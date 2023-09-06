@@ -1,28 +1,31 @@
 ﻿using JourneyMate.Application.Common.Interfaces;
-using MediatR.Pipeline;
-using Microsoft.Extensions.Logging;
+using MediatR;
+using Serilog;
 
 namespace JourneyMate.Application.Common.Behaviours;
-
-public class LoggingBehaviour<TRequest> : IRequestPreProcessor<TRequest> where TRequest : notnull
+public class LoggingBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
 {
-    private readonly ILogger _logger;
     private readonly ICurrentUserService _currentUserService;
 
-	public LoggingBehaviour(ILogger<TRequest> logger, ICurrentUserService currentUserService)
+	public LoggingBehaviour(ICurrentUserService currentUserService)
     {
-        _logger = logger;
         _currentUserService = currentUserService;
 	}
 
-    public Task Process(TRequest request, CancellationToken cancellationToken)
+    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
 	{
 		var requestName = typeof(TRequest).Name;
         var userId = _currentUserService.UserId ?? string.Empty;
+		if(userId != string.Empty)
+		{
+			Log.Information($"Request: {requestName} User: {userId}");
+		}
+		else
+		{
+			Log.Information($"Request: {requestName} User: Unknown");
+		}
+        
 
-        _logger.LogInformation("JourneyMate Request: {Name} {@UserId} {@Request}",
-            requestName, userId, request);
-
-		return Task.CompletedTask;
+		return await next();
 	}
 }

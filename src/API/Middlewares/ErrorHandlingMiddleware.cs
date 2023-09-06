@@ -1,13 +1,10 @@
 ﻿using JourneyMate.Application.Common.Exceptions;
+using Serilog;
 using System.Text.Json;
 
 namespace JourneyMate.API.Middlewares;
 internal sealed class ErrorHandlingMiddleware : IMiddleware
 {
-    public ErrorHandlingMiddleware()
-    {
-    }
-
     public async Task InvokeAsync(HttpContext context, RequestDelegate next)
     {
         try
@@ -16,7 +13,8 @@ internal sealed class ErrorHandlingMiddleware : IMiddleware
         }
         catch (ValidationException exception)
         {
-            context.Response.StatusCode = 400;
+			Log.Error("{ErrorCode} : {Message}", 400, exception.Message);
+			context.Response.StatusCode = 400;
             context.Response.Headers.Add("content-type", "application/json");
 
             var response = new
@@ -32,6 +30,7 @@ internal sealed class ErrorHandlingMiddleware : IMiddleware
         }
 		catch (BadRequestException exception)
 		{
+			Log.Error("{ErrorCode} : {Message}", 400, exception.Message);
 			context.Response.StatusCode = 400;
 			context.Response.Headers.Add("content-type", "application/json");
 
@@ -47,6 +46,7 @@ internal sealed class ErrorHandlingMiddleware : IMiddleware
 		}
 		catch (UnauthorizedAccessException exception)
 		{
+			Log.Error("{ErrorCode} : {Message}", 401, exception.Message);
 			context.Response.StatusCode = 401;
 			context.Response.Headers.Add("content-type", "application/json");
 
@@ -62,6 +62,7 @@ internal sealed class ErrorHandlingMiddleware : IMiddleware
 		}
 		catch (ForbiddenException exception)
 		{
+			Log.Error("{ErrorCode} : {Message}", 403, exception.Message);
 			context.Response.StatusCode = 403;
 			context.Response.Headers.Add("content-type", "application/json");
 
@@ -77,6 +78,7 @@ internal sealed class ErrorHandlingMiddleware : IMiddleware
 		}
 		catch (NotFoundException exception)
         {
+			Log.Error("{ErrorCode} : {Message}", 404, exception.Message);
 			context.Response.StatusCode = 404;
 			context.Response.Headers.Add("content-type", "application/json");
 
@@ -90,15 +92,17 @@ internal sealed class ErrorHandlingMiddleware : IMiddleware
 			var json = JsonSerializer.Serialize(response);
 			await context.Response.WriteAsync(json);
 		}
-        catch (Exception)
+        catch (Exception exception)
 		{
-            context.Response.StatusCode = 500;
+			Log.Error("{ErrorCode} : {Message}", 500, exception.Message);
+			Log.Error("{StackTrace}", exception.StackTrace);
+			context.Response.StatusCode = 500;
             context.Response.Headers.Add("content-type", "application/json");
 
             var response = new
             {
                 Title = "Internal Server Error",
-                Detail = "Something went wrong"
+                Detail = "Something went wrong."
             };
 
             var json = JsonSerializer.Serialize(response);

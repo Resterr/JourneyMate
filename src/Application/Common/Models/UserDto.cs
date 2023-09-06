@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using JourneyMate.Application.Common.Mappings;
+﻿using JourneyMate.Application.Common.Mappings;
 using JourneyMate.Domain.Entities;
 
 namespace JourneyMate.Application.Common.Models;

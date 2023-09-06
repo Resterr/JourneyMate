@@ -12,6 +12,7 @@ public static class Extensions
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 		services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
+		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
 		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(AuthorizationBehaviour<,>));
 		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 

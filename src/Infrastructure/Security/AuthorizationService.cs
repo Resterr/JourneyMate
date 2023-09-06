@@ -1,10 +1,8 @@
 ﻿using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
-using JourneyMate.Domain.Entities;
 using JourneyMate.Domain.Repositories;
 using JourneyMate.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography.X509Certificates;
 
 namespace JourneyMate.Infrastructure.Security;
 internal sealed class AuthorizationService : IAuthorizationService
@@ -40,7 +38,7 @@ internal sealed class AuthorizationService : IAuthorizationService
 		}
 		else
 		{
-			throw new NotFoundException("Role not found");
+			throw new NotFoundException("Role not found.");
 		}
 	}
 
@@ -55,7 +53,7 @@ internal sealed class AuthorizationService : IAuthorizationService
 		}
 		else
 		{
-			throw new NotFoundException("Role not found");
+			throw new NotFoundException("Role not found.");
 		}
 	}
 }

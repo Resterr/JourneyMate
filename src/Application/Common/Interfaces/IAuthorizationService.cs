@@ -1,6 +1,4 @@
-﻿using JourneyMate.Domain.Entities;
-
-namespace JourneyMate.Application.Common.Interfaces;
+﻿namespace JourneyMate.Application.Common.Interfaces;
 public interface IAuthorizationService
 {
 	Task<bool> AuthenticateUserAsync(Guid userId);

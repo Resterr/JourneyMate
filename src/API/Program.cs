@@ -2,10 +2,15 @@ using JourneyMate.API.Middlewares;
 using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Infrastructure.Persistence;
 using JourneyMate.WebUI.Services;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Host.UseSerilog((context, services, configuration) => configuration
+	.ReadFrom.Configuration(context.Configuration)
+	.ReadFrom.Services(services)
+	.Enrich.FromLogContext());
+
 builder.Services.AddScoped<ErrorHandlingMiddleware>();
 
 builder.Services.AddApplicationLayer();

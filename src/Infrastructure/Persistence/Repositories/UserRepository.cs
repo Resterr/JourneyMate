@@ -15,19 +15,19 @@ internal sealed class UserRepository : IUserRepository
 
     public async Task<User> GetByIdAsync(Guid id)
     {
-        var query = await _dbContext.Users.SingleOrDefaultAsync(x => x.Id == id) ?? throw new NotFoundException("User not found");
+        var query = await _dbContext.Users.SingleOrDefaultAsync(x => x.Id == id) ?? throw new NotFoundException("User not found.");
 		return query;
     }
 
     public async Task<User> GetByEmailAsync(string email)
     {
-        var query = await _dbContext.Users.SingleOrDefaultAsync(x => x.Email == email) ?? throw new NotFoundException("User not found");
+        var query = await _dbContext.Users.SingleOrDefaultAsync(x => x.Email == email) ?? throw new NotFoundException("User not found.");
         return query;
     }
 
     public async Task<User> GetByUserNameAsync(string userName)
     {
-        var query = await _dbContext.Users.SingleOrDefaultAsync(x => x.UserName == userName) ?? throw new NotFoundException("User not found");
+        var query = await _dbContext.Users.SingleOrDefaultAsync(x => x.UserName == userName) ?? throw new NotFoundException("User not found.");
         return query;
     }
 
@@ -57,7 +57,7 @@ internal sealed class UserRepository : IUserRepository
         {
 			if (await query.AnyAsync(x => x.Email == email))
 			{
-                throw new BadRequestException("Email already taken");
+                throw new BadRequestException("Email already taken.");
 			}
 		}
 
@@ -65,7 +65,7 @@ internal sealed class UserRepository : IUserRepository
 		{
 			if (await query.AnyAsync(x => x.UserName == userName))
 			{
-                throw new BadRequestException("UserName already taken");
+                throw new BadRequestException("Username already taken.");
 			}
 		}
 
