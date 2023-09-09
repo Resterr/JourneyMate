@@ -2,7 +2,6 @@ using System.Reflection;
 using AutoMapper;
 
 namespace JourneyMate.Application.Common.Mappings;
-
 public class MappingProfile : Profile
 {
     public MappingProfile()

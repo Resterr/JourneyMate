@@ -9,7 +9,6 @@ namespace JourneyMate.Application.Features.Users.Commands.LoginUser;
 [AllowAnonymous]
 public record LoginUser(string UserName, string Password) : IRequest<TokensDto>;
 
-
 internal sealed class LoginUserHandler : IRequestHandler<LoginUser, TokensDto>
 {
     private readonly IUserRepository _userRepository;

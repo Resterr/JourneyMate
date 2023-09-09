@@ -9,7 +9,6 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace JourneyMate.Infrastructure.Security;
-
 internal sealed class TokenService : ITokenService
 {
     private readonly string _issuer;
