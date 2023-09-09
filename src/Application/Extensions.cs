@@ -2,14 +2,15 @@
 using FluentValidation;
 using JourneyMate.Application.Common.Behaviours;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.DependencyInjection;
+namespace JourneyMate.Application;
 public static class Extensions
 {
-    public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
-    {
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
-        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+	public static IServiceCollection AddApplicationLayer(this IServiceCollection services)
+	{
+		services.AddAutoMapper(Assembly.GetExecutingAssembly());
+		services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
 		services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
 
 		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
@@ -17,5 +18,5 @@ public static class Extensions
 		services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviour<,>));
 
 		return services;
-    }
+	}
 }

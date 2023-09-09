@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using JourneyMate.Domain.Entities;
+using JourneyMate.Infrastructure.Common;
 using JourneyMate.Infrastructure.Persistence.Interceptors;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

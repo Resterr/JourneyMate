@@ -1,7 +1,9 @@
 using JourneyMate.API.Middlewares;
+using JourneyMate.API.Services;
+using JourneyMate.Application;
 using JourneyMate.Application.Common.Interfaces;
+using JourneyMate.Infrastructure;
 using JourneyMate.Infrastructure.Persistence;
-using JourneyMate.WebUI.Services;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
