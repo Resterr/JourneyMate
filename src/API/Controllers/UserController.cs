@@ -1,20 +1,20 @@
-﻿using JourneyMate.Application.Features.Users.Commands.LoginUser;
-using JourneyMate.Application.Features.Users.Commands.RegisterUser;
-using JourneyMate.Application.Features.Users.Commands.TokenRefresh;
-using JourneyMate.Application.Features.Users.Commands.TokenRemove;
-using JourneyMate.Application.Features.Users.Queries.GetUserById;
-using JourneyMate.Application.Features.Users.Queries.SelfGetUser;
+﻿using JourneyMate.Application.Features.User.Commands.LoginUser;
+using JourneyMate.Application.Features.User.Commands.RegisterUser;
+using JourneyMate.Application.Features.User.Commands.TokenRefresh;
+using JourneyMate.Application.Features.User.Commands.TokenRemove;
+using JourneyMate.Application.Features.User.Queries.GetUserById;
+using JourneyMate.Application.Features.User.Queries.SelfGetUser;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace JourneyMate.API.Controllers;
 [ApiController]
-[Route("api/users")]
-public class UsersController : ControllerBase
+[Route("api/user")]
+public class UserController : ControllerBase
 {
 	private readonly IMediator _mediator;
 
-	public UsersController(IMediator mediator)
+	public UserController(IMediator mediator)
 	{
 		_mediator = mediator;
 	}

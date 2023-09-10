@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace JourneyMate.Application.Features.Users.EventHandlers;
+namespace JourneyMate.Application.Features.UserFeature.EventHandlers;
 public class UserPasswordUpdatedEventHandler : INotificationHandler<UserPasswordUpdatedEvent>
 {
 	private readonly ILogger<UserPasswordUpdatedEventHandler> _logger;
