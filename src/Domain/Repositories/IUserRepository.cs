@@ -9,5 +9,4 @@ public interface IUserRepository
 	Task AddAsync(User user);
 	Task UpdateAsync(User user);
 	Task DeleteAsync(User user);
-	Task<bool> HasDataCurrentlyUsedAsync(string? email, string? userName);
 }

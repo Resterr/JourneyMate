@@ -48,27 +48,4 @@ internal sealed class UserRepository : IUserRepository
         _dbContext.Users.Remove(user);
         await _dbContext.SaveChangesAsync();
     }
-
-	public async Task<bool> HasDataCurrentlyUsedAsync(string? email, string? userName)
-	{
-        var query = _dbContext.Users;
-
-        if(email != null)
-        {
-			if (await query.AnyAsync(x => x.Email == email))
-			{
-                throw new BadRequestException("Email already taken.");
-			}
-		}
-
-		if (userName != null)
-		{
-			if (await query.AnyAsync(x => x.UserName == userName))
-			{
-                throw new BadRequestException("Username already taken.");
-			}
-		}
-
-        return false;
-	}
 }

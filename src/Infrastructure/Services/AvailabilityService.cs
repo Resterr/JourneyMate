@@ -24,4 +24,27 @@ internal sealed class AvailabilityService : IAvailabilityService
 
 		return true;
 	}
+
+	public async Task<bool> CheckUser(string? email, string? userName)
+	{
+		var query = _dbContext.Users;
+
+		if (email != null)
+		{
+			if (await query.AnyAsync(x => x.Email == email))
+			{
+				throw new BadRequestException("Email already taken.");
+			}
+		}
+
+		if (userName != null)
+		{
+			if (await query.AnyAsync(x => x.UserName == userName))
+			{
+				throw new BadRequestException("Username already taken.");
+			}
+		}
+
+		return true;
+	}
 }

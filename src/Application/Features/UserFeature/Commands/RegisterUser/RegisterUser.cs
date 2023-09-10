@@ -11,12 +11,14 @@ public record RegisterUser(string Email, string UserName, string Password, strin
 internal sealed class RegisterUserHandler : IRequestHandler<RegisterUser, Unit>
 {
 	private readonly IAuthorizationService _authorizationService;
+	private readonly IAvailabilityService _availabilityService;
 	private readonly IUserRepository _userRepository;
 	private readonly IPasswordManager _passwordManager;
 
-	public RegisterUserHandler(IAuthorizationService authorizationService, IUserRepository userRepository, IPasswordManager passwordManager)
+	public RegisterUserHandler(IAuthorizationService authorizationService, IAvailabilityService availabilityService, IUserRepository userRepository, IPasswordManager passwordManager)
 	{
 		_authorizationService = authorizationService;
+		_availabilityService = availabilityService;
 		_userRepository = userRepository;
 		_passwordManager = passwordManager;
 		_passwordManager = passwordManager;
@@ -28,13 +30,16 @@ internal sealed class RegisterUserHandler : IRequestHandler<RegisterUser, Unit>
 		var userName = request.UserName;
 		var password = request.Password;
 
-		await _userRepository.HasDataCurrentlyUsedAsync(email, userName);
+		var available = await _availabilityService.CheckUser(email, userName);
 
 		var hashedPassword = _passwordManager.Secure(password);
 		var user = new User(email, hashedPassword, userName);
 
-		await _userRepository.AddAsync(user);
-		await _authorizationService.AddUserToRoleAsync(user.Id, "User");
+		if (available)
+		{
+			await _userRepository.AddAsync(user);
+			await _authorizationService.AddUserToRoleAsync(user.Id, "User");
+		}
 
 		return Unit.Value;
 	}

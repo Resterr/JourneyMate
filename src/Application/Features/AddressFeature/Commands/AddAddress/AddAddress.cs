@@ -13,11 +13,13 @@ public record AddAddress(string Locality, string AdministrativeArea, string Coun
 internal sealed class AddAddressHandler : IRequestHandler<AddAddress, Guid>
 {
 	private readonly IGeocodeApiService _geocodeApi;
+	private readonly IAvailabilityService _availabilityService;
 	private readonly IAddressRepository _addressRepository;
 
-	public AddAddressHandler(IGeocodeApiService geocodeApi, IAddressRepository addressRepository)
+	public AddAddressHandler(IGeocodeApiService geocodeApi, IAvailabilityService availabilityService, IAddressRepository addressRepository)
 	{
 		_geocodeApi = geocodeApi;
+		_availabilityService = availabilityService;
 		_addressRepository = addressRepository;
 	}
 
@@ -31,10 +33,16 @@ internal sealed class AddAddressHandler : IRequestHandler<AddAddress, Guid>
 		}
 
 		var result = response.Results[0];
+
+		var available = await _availabilityService.CheckAddress(result.Place_Id);
 		var lat = result.Geometry.Location.Lat;
+
 		if (lat == 0.0) throw new BadRequestException();
+
 		var lng = result.Geometry.Location.Lng;
+
 		if (lng == 0.0) throw new BadRequestException();
+
 		var locality = result.Address_Components.FirstOrDefault(x => x.Types.Contains("locality")) ?? throw new BadRequestException();
 		var administrativeAreaLevel2 = result.Address_Components.FirstOrDefault(x => x.Types.Contains("administrative_area_level_2")) ?? throw new BadRequestException();
 		var administrativeAreaLevel1 = result.Address_Components.FirstOrDefault(x => x.Types.Contains("administrative_area_level_1")) ?? throw new BadRequestException();
@@ -48,9 +56,11 @@ internal sealed class AddAddressHandler : IRequestHandler<AddAddress, Guid>
 			new AddressComponent(country.Short_Name, country.Long_Name),
 			new AddressComponent(postalCode.Short_Name, postalCode.Long_Name));
 
-		await _addressRepository.AddAsync(address);
+		if (available)
+		{
+			await _addressRepository.AddAsync(address);
+		}
 
 		return address.Id;
 	}
-
 }
