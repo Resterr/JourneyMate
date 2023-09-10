@@ -30,8 +30,8 @@ internal sealed class TokenRefreshHandler : IRequestHandler<TokenRefresh, Tokens
 
 		var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken);
 
-		var userId = principal.FindFirst(c => c.Type == ClaimTypes.NameIdentifier).Value ?? throw new BadRequestException("Invalid client request.");
-		var user = await _userRepository.GetByIdAsync(Guid.Parse(userId));
+		var userId = principal.FindFirst(c => c.Type == ClaimTypes.NameIdentifier) ?? throw new BadRequestException("Invalid client request.");
+		var user = await _userRepository.GetByIdAsync(Guid.Parse(userId.Value));
 
 		if (!user.IsTokenValid(refreshToken, _dateTimeService.Now)) throw new BadRequestException("Invalid client request.");
 		if (!user.IsTokenValid(refreshToken, _dateTimeService.Now)) throw new BadRequestException("Invalid client request.");
