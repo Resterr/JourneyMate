@@ -11,6 +11,6 @@ public class RoleConfiguration : IEntityTypeConfiguration<Role>
 			.HasMaxLength(25)
 			.IsRequired();
 
-		builder.ToTable("Roles");
+		builder.ToTable("Role");
 	}
 }

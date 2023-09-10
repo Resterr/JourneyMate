@@ -19,6 +19,7 @@ public class ApplicationDbContext : DbContext
 
 	public DbSet<User> Users => Set<User>();
 	public DbSet<Role> Roles => Set<Role>();
+	public DbSet<Address> Addresses => Set<Address>();
 
 	protected override void OnModelCreating(ModelBuilder builder)
 	{
@@ -27,8 +28,8 @@ public class ApplicationDbContext : DbContext
 		builder.Entity<User>()
 		   .HasMany(x => x.Roles)
 		   .WithMany(x => x.Users)
-		   .UsingEntity(j =>
-				j.ToTable("UserRoles")
+		   .UsingEntity(x =>
+				x.ToTable("UserRole")
 			);
 
 		base.OnModelCreating(builder);

@@ -1,5 +1,7 @@
 using System.Reflection;
 using AutoMapper;
+using JourneyMate.Application.Common.Models;
+using JourneyMate.Domain.Entities;
 
 namespace JourneyMate.Application.Common.Mappings;
 public class MappingProfile : Profile
@@ -7,6 +9,8 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
+        CreateMap<PaginatedList<Address>, PaginatedList<AddressDto>>()
+           .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
     }
 
     private void ApplyMappingsFromAssembly(Assembly assembly)

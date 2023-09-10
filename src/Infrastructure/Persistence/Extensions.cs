@@ -18,10 +18,11 @@ internal static class Extensions
 					builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
 		services.AddScoped<ApplicationInitializer>();
-
 		services.AddScoped<IUsersSeeder, UsersSeeder>();
 		services.AddHostedService<ApplicationInitializer>();
-        services.AddScoped<IUserRepository, UserRepository>();
+
+		services.AddScoped<IUserRepository, UserRepository>();
+		services.AddScoped<IAddressRepository, AddressRepository>();
 
 		return services;
     }

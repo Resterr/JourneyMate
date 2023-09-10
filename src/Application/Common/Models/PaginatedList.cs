@@ -1,30 +1,36 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using JourneyMate.Domain.Common.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Application.Common.Models;
-public class PaginatedList<T>
+public class PaginatedList<T> : IPaginatedList<T>
 {
-    public List<T> Items { get; }
-    public int PageNumber { get; }
-    public int TotalPages { get; }
-    public int TotalCount { get; }
+	public List<T> Items { get; }
+	public int PageNumber { get; }
+	public int TotalPages { get; }
+	public int TotalCount { get; }
 
-    public PaginatedList(List<T> items, int count, int pageNumber, int pageSize)
-    {
-        PageNumber = pageNumber;
-        TotalPages = (int)Math.Ceiling(count / (double)pageSize);
-        TotalCount = count;
-        Items = items;
-    }
+	public PaginatedList(List<T> items, int count, int pageNumber, int pageSize)
+	{
+		PageNumber = pageNumber;
+		TotalPages = (int)Math.Ceiling(count / (double)pageSize);
+		TotalCount = count;
+		Items = items;
+	}
 
-    public bool HasPreviousPage => PageNumber > 1;
+	protected PaginatedList()
+	{
+		Items = new List<T>();
+	}
 
-    public bool HasNextPage => PageNumber < TotalPages;
+	public bool HasPreviousPage => PageNumber > 1;
 
-    public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize)
-    {
-        var count = await source.CountAsync();
-        var items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+	public bool HasNextPage => PageNumber < TotalPages;
 
-        return new PaginatedList<T>(items, count, pageNumber, pageSize);
-    }
+	public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize)
+	{
+		var count = await source.CountAsync();
+		var items = await source.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToListAsync();
+
+		return new PaginatedList<T>(items, count, pageNumber, pageSize);
+	}
 }

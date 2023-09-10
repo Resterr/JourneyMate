@@ -10,10 +10,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(x => x.Email)
             .HasMaxLength(500)
             .IsRequired();
+
 		builder.Property(x => x.UserName)
 			.HasMaxLength(100)
 			.IsRequired();
 
-        builder.ToTable("Users");
+        builder.ToTable("User");
 	}
 }
