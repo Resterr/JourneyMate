@@ -4,7 +4,7 @@ using JourneyMate.Domain.Repositories;
 using JourneyMate.Application.Common.Models;
 using JourneyMate.Application.Common.Security;
 
-namespace JourneyMate.Application.Features.User.Queries.GetUserById;
+namespace JourneyMate.Application.Features.UserFeature.Queries.GetUserById;
 [Authorize(Role = "Admin")]
 public record GetUserById(Guid Id) : IRequest<UserDto>;
 

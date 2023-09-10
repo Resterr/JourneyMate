@@ -4,7 +4,7 @@ using JourneyMate.Domain.Entities;
 using JourneyMate.Domain.Repositories;
 using MediatR;
 
-namespace JourneyMate.Application.Features.User.Commands.RegisterUser;
+namespace JourneyMate.Application.Features.UserFeature.Commands.RegisterUser;
 [AllowAnonymous]
 public record RegisterUser(string Email, string UserName, string Password, string ConfirmPassword) : IRequest<Unit>;
 
