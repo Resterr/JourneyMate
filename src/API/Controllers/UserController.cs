@@ -1,9 +1,5 @@
-﻿using JourneyMate.Application.Features.UserFeature.Commands.LoginUser;
-using JourneyMate.Application.Features.UserFeature.Commands.RegisterUser;
-using JourneyMate.Application.Features.UserFeature.Commands.TokenRefresh;
-using JourneyMate.Application.Features.UserFeature.Commands.TokenRemove;
-using JourneyMate.Application.Features.UserFeature.Queries.GetUserById;
-using JourneyMate.Application.Features.UserFeature.Queries.SelfGetUser;
+﻿using JourneyMate.Application.Features.UserFeature.Commands;
+using JourneyMate.Application.Features.UserFeature.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

@@ -1,6 +1,5 @@
-﻿using JourneyMate.Application.Features.AddressFeature.Commands.AddAddress;
-using JourneyMate.Application.Features.AddressFeature.Commands.RemoveAddress;
-using JourneyMate.Application.Features.AddressFeature.Queries.GetAllAddresses;
+﻿using JourneyMate.Application.Features.AddressFeature.Commands;
+using JourneyMate.Application.Features.AddressFeature.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
