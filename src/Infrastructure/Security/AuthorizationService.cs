@@ -56,4 +56,12 @@ internal sealed class AuthorizationService : IAuthorizationService
 			throw new NotFoundException("Role not found.");
 		}
 	}
+
+	public async Task<IEnumerable<string>> GetRolesForUserAsync(Guid userId)
+	{
+		var user = await _userRepository.GetByIdAsync(userId);
+		var roles = await _dbContext.Roles.Include(x => x.Users).Where(x => x.Users.Contains(user)).ToListAsync();
+
+		return roles.Select(x => x.Name);
+	}
 }
