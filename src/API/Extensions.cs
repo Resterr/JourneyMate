@@ -8,10 +8,11 @@ public static class Extensions
 {
 	public static IServiceCollection AddPresentationLayer(this IServiceCollection services)
 	{
-		services.AddScoped<ErrorHandlingMiddleware>();
 		services.AddHttpContextAccessor();
-		services.AddScoped<ICurrentUserService, CurrentUserService>();
 		services.AddHealthChecks().AddDbContextCheck<ApplicationDbContext>();
+		services.AddScoped<ErrorHandlingMiddleware>();	
+		services.AddScoped<ICurrentUserService, CurrentUserService>();
+		services.AddRouting(options => options.LowercaseUrls = true);
 		services.AddControllers();
 		services.AddEndpointsApiExplorer();
 		services.AddSwaggerDocument();
@@ -22,13 +23,13 @@ public static class Extensions
 	public static WebApplication UsePresentationLayer(this WebApplication app)
 	{
 		app.UseHttpsRedirection();
+		app.UseHealthChecks("/health");
 		app.UseMiddleware<ErrorHandlingMiddleware>();
-		app.UseHealthChecks("/health");	
-		app.UseOpenApi();
-		app.UseSwaggerUi3();
 		app.MapControllers();
 		app.UseAuthentication();
 		app.UseAuthorization();
+		app.UseOpenApi();
+		app.UseSwaggerUi3();
 
 		return app;
 	}
