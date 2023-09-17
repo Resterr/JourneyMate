@@ -19,8 +19,8 @@ internal sealed class TokenRemoveHandler : IRequestHandler<TokenRemove, Unit>
 
     public async Task<Unit> Handle(TokenRemove request, CancellationToken cancellationToken)
     {
-        var user = await _userRepository.GetByIdAsync(request.UserId) ?? throw new NotFoundException("User not found.");
-        user.RemoveRefreshToken();
+        var user = await _userRepository.GetByIdAsync(request.UserId) ?? throw new NotFoundException(ExceptionTemplates.InvalidObject(request.UserId));
+		user.RemoveRefreshToken();
 
         await _userRepository.UpdateAsync(user);
 

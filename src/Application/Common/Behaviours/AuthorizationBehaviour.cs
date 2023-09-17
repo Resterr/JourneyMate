@@ -32,7 +32,7 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
 
 		if (!isParsable)
 		{
-			throw new BadRequestException("Invalid ID format.");
+			throw new BadRequestException(ExceptionTemplates.InvalidObject("ID"));
 		}
 
 		var authorizeAttributes = request.GetType().GetCustomAttributes<AuthorizeAttribute>();

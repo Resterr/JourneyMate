@@ -19,7 +19,7 @@ internal sealed class AvailabilityService : IAvailabilityService
 
 		if (await query.AnyAsync(x => x.PlaceId == placeId))
 		{
-			throw new BadRequestException("PlaceId already taken.");
+			throw new BadRequestException(ExceptionTemplates.AlreadyTakenObject(placeId));
 		}
 
 		return true;
@@ -33,7 +33,7 @@ internal sealed class AvailabilityService : IAvailabilityService
 		{
 			if (await query.AnyAsync(x => x.Email == email))
 			{
-				throw new BadRequestException("Email already taken.");
+				throw new BadRequestException(ExceptionTemplates.AlreadyTakenObject(email));
 			}
 		}
 
@@ -41,7 +41,7 @@ internal sealed class AvailabilityService : IAvailabilityService
 		{
 			if (await query.AnyAsync(x => x.UserName == userName))
 			{
-				throw new BadRequestException("Username already taken.");
+				throw new BadRequestException(ExceptionTemplates.AlreadyTakenObject(userName));
 			}
 		}
 

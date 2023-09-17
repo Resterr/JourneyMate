@@ -92,13 +92,13 @@ internal sealed class TokenService : ITokenService
             var tokenHandler = new JwtSecurityTokenHandler();
             var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
             if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-                throw new BadRequestException("Invalid token.");
+                throw new BadRequestException(ExceptionTemplates.InvalidObject("token"));
 
             return principal;
         }
         catch
         {
-            throw new BadRequestException("Invalid token.");
+            throw new BadRequestException(ExceptionTemplates.InvalidObject("token"));
         }
     }
 }

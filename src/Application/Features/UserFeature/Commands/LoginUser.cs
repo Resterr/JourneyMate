@@ -26,9 +26,9 @@ internal sealed class LoginUserHandler : IRequestHandler<LoginUser, TokensDto>
     public async Task<TokensDto> Handle(LoginUser request, CancellationToken cancellationToken)
     {
         var user = await _userRepository.GetByUserNameAsync(request.UserName);
-        if (!_passwordManager.Validate(request.Password, user.PasswordHash)) throw new BadRequestException("Invalid password.");
+        if (!_passwordManager.Validate(request.Password, user.PasswordHash)) throw new BadRequestException(ExceptionTemplates.InvalidObject(request.Password));
 
-        var accessToken = _tokenService.GenerateAccessToken(user.Id, user.Email, user.UserName);
+		var accessToken = _tokenService.GenerateAccessToken(user.Id, user.Email, user.UserName);
         var refreshToken = _tokenService.GenerateRefreshToken();
         var refreshTokenExpiryDate = _tokenService.GetRefreshExpiryDate();
 
