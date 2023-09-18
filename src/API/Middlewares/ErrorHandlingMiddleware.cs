@@ -60,7 +60,7 @@ internal sealed class ErrorHandlingMiddleware : IMiddleware
 			var json = JsonSerializer.Serialize(response);
 			await context.Response.WriteAsync(json);
 		}
-		catch (ForbiddenException exception)
+		catch (ForbiddenAccessException exception)
 		{
 			Log.Error("{ErrorCode} : {Message}", 403, exception.Message);
 			context.Response.StatusCode = 403;
@@ -95,7 +95,6 @@ internal sealed class ErrorHandlingMiddleware : IMiddleware
         catch (Exception exception)
 		{
 			Log.Error("{ErrorCode} : {Message}", 500, exception.Message);
-			Log.Error("{StackTrace}", exception.StackTrace);
 			context.Response.StatusCode = 500;
             context.Response.Headers.Add("content-type", "application/json");
 

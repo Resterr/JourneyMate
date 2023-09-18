@@ -49,9 +49,9 @@ public class RegisterUserValidator : AbstractValidator<RegisterUser>
 {
     public RegisterUserValidator()
     {
-        RuleFor(x => x.Email).NotEmpty().MaximumLength(128).EmailAddress();
-        RuleFor(x => x.UserName).NotEmpty().MaximumLength(128);
-        RuleFor(x => x.Password).NotEmpty().MinimumLength(6).MaximumLength(128);
-        RuleFor(x => x.ConfirmPassword).NotEmpty().MinimumLength(6).MaximumLength(128).Equal(x => x.Password);
+        RuleFor(x => x.Email).MaximumLength(128).EmailAddress();
+        RuleFor(x => x.UserName).MaximumLength(128);
+        RuleFor(x => x.Password).MinimumLength(6).MaximumLength(128);
+        RuleFor(x => x.ConfirmPassword).MinimumLength(6).MaximumLength(128).Equal(x => x.Password);
     }
 }

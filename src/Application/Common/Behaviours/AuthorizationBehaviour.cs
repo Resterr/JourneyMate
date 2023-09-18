@@ -60,7 +60,7 @@ public class AuthorizationBehaviour<TRequest, TResponse> : IPipelineBehavior<TRe
 
 				if (!authorized)
 				{
-					throw new ForbiddenException();
+					throw new ForbiddenAccessException();
 				}
 
 				return await next();

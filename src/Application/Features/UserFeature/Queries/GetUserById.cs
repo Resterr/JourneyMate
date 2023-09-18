@@ -3,7 +3,6 @@ using AutoMapper;
 using JourneyMate.Domain.Repositories;
 using JourneyMate.Application.Common.Models;
 using JourneyMate.Application.Common.Security;
-using FluentValidation;
 
 namespace JourneyMate.Application.Features.UserFeature.Queries;
 [Authorize(Role = "Admin")]
@@ -27,13 +26,3 @@ internal sealed class GetUserByIdHandler : IRequestHandler<GetUserById, UserDto>
         return result;
     }
 }
-
-public class GetUserByIdValidator : AbstractValidator<GetUserById>
-{
-    public GetUserByIdValidator()
-    {
-        RuleFor(x => x.Id)
-            .NotEmpty();
-    }
-}
-

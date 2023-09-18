@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using JourneyMate.Application.Common.Exceptions;
+﻿using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Application.Common.Models;
 using JourneyMate.Application.Common.Security;
@@ -48,14 +47,5 @@ internal sealed class TokenRefreshHandler : IRequestHandler<TokenRefresh, Tokens
             AccessToken = newAccessToken,
             RefreshToken = newRefreshToken
         };
-    }
-}
-
-public class RefreshTokenValidator : AbstractValidator<TokenRefresh>
-{
-    public RefreshTokenValidator()
-    {
-        RuleFor(x => x.AccessToken).NotEmpty();
-        RuleFor(x => x.RefreshToken).NotEmpty();
     }
 }

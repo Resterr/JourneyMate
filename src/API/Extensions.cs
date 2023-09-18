@@ -1,7 +1,9 @@
-﻿using JourneyMate.API.Middlewares;
+﻿using JourneyMate.API.Filters;
+using JourneyMate.API.Middlewares;
 using JourneyMate.API.Services;
 using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Mvc;
 
 namespace JourneyMate.API;
 public static class Extensions
@@ -13,7 +15,8 @@ public static class Extensions
 		services.AddScoped<ErrorHandlingMiddleware>();	
 		services.AddScoped<ICurrentUserService, CurrentUserService>();
 		services.AddRouting(options => options.LowercaseUrls = true);
-		services.AddControllers();
+		services.AddControllers(options => options.Filters.Add<ValidationFilter>());
+		services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
 		services.AddEndpointsApiExplorer();
 		services.AddSwaggerDocument();
 

@@ -1,5 +1,4 @@
-﻿using FluentValidation;
-using JourneyMate.Application.Common.Exceptions;
+﻿using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Application.Common.Models;
 using JourneyMate.Application.Common.Security;
@@ -42,14 +41,5 @@ internal sealed class LoginUserHandler : IRequestHandler<LoginUser, TokensDto>
             AccessToken = accessToken,
             RefreshToken = refreshToken
         };
-    }
-}
-
-public class LoginUserValidator : AbstractValidator<LoginUser>
-{
-    public LoginUserValidator()
-    {
-        RuleFor(x => x.UserName).NotEmpty();
-        RuleFor(x => x.Password).NotEmpty();
     }
 }
