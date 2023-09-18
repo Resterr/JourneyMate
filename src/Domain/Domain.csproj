@@ -6,6 +6,11 @@
 		<AssemblyName>JourneyMate.Domain</AssemblyName>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
+		<Configurations>Debug;Release</Configurations>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="MediatR" Version="12.1.1" />
+	</ItemGroup>
 
 </Project>

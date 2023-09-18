@@ -1,21 +1,21 @@
+using JourneyMate.API;
+using JourneyMate.Application;
+using JourneyMate.Infrastructure;
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Host.UseSerilog((context, services, configuration) => configuration
+	.ReadFrom.Configuration(context.Configuration)
+	.ReadFrom.Services(services)
+	.Enrich.FromLogContext());
+
+builder.Services.AddPresentationLayer();
+builder.Services.AddApplicationLayer();
+builder.Services.AddInfrastructureLayer(builder.Configuration);
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-
-app.UseHttpsRedirection();
-
-app.UseAuthorization();
-
-app.MapControllers();
+app.UsePresentationLayer();
 
 app.Run();
