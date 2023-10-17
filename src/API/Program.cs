@@ -1,4 +1,5 @@
 using JourneyMate.API;
+using JourneyMate.API.Requests;
 using JourneyMate.Application;
 using JourneyMate.Infrastructure;
 using Serilog;
@@ -17,5 +18,9 @@ builder.Services.AddInfrastructureLayer(builder.Configuration);
 var app = builder.Build();
 
 app.UsePresentationLayer();
+
+app.RegisterUsersRequests();
+app.RegisterAdminRequests();
+app.RegisterAddressRequests();
 
 app.Run();

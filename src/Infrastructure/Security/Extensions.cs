@@ -42,6 +42,24 @@ internal static class Extensions
         services.AddSingleton<IPasswordManager, PasswordManager>();
 		services.AddScoped<IAuthorizationService, AuthorizationService>();
 
+		services.AddAuthorization(authorization =>
+		{
+			authorization.AddPolicy("superadmin", policy =>
+			{
+				policy.RequireRole("SuperAdmin");
+			});
+
+			authorization.AddPolicy("admin", policy =>
+			{
+				policy.RequireRole("Admin");
+			});
+
+			authorization.AddPolicy("user", policy =>
+			{
+				policy.RequireRole("User");
+			});
+		});
+
 		return services;
     }
 }

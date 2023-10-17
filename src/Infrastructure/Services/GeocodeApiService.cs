@@ -1,5 +1,5 @@
 ﻿using JourneyMate.Application.Common.Interfaces;
-using JourneyMate.Application.Common.Models.Responses;
+using JourneyMate.Application.Common.Models.ReadModels;
 using JourneyMate.Infrastructure.Common.Options;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
@@ -16,11 +16,11 @@ internal sealed class GeocodeApiService : IGeocodeApiService
 		_keysOptions = keysOptions;
 	}
 
-	public async Task<AddressResponseDto?> GetAddressAsync(string components)
+	public async Task<AddressReadModel?> GetAddressAsync(string components)
 	{
 		using var client = new HttpClient();
 		var response = await client.GetStringAsync($"{_urlOptions.Value.GoogleMapsApiUrl}/geocode/json?components={components}&key={_keysOptions.Value.GooglePlacesApiKey}");
-		var result = JsonConvert.DeserializeObject<AddressResponseDto>(response);
+		var result = JsonConvert.DeserializeObject<AddressReadModel>(response);
 		return result;
 	}
 }

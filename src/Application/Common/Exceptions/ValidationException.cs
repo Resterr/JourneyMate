@@ -1,7 +1,8 @@
 ﻿using FluentValidation.Results;
+using System.Net;
 
 namespace JourneyMate.Application.Common.Exceptions;
-public class ValidationException : Exception
+public class ValidationException : JourneyMateException
 {
     public ValidationException() : base("One or more validation failures have occurred.")
     {
@@ -16,4 +17,6 @@ public class ValidationException : Exception
     }
 
     public IDictionary<string, string[]> Errors { get; }
+
+    public override HttpStatusCode StatusCode => HttpStatusCode.BadRequest;
 }

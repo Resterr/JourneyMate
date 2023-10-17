@@ -1,9 +1,8 @@
-﻿using JourneyMate.Application.Common.Security;
+﻿using FluentValidation;
 using JourneyMate.Domain.Repositories;
 using MediatR;
 
 namespace JourneyMate.Application.Features.AddressFeature.Commands;
-[Authorize(Role = "Admin")]
 public record RemoveAddress(Guid Id) : IRequest<Unit>;
 
 internal sealed class RemoveAddressHandler : IRequestHandler<RemoveAddress, Unit>
@@ -24,3 +23,12 @@ internal sealed class RemoveAddressHandler : IRequestHandler<RemoveAddress, Unit
         return Unit.Value;
     }
 }
+
+public class RemoveAddressValidator : AbstractValidator<RemoveAddress>
+{
+	public RemoveAddressValidator()
+	{
+		RuleFor(x => x.Id).NotNull();
+	}
+}
+

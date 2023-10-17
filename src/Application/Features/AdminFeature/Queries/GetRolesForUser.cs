@@ -1,9 +1,7 @@
 ﻿using JourneyMate.Application.Common.Interfaces;
-using JourneyMate.Application.Common.Security;
 using MediatR;
 
 namespace JourneyMate.Application.Features.AdminFeature.Queries;
-[Authorize(Role = "Admin")]
 public record GetRolesForUser(Guid Id) : IRequest<List<string>>;
 
 internal sealed class GetUserByIdHandler : IRequestHandler<GetRolesForUser, List<string>>

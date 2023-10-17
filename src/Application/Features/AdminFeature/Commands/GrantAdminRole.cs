@@ -1,10 +1,8 @@
 ﻿using JourneyMate.Application.Common.Interfaces;
-using JourneyMate.Application.Common.Security;
 using JourneyMate.Domain.Repositories;
 using MediatR;
 
 namespace JourneyMate.Application.Features.AdminFeature.Commands;
-[Authorize(Role = "SuperAdmin")]
 public record GrantAdminRole(Guid Id) : IRequest<Unit>;
 
 internal sealed class GrantAdminRoleHandler : IRequestHandler<GrantAdminRole, Unit>

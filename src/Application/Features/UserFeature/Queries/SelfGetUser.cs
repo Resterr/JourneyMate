@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
 using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Application.Common.Models;
-using JourneyMate.Application.Common.Security;
 using JourneyMate.Domain.Repositories;
 using MediatR;
 
 namespace JourneyMate.Application.Features.UserFeature.Queries;
-[Authorize(Role = "User")]
 public record SelfGetUser() : IRequest<UserDto>;
 
 internal sealed class SelfGetUserHandler : IRequestHandler<SelfGetUser, UserDto>

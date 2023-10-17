@@ -2,10 +2,8 @@
 using AutoMapper;
 using JourneyMate.Domain.Repositories;
 using JourneyMate.Application.Common.Models;
-using JourneyMate.Application.Common.Security;
 
 namespace JourneyMate.Application.Features.UserFeature.Queries;
-[Authorize(Role = "Admin")]
 public record GetUserById(Guid Id) : IRequest<UserDto>;
 
 internal sealed class GetUserByIdHandler : IRequestHandler<GetUserById, UserDto>

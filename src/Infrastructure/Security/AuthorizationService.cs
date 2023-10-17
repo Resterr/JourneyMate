@@ -1,6 +1,5 @@
 ﻿using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
-using JourneyMate.Domain.Entities;
 using JourneyMate.Domain.Repositories;
 using JourneyMate.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -39,7 +38,7 @@ internal sealed class AuthorizationService : IAuthorizationService
 		}
 		else
 		{
-			throw new NotFoundException(ExceptionTemplates.NotFoundObject(nameof(Role), roleName));
+			throw new RoleNotFoundException(roleName);
 		}
 	}
 
@@ -54,7 +53,7 @@ internal sealed class AuthorizationService : IAuthorizationService
 		}
 		else
 		{
-			throw new NotFoundException(ExceptionTemplates.NotFoundObject(nameof(Role), roleName));
+			throw new RoleNotFoundException(roleName);
 		}
 	}
 

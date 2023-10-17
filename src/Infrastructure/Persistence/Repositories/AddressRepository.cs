@@ -26,13 +26,13 @@ internal sealed class AddressRepository : IAddressRepository
 
 	public async Task<Address> GetByIdAsync(Guid id)
 	{
-		var query = await _dbContext.Addresses.SingleOrDefaultAsync(x => x.Id == id) ?? throw new NotFoundException(ExceptionTemplates.NotFoundObject(nameof(Address), id));
+		var query = await _dbContext.Addresses.SingleOrDefaultAsync(x => x.Id == id) ?? throw new AddressNotFound(id);
 		return query;
 	}
 
 	public async Task<Address> GetByPlaceIdAsync(string placeId)
 	{
-		var query = await _dbContext.Addresses.SingleOrDefaultAsync(x => x.PlaceId == placeId) ?? throw new NotFoundException(ExceptionTemplates.NotFoundObject(nameof(Address), placeId));
+		var query = await _dbContext.Addresses.SingleOrDefaultAsync(x => x.PlaceId == placeId) ?? throw new AddressNotFound(placeId, "place id");
 		return query;
 	}
 

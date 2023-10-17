@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
+using FluentValidation;
 using JourneyMate.Application.Common.Models;
-using JourneyMate.Application.Common.Security;
+using JourneyMate.Application.Features.AddressFeature.Commands;
 using JourneyMate.Domain.Repositories;
 using MediatR;
 
 namespace JourneyMate.Application.Features.AddressFeature.Queries;
-[Authorize(Role = "User")]
 public record GetAllAddresses(int PageNumber, int PageSize) : IRequest<PaginatedList<AddressDto>>;
 
 internal sealed class GetAllAddressesHandler : IRequestHandler<GetAllAddresses, PaginatedList<AddressDto>>
@@ -26,4 +26,13 @@ internal sealed class GetAllAddressesHandler : IRequestHandler<GetAllAddresses, 
 
         return result;
     }
+}
+
+public class GetAllAddressesValidator : AbstractValidator<GetAllAddresses>
+{
+	public GetAllAddressesValidator()
+	{
+		RuleFor(x => x.PageNumber).GreaterThan(0);
+		RuleFor(x => x.PageSize).GreaterThan(0);
+	}
 }
