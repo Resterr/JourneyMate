@@ -2,6 +2,7 @@
 using MediatR;
 
 namespace JourneyMate.Application.Features.AdminFeature.Queries;
+
 public record GetRolesForUser(Guid Id) : IRequest<List<string>>;
 
 internal sealed class GetUserByIdHandler : IRequestHandler<GetRolesForUser, List<string>>
@@ -12,6 +13,7 @@ internal sealed class GetUserByIdHandler : IRequestHandler<GetRolesForUser, List
 	{
 		_authorizationService = authorizationService;
 	}
+
 	public async Task<List<string>> Handle(GetRolesForUser request, CancellationToken cancellationToken)
 	{
 		var result = await _authorizationService.GetRolesForUserAsync(request.Id);

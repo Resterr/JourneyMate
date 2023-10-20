@@ -1,4 +1,5 @@
 ﻿namespace JourneyMate.Application.Common.Models.ReadModels;
+
 public class AddressReadModel
 {
 	public List<Result> Results { get; set; }

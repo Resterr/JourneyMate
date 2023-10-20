@@ -2,6 +2,7 @@
 using JourneyMate.Domain.Events.UserEvents;
 
 namespace JourneyMate.Domain.Entities;
+
 public class User : BaseAuditableEntity
 {
 	public string Email { get; private set; }
@@ -9,9 +10,8 @@ public class User : BaseAuditableEntity
 	public string UserName { get; private set; }
 	public string? RefreshToken { get; private set; }
 	public DateTime? RefreshTokenExpiryTime { get; private set; }
-	public List<Role> Roles { get; private set; } = new();
-
-    private User() { }
+	public List<Role> Roles { get; } = new();
+	private User() { }
 
 	public User(string email, string passwordHash, string userName)
 	{
@@ -42,7 +42,7 @@ public class User : BaseAuditableEntity
 	public bool IsTokenValid(string token, DateTime currentDate)
 	{
 		if (RefreshToken == token && RefreshTokenExpiryTime >= currentDate) return true;
-		else return false;
+		return false;
 	}
 
 	public void RemoveRefreshToken()
@@ -53,7 +53,7 @@ public class User : BaseAuditableEntity
 
 	public void AddRole(Role role)
 	{
-		if(Roles.Contains(role)) return;
+		if (Roles.Contains(role)) return;
 		Roles.Add(role);
 	}
 

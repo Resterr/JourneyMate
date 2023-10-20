@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace JourneyMate.API.Requests;
+
 internal static class AddressRequests
 {
 	public static WebApplication RegisterAddressRequests(this WebApplication app)
@@ -20,18 +21,20 @@ internal static class AddressRequests
 	private static RouteGroupBuilder MapAddressEndpoints(this RouteGroupBuilder group)
 	{
 		group.MapGet("", async (ISender mediator, [AsParameters] GetAllAddresses request) =>
-		{
-			var result = await mediator.Send(request);
-			return Results.Ok(result);
-		}).AllowAnonymous()
+			{
+				var result = await mediator.Send(request);
+				return Results.Ok(result);
+			})
+			.AllowAnonymous()
 			.Produces<AddressDto>()
 			.WithMetadata(new SwaggerOperationAttribute("Get addresses"));
 
 		group.MapPost("add", async (ISender mediator, [FromBody] AddAddress request) =>
-		{
-			await mediator.Send(request);
-			return Results.Ok();
-		}).RequireAuthorization("admin")
+			{
+				await mediator.Send(request);
+				return Results.Ok();
+			})
+			.RequireAuthorization("admin")
 			.Produces(StatusCodes.Status200OK)
 			.Produces(StatusCodes.Status401Unauthorized)
 			.Produces(StatusCodes.Status403Forbidden)
@@ -39,10 +42,11 @@ internal static class AddressRequests
 			.WithMetadata(new SwaggerOperationAttribute("Add address location"));
 
 		group.MapDelete("remove", async (ISender mediator, [FromBody] RemoveAddress request) =>
-		{
-			await mediator.Send(request);
-			return Results.NoContent();
-		}).RequireAuthorization("admin")
+			{
+				await mediator.Send(request);
+				return Results.NoContent();
+			})
+			.RequireAuthorization("admin")
 			.Produces(StatusCodes.Status200OK)
 			.Produces(StatusCodes.Status401Unauthorized)
 			.Produces(StatusCodes.Status403Forbidden)

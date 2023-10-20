@@ -1,4 +1,5 @@
 ﻿namespace JourneyMate.Application.Common.Interfaces;
+
 public interface IAuthorizationService
 {
 	Task<bool> AuthenticateUserAsync(Guid userId);

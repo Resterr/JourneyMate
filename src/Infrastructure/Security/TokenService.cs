@@ -9,16 +9,17 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace JourneyMate.Infrastructure.Security;
+
 internal sealed class TokenService : ITokenService
 {
-	private readonly string _issuer;
-	private readonly string _audience;
-	private readonly string _signingKey;
 	private readonly TimeSpan _accessTokenExpiry;
+	private readonly string _audience;
+	private readonly IDateTimeService _dateTimeService;
+	private readonly string _issuer;
+	private readonly JwtSecurityTokenHandler _jwtSecurityToken = new();
 	private readonly TimeSpan _refreshTokenExpiry;
 	private readonly SigningCredentials _signingCredentials;
-	private readonly JwtSecurityTokenHandler _jwtSecurityToken = new();
-	private readonly IDateTimeService _dateTimeService;
+	private readonly string _signingKey;
 
 	public TokenService(IOptions<AuthOptions> options, IDateTimeService dateTimeService)
 	{
@@ -27,9 +28,7 @@ internal sealed class TokenService : ITokenService
 		_signingKey = options.Value.SigningKey;
 		_accessTokenExpiry = options.Value.AccessTokenExpiry ?? TimeSpan.FromMinutes(10);
 		_refreshTokenExpiry = options.Value.RefreshTokenExpiry ?? TimeSpan.FromHours(24);
-		_signingCredentials = new SigningCredentials(new SymmetricSecurityKey(
-				Encoding.UTF8.GetBytes(_signingKey)),
-				SecurityAlgorithms.HmacSha256);
+		_signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_signingKey)), SecurityAlgorithms.HmacSha256);
 		_dateTimeService = dateTimeService;
 	}
 
@@ -42,10 +41,7 @@ internal sealed class TokenService : ITokenService
 			new(ClaimTypes.Name, userName)
 		};
 
-		foreach (var role in roles)
-		{
-			claims.Add(new Claim(ClaimTypes.Role, role));
-		}
+		foreach (var role in roles) claims.Add(new Claim(ClaimTypes.Role, role));
 
 		var now = _dateTimeService.CurrentDate();
 		var expires = now.Add(_accessTokenExpiry);
@@ -96,8 +92,7 @@ internal sealed class TokenService : ITokenService
 		{
 			var tokenHandler = new JwtSecurityTokenHandler();
 			var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
-			if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
-				throw new InvalidTokenException();
+			if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase)) throw new InvalidTokenException();
 
 			return principal;
 		}

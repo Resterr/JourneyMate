@@ -3,12 +3,13 @@ using JourneyMate.Domain.Repositories;
 using MediatR;
 
 namespace JourneyMate.Application.Features.AdminFeature.Commands;
+
 public record GrantAdminRole(Guid Id) : IRequest<Unit>;
 
 internal sealed class GrantAdminRoleHandler : IRequestHandler<GrantAdminRole, Unit>
 {
-	private readonly IUserRepository _userRepository;
 	private readonly IAuthorizationService _authorizationService;
+	private readonly IUserRepository _userRepository;
 
 	public GrantAdminRoleHandler(IUserRepository userRepository, IAuthorizationService authorizationService)
 	{

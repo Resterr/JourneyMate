@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 
 namespace JourneyMate.Application.Common.Interfaces;
+
 public interface ITokenService
 {
 	string GenerateAccessToken(Guid userId, string userEmail, string userName, IEnumerable<string> roles);

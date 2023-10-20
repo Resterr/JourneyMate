@@ -3,10 +3,11 @@ using JourneyMate.Domain.Entities;
 using JourneyMate.Domain.ValueObjects;
 
 namespace JourneyMate.Application.Common.Models;
+
 public class AddressDto : IMapFrom<Address>
 {
-    public Guid Id { get; set; }
-    public string PlaceId { get; set; }
+	public Guid Id { get; set; }
+	public string PlaceId { get; set; }
 	public LocationDto Location { get; set; }
 	public AddressComponentDto Locality { get; set; }
 	public AddressComponentDto AdministrativeAreaLevel2 { get; set; }

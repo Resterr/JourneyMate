@@ -5,13 +5,14 @@ using JourneyMate.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Infrastructure.Security;
+
 internal sealed class AuthorizationService : IAuthorizationService
 {
 	private readonly ApplicationDbContext _dbContext;
 	private readonly IUserRepository _userRepository;
 
 	public AuthorizationService(ApplicationDbContext dbContext, IUserRepository userRepository)
-    {
+	{
 		_dbContext = dbContext;
 		_userRepository = userRepository;
 	}
@@ -23,8 +24,11 @@ internal sealed class AuthorizationService : IAuthorizationService
 
 	public async Task<bool> AuthorizeUserAsync(Guid userId, string roleName)
 	{
-		var user = await _dbContext.Users.Include(x => x.Roles).SingleOrDefaultAsync(x => x.Id == userId) ?? throw new UnauthorizedAccessException();
-		return user.Roles.Select(x => x.Name).Contains(roleName);
+		var user = await _dbContext.Users.Include(x => x.Roles)
+				.SingleOrDefaultAsync(x => x.Id == userId) ??
+			throw new UnauthorizedAccessException();
+		return user.Roles.Select(x => x.Name)
+			.Contains(roleName);
 	}
 
 	public async Task AddUserToRoleAsync(Guid userId, string roleName)
@@ -60,7 +64,9 @@ internal sealed class AuthorizationService : IAuthorizationService
 	public async Task<IEnumerable<string>> GetRolesForUserAsync(Guid userId)
 	{
 		var user = await _userRepository.GetByIdAsync(userId);
-		var roles = await _dbContext.Roles.Include(x => x.Users).Where(x => x.Users.Contains(user)).ToListAsync();
+		var roles = await _dbContext.Roles.Include(x => x.Users)
+			.Where(x => x.Users.Contains(user))
+			.ToListAsync();
 
 		return roles.Select(x => x.Name);
 	}

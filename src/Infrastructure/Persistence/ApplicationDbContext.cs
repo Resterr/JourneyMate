@@ -6,10 +6,15 @@ using MediatR;
 using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Infrastructure.Persistence;
+
 public class ApplicationDbContext : DbContext
 {
-	private readonly IMediator _mediator;
 	private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
+	private readonly IMediator _mediator;
+
+	public DbSet<User> Users => Set<User>();
+	public DbSet<Role> Roles => Set<Role>();
+	public DbSet<Address> Addresses => Set<Address>();
 
 	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IMediator mediator, AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor) : base(options)
 	{
@@ -17,20 +22,14 @@ public class ApplicationDbContext : DbContext
 		_auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
 	}
 
-	public DbSet<User> Users => Set<User>();
-	public DbSet<Role> Roles => Set<Role>();
-	public DbSet<Address> Addresses => Set<Address>();
-
 	protected override void OnModelCreating(ModelBuilder builder)
 	{
 		builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
 
 		builder.Entity<User>()
-		   .HasMany(x => x.Roles)
-		   .WithMany(x => x.Users)
-		   .UsingEntity(x =>
-				x.ToTable("UserRole")
-			);
+			.HasMany(x => x.Roles)
+			.WithMany(x => x.Users)
+			.UsingEntity(x => x.ToTable("UserRole"));
 
 		base.OnModelCreating(builder);
 	}

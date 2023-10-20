@@ -1,6 +1,7 @@
 ﻿using JourneyMate.Domain.Common;
 
 namespace JourneyMate.Domain.ValueObjects;
+
 public class Location : ValueObject
 {
 	public double Latitude { get; set; }

@@ -4,10 +4,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 namespace JourneyMate.Infrastructure.Persistence;
+
 public class ApplicationInitializer : IHostedService
 {
-	private readonly IServiceProvider _serviceProvider;
 	private readonly IHostEnvironment _env;
+	private readonly IServiceProvider _serviceProvider;
 
 	public ApplicationInitializer(IServiceProvider serviceProvider, IHostEnvironment env)
 	{
@@ -21,14 +22,12 @@ public class ApplicationInitializer : IHostedService
 		var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
 		if (_env.IsDevelopment())
-		{
-			if (dbContext.Database.GetPendingMigrations().Any())
-			{
+			if (dbContext.Database.GetPendingMigrations()
+				.Any())
 				await dbContext.Database.MigrateAsync(cancellationToken);
-			}
-		}
 
-		if (!dbContext.Database.GetPendingMigrations().Any())
+		if (!dbContext.Database.GetPendingMigrations()
+			.Any())
 		{
 			var userSeeder = scope.ServiceProvider.GetRequiredService<IUsersSeeder>();
 			if (await dbContext.Roles.AnyAsync(cancellationToken) == false)
@@ -39,7 +38,7 @@ public class ApplicationInitializer : IHostedService
 				await dbContext.SaveChangesAsync(cancellationToken);
 			}
 
-			if (await dbContext.Users.FirstOrDefaultAsync(x => x.Roles.Any(y => y.Name == "SuperAdmin"), cancellationToken: cancellationToken) == null)
+			if (await dbContext.Users.FirstOrDefaultAsync(x => x.Roles.Any(y => y.Name == "SuperAdmin"), cancellationToken) == null)
 			{
 				var superAdminRole = await dbContext.Roles.SingleAsync(x => x.Name == "SuperAdmin", cancellationToken);
 

@@ -4,6 +4,7 @@ using JourneyMate.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Infrastructure.Services;
+
 internal sealed class AvailabilityService : IAvailabilityService
 {
 	private readonly ApplicationDbContext _dbContext;
@@ -17,10 +18,7 @@ internal sealed class AvailabilityService : IAvailabilityService
 	{
 		var query = _dbContext.Addresses;
 
-		if (await query.AnyAsync(x => x.PlaceId == placeId))
-		{
-			throw new DataAlreadyTakenException(placeId, "Address");
-		}
+		if (await query.AnyAsync(x => x.PlaceId == placeId)) throw new DataAlreadyTakenException(placeId, "Address");
 
 		return true;
 	}
@@ -30,20 +28,12 @@ internal sealed class AvailabilityService : IAvailabilityService
 		var query = _dbContext.Users;
 
 		if (email != null)
-		{
 			if (await query.AnyAsync(x => x.Email == email))
-			{
 				throw new DataAlreadyTakenException(email, "Email");
-			}
-		}
 
 		if (userName != null)
-		{
 			if (await query.AnyAsync(x => x.UserName == userName))
-			{
 				throw new DataAlreadyTakenException(userName, "Username");
-			}
-		}
 
 		return true;
 	}

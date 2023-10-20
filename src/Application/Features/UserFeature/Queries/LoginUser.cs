@@ -6,51 +6,54 @@ using JourneyMate.Domain.Repositories;
 using MediatR;
 
 namespace JourneyMate.Application.Features.UserFeature.Queries;
+
 public record LoginUser(string UserName, string Password) : IRequest<TokensDto>;
 
 internal sealed class LoginUserHandler : IRequestHandler<LoginUser, TokensDto>
 {
-    private readonly IUserRepository _userRepository;
-    private readonly IPasswordManager _passwordManager;
-    private readonly ITokenService _tokenService;
 	private readonly IAuthorizationService _authorizationService;
+	private readonly IPasswordManager _passwordManager;
+	private readonly ITokenService _tokenService;
+	private readonly IUserRepository _userRepository;
 
 	public LoginUserHandler(IUserRepository userRepository, IPasswordManager passwordManager, ITokenService tokenService, IAuthorizationService authorizationService)
-    {
-        _userRepository = userRepository;
-        _passwordManager = passwordManager;
-        _tokenService = tokenService;
+	{
+		_userRepository = userRepository;
+		_passwordManager = passwordManager;
+		_tokenService = tokenService;
 		_authorizationService = authorizationService;
 	}
 
-    public async Task<TokensDto> Handle(LoginUser request, CancellationToken cancellationToken)
-    {
-        var user = await _userRepository.GetByUserNameAsync(request.UserName);
-        if (!_passwordManager.Validate(request.Password, user.PasswordHash)) throw new InvalidUserPassword();
+	public async Task<TokensDto> Handle(LoginUser request, CancellationToken cancellationToken)
+	{
+		var user = await _userRepository.GetByUserNameAsync(request.UserName);
+		if (!_passwordManager.Validate(request.Password, user.PasswordHash)) throw new InvalidUserPassword();
 
-        var roles = await _authorizationService.GetRolesForUserAsync(user.Id);
+		var roles = await _authorizationService.GetRolesForUserAsync(user.Id);
 		var accessToken = _tokenService.GenerateAccessToken(user.Id, user.Email, user.UserName, roles);
-        var refreshToken = _tokenService.GenerateRefreshToken();
-        var refreshTokenExpiryDate = _tokenService.GetRefreshExpiryDate();
+		var refreshToken = _tokenService.GenerateRefreshToken();
+		var refreshTokenExpiryDate = _tokenService.GetRefreshExpiryDate();
 
-        user.SetRefreshToken(refreshToken);
-        user.SetRefreshTokenExpiryTime(refreshTokenExpiryDate);
+		user.SetRefreshToken(refreshToken);
+		user.SetRefreshTokenExpiryTime(refreshTokenExpiryDate);
 
-        await _userRepository.UpdateAsync(user);
+		await _userRepository.UpdateAsync(user);
 
-        return new TokensDto
-        {
-            AccessToken = accessToken,
-            RefreshToken = refreshToken
-        };
-    }
+		return new TokensDto
+		{
+			AccessToken = accessToken,
+			RefreshToken = refreshToken
+		};
+	}
 }
 
 public class LoginUserValidator : AbstractValidator<LoginUser>
 {
 	public LoginUserValidator()
 	{
-		RuleFor(x => x.UserName).NotNull();
-		RuleFor(x => x.Password).NotNull();
+		RuleFor(x => x.UserName)
+			.NotNull();
+		RuleFor(x => x.Password)
+			.NotNull();
 	}
 }

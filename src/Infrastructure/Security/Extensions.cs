@@ -1,4 +1,5 @@
-﻿using JourneyMate.Application.Common.Interfaces;
+﻿using System.Text;
+using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Domain.Entities;
 using JourneyMate.Infrastructure.Common.Options;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -6,18 +7,18 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
 
 namespace JourneyMate.Infrastructure.Security;
+
 internal static class Extensions
 {
 	private const string _optionsSectionName = "Auth";
+
 	public static IServiceCollection AddSecurity(this IServiceCollection services, IConfiguration configuration)
-    {
+	{
 		var options = configuration.GetOptions<AuthOptions>(_optionsSectionName);
 
-		services
-			.Configure<AuthOptions>(configuration.GetRequiredSection(_optionsSectionName))
+		services.Configure<AuthOptions>(configuration.GetRequiredSection(_optionsSectionName))
 			.AddSingleton<ITokenService, TokenService>()
 			.AddAuthentication(o =>
 			{
@@ -39,7 +40,7 @@ internal static class Extensions
 			});
 
 		services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
-        services.AddSingleton<IPasswordManager, PasswordManager>();
+		services.AddSingleton<IPasswordManager, PasswordManager>();
 		services.AddScoped<IAuthorizationService, AuthorizationService>();
 
 		services.AddAuthorization(authorization =>
@@ -61,5 +62,5 @@ internal static class Extensions
 		});
 
 		return services;
-    }
+	}
 }

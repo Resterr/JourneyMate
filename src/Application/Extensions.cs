@@ -5,6 +5,7 @@ using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace JourneyMate.Application;
+
 public static class Extensions
 {
 	public static IServiceCollection AddApplicationLayer(this IServiceCollection services)

@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.Extensions.Logging;
 
 namespace JourneyMate.Application.Features.UserFeature.EventHandlers;
+
 public class UserCreatedEventHandler : INotificationHandler<UserCreatedEvent>
 {
 	private readonly ILogger<UserCreatedEventHandler> _logger;
@@ -14,7 +15,8 @@ public class UserCreatedEventHandler : INotificationHandler<UserCreatedEvent>
 
 	public Task Handle(UserCreatedEvent notification, CancellationToken cancellationToken)
 	{
-		_logger.LogInformation("JourneyMate Domain Event: {DomainEvent}", notification.GetType().Name);
+		_logger.LogInformation("JourneyMate Domain Event: {DomainEvent}", notification.GetType()
+			.Name);
 
 		return Task.CompletedTask;
 	}

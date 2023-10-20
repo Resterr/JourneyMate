@@ -1,8 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore.Metadata.Builders;
+﻿using JourneyMate.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
-using JourneyMate.Domain.Entities;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace JourneyMate.Infrastructure.Persistence.Configurations;
+
 public class RoleConfiguration : IEntityTypeConfiguration<Role>
 {
 	public void Configure(EntityTypeBuilder<Role> builder)

@@ -2,6 +2,7 @@
 using JourneyMate.Domain.Entities;
 
 namespace JourneyMate.Domain.Repositories;
+
 public interface IAddressRepository
 {
 	Task<IPaginatedList<Address>> GetAll(int pageNumber, int pageSize);

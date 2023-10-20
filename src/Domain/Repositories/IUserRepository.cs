@@ -1,6 +1,7 @@
 ﻿using JourneyMate.Domain.Entities;
 
 namespace JourneyMate.Domain.Repositories;
+
 public interface IUserRepository
 {
 	Task<User> GetByIdAsync(Guid id);

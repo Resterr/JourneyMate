@@ -3,12 +3,13 @@ using JourneyMate.Domain.Repositories;
 using MediatR;
 
 namespace JourneyMate.Application.Features.AdminFeature.Commands;
+
 public record RemoveAdminRole(Guid Id) : IRequest<Unit>;
 
 internal sealed class RemoveAdminRoleHandler : IRequestHandler<RemoveAdminRole, Unit>
 {
-	private readonly IUserRepository _userRepository;
 	private readonly IAuthorizationService _authorizationService;
+	private readonly IUserRepository _userRepository;
 
 	public RemoveAdminRoleHandler(IUserRepository userRepository, IAuthorizationService authorizationService)
 	{

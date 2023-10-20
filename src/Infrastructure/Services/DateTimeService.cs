@@ -4,5 +4,8 @@ namespace JourneyMate.Infrastructure.Services;
 
 internal sealed class DateTimeService : IDateTimeService
 {
-	public DateTime CurrentDate() => DateTime.UtcNow;
+	public DateTime CurrentDate()
+	{
+		return DateTime.UtcNow;
+	}
 }

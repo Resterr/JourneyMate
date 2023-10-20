@@ -6,19 +6,19 @@ using JourneyMate.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Infrastructure.Persistence.Repositories;
+
 internal sealed class AddressRepository : IAddressRepository
 {
 	private readonly ApplicationDbContext _dbContext;
 
 	public AddressRepository(ApplicationDbContext dbContext)
-    {
+	{
 		_dbContext = dbContext;
 	}
 
 	public async Task<IPaginatedList<Address>> GetAll(int pageNumber, int pageSize)
 	{
-		var query = await _dbContext.Addresses
-			.OrderBy(x => x.Locality.LongName)
+		var query = await _dbContext.Addresses.OrderBy(x => x.Locality.LongName)
 			.PaginatedListAsync(pageNumber, pageSize);
 
 		return query;

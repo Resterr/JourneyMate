@@ -5,10 +5,11 @@ using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 
 namespace JourneyMate.Infrastructure.Services;
+
 internal sealed class GeocodeApiService : IGeocodeApiService
 {
-	private readonly IOptions<ApiUrlsOptions> _urlOptions;
 	private readonly IOptions<ApiKeysOptions> _keysOptions;
+	private readonly IOptions<ApiUrlsOptions> _urlOptions;
 
 	public GeocodeApiService(IOptions<ApiUrlsOptions> urlOptions, IOptions<ApiKeysOptions> keysOptions)
 	{

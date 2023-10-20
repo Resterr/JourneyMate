@@ -6,6 +6,7 @@ using JourneyMate.Infrastructure.Persistence;
 using Microsoft.OpenApi.Models;
 
 namespace JourneyMate.API;
+
 public static class Extensions
 {
 	private const string _apiTitle = "JourneyMate API";
@@ -14,8 +15,9 @@ public static class Extensions
 	public static IServiceCollection AddPresentationLayer(this IServiceCollection services)
 	{
 		services.AddHttpContextAccessor();
-		services.AddHealthChecks().AddDbContextCheck<ApplicationDbContext>();
-		services.AddScoped<ErrorHandlerMiddleware>();	
+		services.AddHealthChecks()
+			.AddDbContextCheck<ApplicationDbContext>();
+		services.AddScoped<ErrorHandlerMiddleware>();
 		services.AddScoped<ICurrentUserService, CurrentUserService>();
 		services.AddRouting(options => options.LowercaseUrls = true);
 		services.AddEndpointsApiExplorer();
@@ -56,4 +58,3 @@ public static class Extensions
 		return app;
 	}
 }
-
