@@ -5,7 +5,7 @@ using JourneyMate.Domain.Repositories;
 using MediatR;
 
 namespace JourneyMate.Application.Features.UserFeature.Queries;
-public record SelfGetUser() : IRequest<UserDto>;
+public record SelfGetUser : IRequest<UserDto>;
 
 internal sealed class SelfGetUserHandler : IRequestHandler<SelfGetUser, UserDto>
 {

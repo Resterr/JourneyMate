@@ -3,7 +3,6 @@ using JourneyMate.API.Middlewares;
 using JourneyMate.API.Services;
 using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.OpenApi.Models;
 
 namespace JourneyMate.API;

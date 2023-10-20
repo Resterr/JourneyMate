@@ -24,7 +24,7 @@ internal static class AddressRequests
 			var result = await mediator.Send(request);
 			return Results.Ok(result);
 		}).AllowAnonymous()
-			.Produces<AddressDto>(StatusCodes.Status200OK)
+			.Produces<AddressDto>()
 			.WithMetadata(new SwaggerOperationAttribute("Get addresses"));
 
 		group.MapPost("add", async (ISender mediator, [FromBody] AddAddress request) =>

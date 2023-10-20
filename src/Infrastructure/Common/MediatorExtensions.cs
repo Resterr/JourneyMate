@@ -12,11 +12,12 @@ public static class MediatorExtensions
 			.Where(e => e.Entity.DomainEvents.Any())
 			.Select(e => e.Entity);
 
-		var domainEvents = entities
+		var baseEntities = entities.ToList();
+		var domainEvents = baseEntities
 			.SelectMany(e => e.DomainEvents)
 			.ToList();
 
-		entities.ToList().ForEach(e => e.ClearDomainEvents());
+		baseEntities.ForEach(e => e.ClearDomainEvents());
 
 		foreach (var domainEvent in domainEvents)
 			await mediator.Publish(domainEvent);

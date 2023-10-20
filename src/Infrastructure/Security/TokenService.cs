@@ -5,7 +5,6 @@ using System.Text;
 using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Infrastructure.Common.Options;
-using JourneyMate.Infrastructure.Services;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -96,7 +95,7 @@ internal sealed class TokenService : ITokenService
 		try
 		{
 			var tokenHandler = new JwtSecurityTokenHandler();
-			var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out SecurityToken securityToken);
+			var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out var securityToken);
 			if (securityToken is not JwtSecurityToken jwtSecurityToken || !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
 				throw new InvalidTokenException();
 

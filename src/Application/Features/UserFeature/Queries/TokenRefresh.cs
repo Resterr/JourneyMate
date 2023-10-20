@@ -24,8 +24,8 @@ internal sealed class TokenRefreshHandler : IRequestHandler<TokenRefresh, Tokens
 
     public async Task<TokensDto> Handle(TokenRefresh request, CancellationToken cancellationToken)
     {
-        string accessToken = request.AccessToken;
-        string refreshToken = request.RefreshToken;
+        var accessToken = request.AccessToken;
+        var refreshToken = request.RefreshToken;
 
         var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken);
 

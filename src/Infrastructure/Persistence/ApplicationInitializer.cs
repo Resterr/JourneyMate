@@ -36,10 +36,10 @@ public class ApplicationInitializer : IHostedService
 				var roles = userSeeder.SeedDefaultRoles();
 
 				await dbContext.Roles.AddRangeAsync(roles, cancellationToken);
-				await dbContext.SaveChangesAsync(cancellationToken); ;
+				await dbContext.SaveChangesAsync(cancellationToken);
 			}
 
-			if (await dbContext.Users.FirstOrDefaultAsync(x => x.Roles.Any(x => x.Name == "SuperAdmin"), cancellationToken: cancellationToken) == null)
+			if (await dbContext.Users.FirstOrDefaultAsync(x => x.Roles.Any(y => y.Name == "SuperAdmin"), cancellationToken: cancellationToken) == null)
 			{
 				var superAdminRole = await dbContext.Roles.SingleAsync(x => x.Name == "SuperAdmin", cancellationToken);
 

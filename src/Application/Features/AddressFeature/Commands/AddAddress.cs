@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
-using JourneyMate.Application.Features.UserFeature.Queries;
 using JourneyMate.Domain.Entities;
 using JourneyMate.Domain.Repositories;
 using JourneyMate.Domain.ValueObjects;

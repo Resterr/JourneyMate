@@ -2,7 +2,6 @@
 using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Application.Common.Models;
-using JourneyMate.Application.Features.UserFeature.Commands;
 using JourneyMate.Domain.Repositories;
 using MediatR;
 

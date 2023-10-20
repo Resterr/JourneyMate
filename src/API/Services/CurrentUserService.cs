@@ -12,5 +12,5 @@ public class CurrentUserService : ICurrentUserService
     }
 
     public ClaimsPrincipal Principal => _httpContextAccessor.HttpContext?.User ?? throw new UnauthorizedAccessException();
-    public string? UserId => _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+    public string? UserId => _httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
 }

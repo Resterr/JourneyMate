@@ -18,7 +18,7 @@ internal sealed class AuthorizationService : IAuthorizationService
 
 	public async Task<bool> AuthenticateUserAsync(Guid userId)
 	{
-		return await _dbContext.Users.AnyAsync(x => x.Id == userId);;
+		return await _dbContext.Users.AnyAsync(x => x.Id == userId);
 	}
 
 	public async Task<bool> AuthorizeUserAsync(Guid userId, string roleName)

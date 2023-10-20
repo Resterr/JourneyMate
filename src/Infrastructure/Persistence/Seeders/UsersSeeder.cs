@@ -35,9 +35,9 @@ internal sealed class UsersSeeder : IUsersSeeder
 	{
         var roles = new List<Role>()
         {
-			new Role("SuperAdmin"),
-			new Role("Admin"),
-			new Role("User"),                  
+			new("SuperAdmin"),
+			new("Admin"),
+			new("User")                  
         };
 
         return roles;

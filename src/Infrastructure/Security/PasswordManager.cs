@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity;
 namespace JourneyMate.Infrastructure.Security;
 internal sealed class PasswordManager : IPasswordManager
 {
-	private const User _user = default;
+	private const User _user = default!;
 	private readonly IPasswordHasher<User> _passwordHasher;
 
 	public PasswordManager(IPasswordHasher<User> passwordHasher)

@@ -23,7 +23,7 @@ internal static class AdminRequests
 			var result = await mediator.Send(request);
 			return Results.Ok(result);
 		}).RequireAuthorization("admin")
-			.Produces<List<string>>(StatusCodes.Status200OK)
+			.Produces<List<string>>()
 			.Produces(StatusCodes.Status401Unauthorized)
 			.Produces(StatusCodes.Status403Forbidden)
 			.Produces(StatusCodes.Status404NotFound)
@@ -34,7 +34,7 @@ internal static class AdminRequests
 			var request = new GrantAdminRole(id);
 			await mediator.Send(request);
 			return Results.Ok();
-		}).RequireAuthorization("superadmin")
+		}).RequireAuthorization("super-admin")
 			.Produces(StatusCodes.Status200OK)
 			.Produces(StatusCodes.Status401Unauthorized)
 			.Produces(StatusCodes.Status403Forbidden)
@@ -46,7 +46,7 @@ internal static class AdminRequests
 			var request = new RemoveAdminRole(id);
 			await mediator.Send(request);
 			return Results.Ok();
-		}).RequireAuthorization("superadmin")
+		}).RequireAuthorization("super-admin")
 			.Produces(StatusCodes.Status200OK)
 			.Produces(StatusCodes.Status401Unauthorized)
 			.Produces(StatusCodes.Status403Forbidden)

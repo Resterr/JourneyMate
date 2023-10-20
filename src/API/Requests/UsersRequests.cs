@@ -23,9 +23,9 @@ internal static class UsersRequests
 		{
 			var request = new GetUserById(id);
 			var result = await mediator.Send(request);
-			return result != null ? Results.Ok(result) : Results.NotFound();
+			return Results.Ok(result);
 		}).RequireAuthorization("admin")
-			.Produces<UserDto>(StatusCodes.Status200OK)
+			.Produces<UserDto>()
 			.Produces(StatusCodes.Status401Unauthorized)
 			.Produces(StatusCodes.Status403Forbidden)
 			.Produces(StatusCodes.Status404NotFound)
@@ -35,9 +35,9 @@ internal static class UsersRequests
 		{
 			var request = new SelfGetUser();
 			var result = await mediator.Send(request);
-			return result != null ? Results.Ok(result) : Results.Unauthorized();
+			return Results.Ok(result);
 		}).RequireAuthorization("user")
-			.Produces<UserDto>(StatusCodes.Status200OK)
+			.Produces<UserDto>()
 			.Produces(StatusCodes.Status401Unauthorized)
 			.WithMetadata(new SwaggerOperationAttribute("Get current user"));
 
@@ -55,7 +55,7 @@ internal static class UsersRequests
 			var result = await mediator.Send(request);
 			return Results.Ok(result);
 		}).AllowAnonymous()
-			.Produces<TokensDto>(StatusCodes.Status200OK)
+			.Produces<TokensDto>()
 			.Produces(StatusCodes.Status400BadRequest)
 			.Produces(StatusCodes.Status404NotFound)
 			.WithMetadata(new SwaggerOperationAttribute("Sign in user"));
@@ -65,7 +65,7 @@ internal static class UsersRequests
 			var token = await mediator.Send(request);
 			return Results.Ok(token);
 		}).RequireAuthorization("user")
-			.Produces<TokensDto>(StatusCodes.Status200OK)
+			.Produces<TokensDto>()
 			.Produces(StatusCodes.Status400BadRequest)
 			.Produces(StatusCodes.Status401Unauthorized)
 			.Produces(StatusCodes.Status404NotFound)

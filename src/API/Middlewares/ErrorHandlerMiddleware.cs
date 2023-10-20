@@ -30,7 +30,7 @@ internal sealed class ErrorHandlerMiddleware : IMiddleware
 			{
 				Code = GetErrorCode(exception),
 				Detail = exception.Message,
-				exception.Errors,
+				exception.Errors
 			};
 
 			var json = JsonSerializer.Serialize(response);

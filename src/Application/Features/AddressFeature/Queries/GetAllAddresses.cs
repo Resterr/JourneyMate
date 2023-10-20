@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using FluentValidation;
 using JourneyMate.Application.Common.Models;
-using JourneyMate.Application.Features.AddressFeature.Commands;
 using JourneyMate.Domain.Repositories;
 using MediatR;
 
