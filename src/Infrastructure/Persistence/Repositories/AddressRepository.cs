@@ -16,7 +16,7 @@ internal sealed class AddressRepository : IAddressRepository
 		_dbContext = dbContext;
 	}
 
-	public async Task<IPaginatedList<Address>> GetAll(int pageNumber, int pageSize)
+	public async Task<IPaginatedList<Address>> GetAllAsync(int pageNumber, int pageSize)
 	{
 		var query = await _dbContext.Addresses.OrderBy(x => x.Locality.LongName)
 			.PaginatedListAsync(pageNumber, pageSize);

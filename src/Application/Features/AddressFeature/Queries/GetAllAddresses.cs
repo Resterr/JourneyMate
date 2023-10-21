@@ -21,7 +21,7 @@ internal sealed class GetAllAddressesHandler : IRequestHandler<GetAllAddresses, 
 
 	public async Task<PaginatedList<AddressDto>> Handle(GetAllAddresses request, CancellationToken cancellationToken)
 	{
-		var addresses = await _addressRepository.GetAll(request.PageNumber, request.PageSize);
+		var addresses = await _addressRepository.GetAllAsync(request.PageNumber, request.PageSize);
 
 		var result = _mapper.Map<PaginatedList<AddressDto>>(addresses);
 
