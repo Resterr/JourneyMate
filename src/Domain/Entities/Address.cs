@@ -14,7 +14,9 @@ public class Address : BaseEntity
 	public AddressComponent PostalCode { get; set; }
 	private Address() { }
 
-	public Address(string placeId, Location location, AddressComponent locality, AddressComponent administrativeAreaLevel2, AddressComponent administrativeAreaLevel1, AddressComponent country, AddressComponent postalCode)
+	public Address(
+		string placeId, Location location, AddressComponent locality, AddressComponent administrativeAreaLevel2, AddressComponent administrativeAreaLevel1,
+		AddressComponent country, AddressComponent postalCode)
 	{
 		PlaceId = placeId;
 		Location = location;

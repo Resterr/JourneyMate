@@ -22,6 +22,7 @@ internal sealed class GeocodeApiService : IGeocodeApiService
 		using var client = new HttpClient();
 		var response = await client.GetStringAsync($"{_urlOptions.Value.GoogleMapsApiUrl}/geocode/json?components={components}&key={_keysOptions.Value.GooglePlacesApiKey}");
 		var result = JsonConvert.DeserializeObject<AddressReadModel>(response);
+
 		return result;
 	}
 }

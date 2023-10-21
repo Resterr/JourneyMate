@@ -44,10 +44,7 @@ public static class Extensions
 		app.UseAuthentication();
 		app.UseAuthorization();
 		app.UseSwagger();
-		app.UseSwaggerUI(swagger =>
-		{
-			swagger.SwaggerEndpoint("/swagger/v1/swagger.json", "JourneyMate");
-		});
+		app.UseSwaggerUI(swagger => { swagger.SwaggerEndpoint("/swagger/v1/swagger.json", "JourneyMate"); });
 		app.UseReDoc(reDoc =>
 		{
 			reDoc.RoutePrefix = "docs";
