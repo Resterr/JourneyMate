@@ -17,18 +17,21 @@ internal sealed class UserRepository : IUserRepository
 	public async Task<User> GetByIdAsync(Guid id)
 	{
 		var query = await _dbContext.Users.SingleOrDefaultAsync(x => x.Id == id) ?? throw new UserNotFoundException(id);
+		
 		return query;
 	}
 
 	public async Task<User> GetByEmailAsync(string email)
 	{
 		var query = await _dbContext.Users.SingleOrDefaultAsync(x => x.Email == email) ?? throw new UserNotFoundException(email, "email");
+		
 		return query;
 	}
 
 	public async Task<User> GetByUserNameAsync(string userName)
 	{
 		var query = await _dbContext.Users.SingleOrDefaultAsync(x => x.UserName == userName) ?? throw new UserNotFoundException(userName, "username");
+		
 		return query;
 	}
 
