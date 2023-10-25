@@ -6,6 +6,11 @@ insert_final_newline = false
 indent_style = space
 indent_size = 4
 
+[*.cs]
+
+# CS8618: Non nullable field _name is not initialized. Consider declare the field as nullable type
+dotnet_diagnostic.CS8618.severity = none
+
 # Microsoft .NET properties
 csharp_new_line_before_members_in_object_initializers = false
 csharp_preferred_modifier_order = public, private, protected, internal, file, new, static, abstract, virtual, sealed, readonly, override, extern, unsafe, volatile, async, required:suggestion
