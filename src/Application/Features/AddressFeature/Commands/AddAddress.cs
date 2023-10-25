@@ -47,10 +47,8 @@ internal sealed class AddAddressHandler : IRequestHandler<AddAddress, Guid>
 		var country = result.Address_Components.FirstOrDefault(x => x.Types.Contains("country")) ?? throw new ObjectNotFound("Country");
 		var postalCode = result.Address_Components.FirstOrDefault(x => x.Types.Contains("postal_code")) ?? throw new ObjectNotFound("Postal code");
 
-		var address = new Address(result.Place_Id, new Location((double)lat, (double)lng), new AddressComponent(locality.Short_Name, locality.Long_Name),
-			new AddressComponent(administrativeAreaLevel2.Short_Name, administrativeAreaLevel2.Long_Name),
-			new AddressComponent(administrativeAreaLevel1.Short_Name, administrativeAreaLevel1.Long_Name), new AddressComponent(country.Short_Name, country.Long_Name),
-			new AddressComponent(postalCode.Short_Name, postalCode.Long_Name));
+		var address = new Address(result.Place_Id, new Location((double)lat, (double)lng), new AddressComponent(locality.Short_Name, locality.Long_Name), new AddressComponent(administrativeAreaLevel2.Short_Name, administrativeAreaLevel2.Long_Name),
+			new AddressComponent(administrativeAreaLevel1.Short_Name, administrativeAreaLevel1.Long_Name), new AddressComponent(country.Short_Name, country.Long_Name), new AddressComponent(postalCode.Short_Name, postalCode.Long_Name));
 
 		if (available) await _addressRepository.AddAsync(address);
 

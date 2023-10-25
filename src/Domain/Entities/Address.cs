@@ -16,14 +16,7 @@ public class Address : BaseEntity
 	public List<Place> Places { get; private set; } = new();
 	private Address() { }
 
-	public Address(
-		string apiPlaceId,
-		Location location,
-		AddressComponent locality,
-		AddressComponent administrativeAreaLevel2,
-		AddressComponent administrativeAreaLevel1,
-		AddressComponent country,
-		AddressComponent postalCode)
+	public Address(string apiPlaceId, Location location, AddressComponent locality, AddressComponent administrativeAreaLevel2, AddressComponent administrativeAreaLevel1, AddressComponent country, AddressComponent postalCode)
 	{
 		ApiPlaceId = apiPlaceId;
 		Location = location;

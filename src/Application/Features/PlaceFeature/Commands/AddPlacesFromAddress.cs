@@ -45,8 +45,8 @@ internal sealed class AddPlacesFromAddressHandler : IRequestHandler<AddPlacesFro
 			var places = new List<Place>();
 			foreach (var placeDto in response)
 			{
-				var place = new Place(placeDto.ApiPlaceId, placeDto.BusinessStatus, placeDto.Name, placeDto.Rating, placeDto.UserRatingsTotal, placeDto.Vicinity, placeDto.DistanceFromAddress,
-					placeDto.Location, placeDto.PlusCode, placeDto.Photo, address.Id);
+				var place = new Place(placeDto.ApiPlaceId, placeDto.BusinessStatus, placeDto.Name, placeDto.Rating, placeDto.UserRatingsTotal, placeDto.Vicinity, placeDto.DistanceFromAddress, placeDto.Location,
+					placeDto.PlusCode, placeDto.Photo, address.Id);
 
 				var currentPlaceTypes = placeTypes.Where(placeType => placeDto.Types.Any(x => x.Name.Contains(placeType.Name)))
 					.ToList();
