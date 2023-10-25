@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Domain.Repositories;
 using MediatR;
 
@@ -18,7 +17,7 @@ internal sealed class TokenRemoveHandler : IRequestHandler<TokenRemove, Unit>
 
 	public async Task<Unit> Handle(TokenRemove request, CancellationToken cancellationToken)
 	{
-		var user = await _userRepository.GetByIdAsync(request.UserId) ?? throw new UserNotFoundException(request.UserId);
+		var user = await _userRepository.GetByIdAsync(request.UserId);
 		user.RemoveRefreshToken();
 
 		await _userRepository.UpdateAsync(user);

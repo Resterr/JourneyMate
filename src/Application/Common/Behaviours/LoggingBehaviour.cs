@@ -16,9 +16,9 @@ public class LoggingBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest,
 	public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
 	{
 		var requestName = typeof(TRequest).Name;
-		var userId = _currentUserService.UserId ?? string.Empty;
-		if (userId != string.Empty)
-			Log.Information($"Request: {requestName} User: {userId}");
+		var userId = _currentUserService.UserId;
+		if (userId != null)
+			Log.Information($"Request: {requestName} User: {userId.ToString()}");
 		else
 			Log.Information($"Request: {requestName} User: Unknown");
 

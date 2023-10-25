@@ -1,7 +1,5 @@
 ﻿using FluentValidation;
 using JourneyMate.API.Middlewares;
-using JourneyMate.API.Services;
-using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Infrastructure.Persistence;
 using Microsoft.OpenApi.Models;
 
@@ -18,7 +16,6 @@ public static class Extensions
 		services.AddHealthChecks()
 			.AddDbContextCheck<ApplicationDbContext>();
 		services.AddScoped<ErrorHandlerMiddleware>();
-		services.AddScoped<ICurrentUserService, CurrentUserService>();
 		services.AddRouting(options => options.LowercaseUrls = true);
 		services.AddEndpointsApiExplorer();
 		ValidatorOptions.Global.LanguageManager.Enabled = false;

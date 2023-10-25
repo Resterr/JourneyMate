@@ -24,7 +24,7 @@ internal sealed class SelfGetUserHandler : IRequestHandler<SelfGetUser, UserDto>
 	public async Task<UserDto> Handle(SelfGetUser request, CancellationToken cancellationToken)
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
-		var user = await _userRepository.GetByIdAsync(Guid.Parse(userId));
+		var user = await _userRepository.GetByIdAsync(userId);
 		var result = _mapper.Map<UserDto>(user);
 
 		return result;

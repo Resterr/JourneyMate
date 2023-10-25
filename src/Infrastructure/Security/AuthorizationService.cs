@@ -1,4 +1,5 @@
-﻿using JourneyMate.Application.Common.Exceptions;
+﻿using AutoMapper;
+using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Domain.Repositories;
 using JourneyMate.Infrastructure.Persistence;
@@ -11,34 +12,35 @@ internal sealed class AuthorizationService : IAuthorizationService
 	private readonly ApplicationDbContext _dbContext;
 	private readonly IUserRepository _userRepository;
 
-	public AuthorizationService(ApplicationDbContext dbContext, IUserRepository userRepository)
+	public AuthorizationService(ApplicationDbContext dbContext, IUserRepository userRepository, IMapper mapper)
 	{
 		_dbContext = dbContext;
 		_userRepository = userRepository;
 	}
 
-	public async Task<bool> AuthenticateUserAsync(Guid userId)
-	{
-		return await _dbContext.Users.AnyAsync(x => x.Id == userId);
-	}
-
-	public async Task<bool> AuthorizeUserAsync(Guid userId, string roleName)
+	public async Task<bool> AuthorizeAsync(Guid userId, string roleName)
 	{
 		var user = await _dbContext.Users.Include(x => x.Roles)
-				.SingleOrDefaultAsync(x => x.Id == userId) ??
-			throw new UnauthorizedAccessException();
+			.SingleOrDefaultAsync(x => x.Id == userId);
 
-		return user.Roles.Select(x => x.Name)
-			.Contains(roleName);
+		if (user == null) throw new AccessForbiddenException();
+
+		if (user.Roles.Select(x => x.Name)
+			.Contains(roleName))
+			return true;
+		throw new AccessForbiddenException();
 	}
 
 	public async Task AddUserToRoleAsync(Guid userId, string roleName)
 	{
 		var role = await _dbContext.Roles.SingleOrDefaultAsync(x => x.Name == roleName);
-
 		if (role != null)
 		{
 			var user = await _userRepository.GetByIdAsync(userId);
+			var isRole = user.Roles.Select(x => x.Name.ToLower())
+				.Contains(roleName.ToLower());
+			if (isRole) throw new UserHasRoleException(user.Id, roleName);
+
 			user.AddRole(role);
 			await _userRepository.UpdateAsync(user);
 		}
@@ -51,10 +53,12 @@ internal sealed class AuthorizationService : IAuthorizationService
 	public async Task RemoveUserFromRoleAsync(Guid userId, string roleName)
 	{
 		var role = await _dbContext.Roles.SingleOrDefaultAsync(x => x.Name == roleName);
-
 		if (role != null)
 		{
 			var user = await _userRepository.GetByIdAsync(userId);
+			var isRole = user.Roles.Select(x => x.Name.ToLower())
+				.Contains(roleName.ToLower());
+			if (!isRole) throw new UserHasNoRoleException(user.Id, roleName);
 			user.RemoveRole(role);
 			await _userRepository.UpdateAsync(user);
 		}
@@ -62,15 +66,5 @@ internal sealed class AuthorizationService : IAuthorizationService
 		{
 			throw new RoleNotFoundException(roleName);
 		}
-	}
-
-	public async Task<IEnumerable<string>> GetRolesForUserAsync(Guid userId)
-	{
-		var user = await _userRepository.GetByIdAsync(userId);
-		var roles = await _dbContext.Roles.Include(x => x.Users)
-			.Where(x => x.Users.Contains(user))
-			.ToListAsync();
-
-		return roles.Select(x => x.Name);
 	}
 }

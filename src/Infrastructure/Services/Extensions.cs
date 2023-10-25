@@ -19,6 +19,7 @@ internal static class Extensions
 		services.AddTransient<IAvailabilityService, AvailabilityService>();
 		services.AddTransient<IGeocodeApiService, GeocodeApiService>();
 		services.AddTransient<IPlacesApiService, PlacesApiService>();
+		services.AddTransient<ICurrentUserService, CurrentUserService>();
 
 		return services;
 	}
@@ -49,5 +50,10 @@ public static class MathOperations
 	private static double DegreeToRadian(double degree)
 	{
 		return degree * (Math.PI / 180);
+	}
+
+	public static Guid? ToGuid(this string? value)
+	{
+		return Guid.TryParse(value, out var result) ? result : null;
 	}
 }

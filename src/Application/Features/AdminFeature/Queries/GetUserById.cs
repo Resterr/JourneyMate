@@ -3,7 +3,7 @@ using JourneyMate.Application.Common.Models;
 using JourneyMate.Domain.Repositories;
 using MediatR;
 
-namespace JourneyMate.Application.Features.UserFeature.Queries;
+namespace JourneyMate.Application.Features.AdminFeature.Queries;
 
 public record GetUserById(Guid Id) : IRequest<UserDto>;
 

@@ -11,17 +11,15 @@ public record LoginUser(string UserName, string Password) : IRequest<TokensDto>;
 
 internal sealed class LoginUserHandler : IRequestHandler<LoginUser, TokensDto>
 {
-	private readonly IAuthorizationService _authorizationService;
 	private readonly IPasswordManager _passwordManager;
 	private readonly ITokenService _tokenService;
 	private readonly IUserRepository _userRepository;
 
-	public LoginUserHandler(IUserRepository userRepository, IPasswordManager passwordManager, ITokenService tokenService, IAuthorizationService authorizationService)
+	public LoginUserHandler(IUserRepository userRepository, IPasswordManager passwordManager, ITokenService tokenService)
 	{
 		_userRepository = userRepository;
 		_passwordManager = passwordManager;
 		_tokenService = tokenService;
-		_authorizationService = authorizationService;
 	}
 
 	public async Task<TokensDto> Handle(LoginUser request, CancellationToken cancellationToken)
@@ -29,8 +27,7 @@ internal sealed class LoginUserHandler : IRequestHandler<LoginUser, TokensDto>
 		var user = await _userRepository.GetByUserNameAsync(request.UserName);
 		if (!_passwordManager.Validate(request.Password, user.PasswordHash)) throw new InvalidUserPassword();
 
-		var roles = await _authorizationService.GetRolesForUserAsync(user.Id);
-		var accessToken = _tokenService.GenerateAccessToken(user.Id, user.Email, user.UserName, roles);
+		var accessToken = _tokenService.GenerateAccessToken(user.Id, user.Email, user.UserName, user.Roles.Select(x => x.Name));
 		var refreshToken = _tokenService.GenerateRefreshToken();
 		var refreshTokenExpiryDate = _tokenService.GetRefreshExpiryDate();
 
