@@ -6,19 +6,19 @@ using JourneyMate.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Infrastructure.Persistence.Repositories;
+
 internal sealed class AddressRepository : IAddressRepository
 {
 	private readonly ApplicationDbContext _dbContext;
 
 	public AddressRepository(ApplicationDbContext dbContext)
-    {
+	{
 		_dbContext = dbContext;
 	}
 
-	public async Task<IPaginatedList<Address>> GetAll(int pageNumber, int pageSize)
+	public async Task<IPaginatedList<Address>> GetAllAsync(int pageNumber, int pageSize)
 	{
-		var query = await _dbContext.Addresses
-			.OrderBy(x => x.Locality.LongName)
+		var query = await _dbContext.Addresses.OrderBy(x => x.Locality.LongName)
 			.PaginatedListAsync(pageNumber, pageSize);
 
 		return query;
@@ -26,13 +26,15 @@ internal sealed class AddressRepository : IAddressRepository
 
 	public async Task<Address> GetByIdAsync(Guid id)
 	{
-		var query = await _dbContext.Addresses.SingleOrDefaultAsync(x => x.Id == id) ?? throw new NotFoundException(ExceptionTemplates.NotFoundObject(nameof(Address), id));
+		var query = await _dbContext.Addresses.SingleOrDefaultAsync(x => x.Id == id) ?? throw new AddressNotFound(id);
+
 		return query;
 	}
 
 	public async Task<Address> GetByPlaceIdAsync(string placeId)
 	{
-		var query = await _dbContext.Addresses.SingleOrDefaultAsync(x => x.PlaceId == placeId) ?? throw new NotFoundException(ExceptionTemplates.NotFoundObject(nameof(Address), placeId));
+		var query = await _dbContext.Addresses.SingleOrDefaultAsync(x => x.ApiPlaceId == placeId) ?? throw new AddressNotFound(placeId, "place id");
+
 		return query;
 	}
 

@@ -1,24 +1,34 @@
-﻿using JourneyMate.API.Filters;
+﻿using FluentValidation;
 using JourneyMate.API.Middlewares;
-using JourneyMate.API.Services;
-using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Infrastructure.Persistence;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.OpenApi.Models;
 
 namespace JourneyMate.API;
+
 public static class Extensions
 {
+	private const string _apiTitle = "JourneyMate API";
+	private const string _apiVersion = "v1";
+
 	public static IServiceCollection AddPresentationLayer(this IServiceCollection services)
 	{
 		services.AddHttpContextAccessor();
-		services.AddHealthChecks().AddDbContextCheck<ApplicationDbContext>();
-		services.AddScoped<ErrorHandlingMiddleware>();	
-		services.AddScoped<ICurrentUserService, CurrentUserService>();
+		services.AddHealthChecks()
+			.AddDbContextCheck<ApplicationDbContext>();
+		services.AddScoped<ErrorHandlerMiddleware>();
 		services.AddRouting(options => options.LowercaseUrls = true);
-		services.AddControllers(options => options.Filters.Add<ValidationFilter>());
-		services.Configure<ApiBehaviorOptions>(options => options.SuppressModelStateInvalidFilter = true);
 		services.AddEndpointsApiExplorer();
-		services.AddSwaggerDocument();
+		ValidatorOptions.Global.LanguageManager.Enabled = false;
+		services.AddSwaggerGen(swagger =>
+		{
+			swagger.EnableAnnotations();
+			swagger.CustomSchemaIds(x => x.FullName);
+			swagger.SwaggerDoc(_apiVersion, new OpenApiInfo
+			{
+				Title = _apiTitle,
+				Version = _apiVersion
+			});
+		});
 
 		return services;
 	}
@@ -27,14 +37,21 @@ public static class Extensions
 	{
 		app.UseHttpsRedirection();
 		app.UseHealthChecks("/health");
-		app.UseMiddleware<ErrorHandlingMiddleware>();
-		app.MapControllers();
+		app.UseMiddleware<ErrorHandlerMiddleware>();
 		app.UseAuthentication();
 		app.UseAuthorization();
-		app.UseOpenApi();
-		app.UseSwaggerUi3();
+		app.UseSwagger();
+		app.UseSwaggerUI(swagger =>
+		{
+			swagger.SwaggerEndpoint("/swagger/v1/swagger.json", "JourneyMate");
+		});
+		app.UseReDoc(reDoc =>
+		{
+			reDoc.RoutePrefix = "docs";
+			reDoc.SpecUrl($"/swagger/{_apiVersion}/swagger.json");
+			reDoc.DocumentTitle = _apiTitle;
+		});
 
 		return app;
 	}
 }
-

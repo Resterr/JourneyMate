@@ -2,21 +2,23 @@
 using JourneyMate.Domain.ValueObjects;
 
 namespace JourneyMate.Domain.Entities;
+
 public class Address : BaseEntity
 {
-    public string PlaceId { get; set; }
-    public Location Location { get; set; }
-    public AddressComponent Locality { get; set; }
-    public AddressComponent AdministrativeAreaLevel2 { get; set; }
-	public AddressComponent AdministrativeAreaLevel1 { get; set; }
-	public AddressComponent Country { get; set; }
-	public AddressComponent PostalCode { get; set; }
+	public string ApiPlaceId { get; private set; }
+	public Location Location { get; private set; }
+	public AddressComponent Locality { get; private set; }
+	public AddressComponent AdministrativeAreaLevel2 { get; private set; }
+	public AddressComponent AdministrativeAreaLevel1 { get; private set; }
+	public AddressComponent Country { get; private set; }
+	public AddressComponent PostalCode { get; private set; }
 
-    private Address() { }
+	public List<Place> Places { get; private set; } = new();
+	private Address() { }
 
-    public Address(string placeId, Location location, AddressComponent locality, AddressComponent administrativeAreaLevel2, AddressComponent administrativeAreaLevel1, AddressComponent country, AddressComponent postalCode)
+	public Address(string apiPlaceId, Location location, AddressComponent locality, AddressComponent administrativeAreaLevel2, AddressComponent administrativeAreaLevel1, AddressComponent country, AddressComponent postalCode)
 	{
-		PlaceId = placeId;
+		ApiPlaceId = apiPlaceId;
 		Location = location;
 		Locality = locality;
 		AdministrativeAreaLevel2 = administrativeAreaLevel2;

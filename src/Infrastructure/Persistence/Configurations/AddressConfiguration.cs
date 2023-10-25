@@ -3,75 +3,62 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace JourneyMate.Infrastructure.Persistence.Configurations;
+
 public class AddressConfiguration : IEntityTypeConfiguration<Address>
 {
 	public void Configure(EntityTypeBuilder<Address> builder)
 	{
-		builder
-			.Property(x => x.PlaceId)
+		builder.Property(x => x.ApiPlaceId)
 			.IsRequired();
 
-		builder
-			.HasIndex(x => x.PlaceId)
+		builder.HasIndex(x => x.ApiPlaceId)
 			.IsUnique();
 
-		builder
-			.OwnsOne(x => x.Location)
+		builder.OwnsOne(x => x.Location)
 			.Property(x => x.Latitude)
 			.IsRequired();
 
-		builder
-			.OwnsOne(x => x.Location)
+		builder.OwnsOne(x => x.Location)
 			.Property(x => x.Longitude)
 			.IsRequired();
 
-		builder
-			.OwnsOne(x => x.Locality)
+		builder.OwnsOne(x => x.Locality)
 			.Property(x => x.ShortName)
 			.IsRequired();
 
-		builder
-			.OwnsOne(x => x.Locality)
+		builder.OwnsOne(x => x.Locality)
 			.Property(x => x.LongName)
 			.IsRequired();
 
-		builder
-			.OwnsOne(x => x.AdministrativeAreaLevel2)
+		builder.OwnsOne(x => x.AdministrativeAreaLevel2)
 			.Property(x => x.ShortName)
 			.IsRequired();
 
-		builder
-			.OwnsOne(x => x.AdministrativeAreaLevel2)
+		builder.OwnsOne(x => x.AdministrativeAreaLevel2)
 			.Property(x => x.LongName)
 			.IsRequired();
 
-		builder
-			.OwnsOne(x => x.AdministrativeAreaLevel1)
+		builder.OwnsOne(x => x.AdministrativeAreaLevel1)
 			.Property(x => x.ShortName)
 			.IsRequired();
 
-		builder
-			.OwnsOne(x => x.AdministrativeAreaLevel1)
+		builder.OwnsOne(x => x.AdministrativeAreaLevel1)
 			.Property(x => x.LongName)
 			.IsRequired();
 
-		builder
-			.OwnsOne(x => x.Country)
+		builder.OwnsOne(x => x.Country)
 			.Property(x => x.ShortName)
 			.IsRequired();
 
-		builder
-			.OwnsOne(x => x.Country)
+		builder.OwnsOne(x => x.Country)
 			.Property(x => x.LongName)
 			.IsRequired();
 
-		builder
-			.OwnsOne(x => x.PostalCode)
+		builder.OwnsOne(x => x.PostalCode)
 			.Property(x => x.ShortName)
 			.IsRequired();
 
-		builder
-			.OwnsOne(x => x.PostalCode)
+		builder.OwnsOne(x => x.PostalCode)
 			.Property(x => x.LongName)
 			.IsRequired();
 

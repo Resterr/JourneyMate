@@ -17,7 +17,7 @@ namespace JourneyMate.Infrastructure.Persistence.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.10")
+                .HasAnnotation("ProductVersion", "7.0.12")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -28,16 +28,90 @@ namespace JourneyMate.Infrastructure.Persistence.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("PlaceId")
+                    b.Property<string>("ApiPlaceId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("PlaceId")
+                    b.HasIndex("ApiPlaceId")
                         .IsUnique();
 
                     b.ToTable("Address", (string)null);
+                });
+
+            modelBuilder.Entity("JourneyMate.Domain.Entities.Place", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AddressId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ApiPlaceId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("BusinessStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("DistanceFromAddress")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Rating")
+                        .HasColumnType("float");
+
+                    b.Property<int>("UserRatingsTotal")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Vicinity")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
+
+                    b.HasIndex("ApiPlaceId")
+                        .IsUnique();
+
+                    b.ToTable("Place", (string)null);
+                });
+
+            modelBuilder.Entity("JourneyMate.Domain.Entities.PlaceType", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("PlaceType", (string)null);
                 });
 
             modelBuilder.Entity("JourneyMate.Domain.Entities.Role", b =>
@@ -52,6 +126,9 @@ namespace JourneyMate.Infrastructure.Persistence.Migrations
                         .HasColumnType("nvarchar(25)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
 
                     b.ToTable("Role", (string)null);
                 });
@@ -97,6 +174,21 @@ namespace JourneyMate.Infrastructure.Persistence.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("User", (string)null);
+                });
+
+            modelBuilder.Entity("PlacePlaceType", b =>
+                {
+                    b.Property<Guid>("PlacesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("TypesId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("PlacesId", "TypesId");
+
+                    b.HasIndex("TypesId");
+
+                    b.ToTable("PlaceTypeRelation", (string)null);
                 });
 
             modelBuilder.Entity("RoleUser", b =>
@@ -200,6 +292,25 @@ namespace JourneyMate.Infrastructure.Persistence.Migrations
                                 .HasForeignKey("AddressId");
                         });
 
+                    b.OwnsOne("JourneyMate.Domain.ValueObjects.Location", "Location", b1 =>
+                        {
+                            b1.Property<Guid>("AddressId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<double>("Latitude")
+                                .HasColumnType("float");
+
+                            b1.Property<double>("Longitude")
+                                .HasColumnType("float");
+
+                            b1.HasKey("AddressId");
+
+                            b1.ToTable("Address");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AddressId");
+                        });
+
                     b.OwnsOne("JourneyMate.Domain.ValueObjects.AddressComponent", "PostalCode", b1 =>
                         {
                             b1.Property<Guid>("AddressId")
@@ -212,25 +323,6 @@ namespace JourneyMate.Infrastructure.Persistence.Migrations
                             b1.Property<string>("ShortName")
                                 .IsRequired()
                                 .HasColumnType("nvarchar(max)");
-
-                            b1.HasKey("AddressId");
-
-                            b1.ToTable("Address");
-
-                            b1.WithOwner()
-                                .HasForeignKey("AddressId");
-                        });
-
-                    b.OwnsOne("JourneyMate.Domain.ValueObjects.Location", "Location", b1 =>
-                        {
-                            b1.Property<Guid>("AddressId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<double>("Latitude")
-                                .HasColumnType("float");
-
-                            b1.Property<double>("Longitude")
-                                .HasColumnType("float");
 
                             b1.HasKey("AddressId");
 
@@ -259,6 +351,103 @@ namespace JourneyMate.Infrastructure.Persistence.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("JourneyMate.Domain.Entities.Place", b =>
+                {
+                    b.HasOne("JourneyMate.Domain.Entities.Address", "Address")
+                        .WithMany("Places")
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.OwnsOne("JourneyMate.Domain.ValueObjects.Location", "Location", b1 =>
+                        {
+                            b1.Property<Guid>("PlaceId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<double>("Latitude")
+                                .HasColumnType("float");
+
+                            b1.Property<double>("Longitude")
+                                .HasColumnType("float");
+
+                            b1.HasKey("PlaceId");
+
+                            b1.ToTable("Place");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PlaceId");
+                        });
+
+                    b.OwnsOne("JourneyMate.Domain.ValueObjects.Photo", "Photo", b1 =>
+                        {
+                            b1.Property<Guid>("PlaceId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<int>("Height")
+                                .HasColumnType("int");
+
+                            b1.Property<string>("PhotoReference")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<int>("Width")
+                                .HasColumnType("int");
+
+                            b1.HasKey("PlaceId");
+
+                            b1.ToTable("Place");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PlaceId");
+                        });
+
+                    b.OwnsOne("JourneyMate.Domain.ValueObjects.PlusCode", "PlusCode", b1 =>
+                        {
+                            b1.Property<Guid>("PlaceId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<string>("CompoundCode")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.Property<string>("GlobalCode")
+                                .IsRequired()
+                                .HasColumnType("nvarchar(max)");
+
+                            b1.HasKey("PlaceId");
+
+                            b1.ToTable("Place");
+
+                            b1.WithOwner()
+                                .HasForeignKey("PlaceId");
+                        });
+
+                    b.Navigation("Address");
+
+                    b.Navigation("Location")
+                        .IsRequired();
+
+                    b.Navigation("Photo");
+
+                    b.Navigation("PlusCode")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("PlacePlaceType", b =>
+                {
+                    b.HasOne("JourneyMate.Domain.Entities.Place", null)
+                        .WithMany()
+                        .HasForeignKey("PlacesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("JourneyMate.Domain.Entities.PlaceType", null)
+                        .WithMany()
+                        .HasForeignKey("TypesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("RoleUser", b =>
                 {
                     b.HasOne("JourneyMate.Domain.Entities.Role", null)
@@ -272,6 +461,11 @@ namespace JourneyMate.Infrastructure.Persistence.Migrations
                         .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("JourneyMate.Domain.Entities.Address", b =>
+                {
+                    b.Navigation("Places");
                 });
 #pragma warning restore 612, 618
         }

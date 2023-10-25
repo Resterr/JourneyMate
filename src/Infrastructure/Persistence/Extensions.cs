@@ -7,15 +7,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace JourneyMate.Infrastructure.Persistence;
+
 internal static class Extensions
 {
-    public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
-    {
+	public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
+	{
 		services.AddScoped<AuditableEntitySaveChangesInterceptor>();
 
-		services.AddDbContext<ApplicationDbContext>(options =>
-			options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-					builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+		services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
 
 		services.AddScoped<ApplicationInitializer>();
 		services.AddScoped<IUsersSeeder, UsersSeeder>();
@@ -23,7 +22,9 @@ internal static class Extensions
 
 		services.AddScoped<IUserRepository, UserRepository>();
 		services.AddScoped<IAddressRepository, AddressRepository>();
+		services.AddScoped<IPlaceRepository, PlaceRepository>();
+		services.AddScoped<IPlaceTypeRepository, PlaceTypeRepository>();
 
 		return services;
-    }
+	}
 }

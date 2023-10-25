@@ -4,51 +4,60 @@ using JourneyMate.Application.Common.Models;
 using JourneyMate.Domain.Entities;
 
 namespace JourneyMate.Application.Common.Mappings;
+
 public class MappingProfile : Profile
 {
-    public MappingProfile()
-    {
-        ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
-        CreateMap<PaginatedList<Address>, PaginatedList<AddressDto>>()
-           .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
-    }
+	public MappingProfile()
+	{
+		ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
+		CreateMap<PaginatedList<Address>, PaginatedList<AddressDto>>()
+			.ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
+	}
 
-    private void ApplyMappingsFromAssembly(Assembly assembly)
-    {
-        var mapFromType = typeof(IMapFrom<>);
-        
-        var mappingMethodName = nameof(IMapFrom<object>.Mapping);
+	private void ApplyMappingsFromAssembly(Assembly assembly)
+	{
+		var mapFromType = typeof(IMapFrom<>);
 
-        bool HasInterface(Type t) => t.IsGenericType && t.GetGenericTypeDefinition() == mapFromType;
-        
-        var types = assembly.GetExportedTypes().Where(t => t.GetInterfaces().Any(HasInterface)).ToList();
-        
-        var argumentTypes = new Type[] { typeof(Profile) };
+		var mappingMethodName = nameof(IMapFrom<object>.Mapping);
 
-        foreach (var type in types)
-        {
-            var instance = Activator.CreateInstance(type);
-            
-            var methodInfo = type.GetMethod(mappingMethodName);
+		var types = assembly.GetExportedTypes()
+			.Where(t => t.GetInterfaces()
+				.Any(HasInterface))
+			.ToList();
 
-            if (methodInfo != null)
-            {
-                methodInfo.Invoke(instance, new object[] { this });
-            }
-            else
-            {
-                var interfaces = type.GetInterfaces().Where(HasInterface).ToList();
+		var argumentTypes = new[] { typeof(Profile) };
 
-                if (interfaces.Count > 0)
-                {
-                    foreach (var @interface in interfaces)
-                    {
-                        var interfaceMethodInfo = @interface.GetMethod(mappingMethodName, argumentTypes);
+		foreach (var type in types)
+		{
+			var instance = Activator.CreateInstance(type);
 
-                        interfaceMethodInfo?.Invoke(instance, new object[] { this });
-                    }
-                }
-            }
-        }
-    }
+			var methodInfo = type.GetMethod(mappingMethodName);
+
+			if (methodInfo != null)
+			{
+				methodInfo.Invoke(instance, new object[] { this });
+			}
+			else
+			{
+				var interfaces = type.GetInterfaces()
+					.Where(HasInterface)
+					.ToList();
+
+				if (interfaces.Count > 0)
+					foreach (var @interface in interfaces)
+					{
+						var interfaceMethodInfo = @interface.GetMethod(mappingMethodName, argumentTypes);
+
+						interfaceMethodInfo?.Invoke(instance, new object[] { this });
+					}
+			}
+		}
+
+		return;
+
+		bool HasInterface(Type t)
+		{
+			return t.IsGenericType && t.GetGenericTypeDefinition() == mapFromType;
+		}
+	}
 }

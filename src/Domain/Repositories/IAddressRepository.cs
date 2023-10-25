@@ -2,9 +2,10 @@
 using JourneyMate.Domain.Entities;
 
 namespace JourneyMate.Domain.Repositories;
+
 public interface IAddressRepository
 {
-	Task<IPaginatedList<Address>> GetAll(int pageNumber, int pageSize);
+	Task<IPaginatedList<Address>> GetAllAsync(int pageNumber, int pageSize);
 	Task<Address> GetByIdAsync(Guid id);
 	Task<Address> GetByPlaceIdAsync(string placeId);
 	Task AddAsync(Address address);

@@ -1,23 +1,28 @@
-﻿using JourneyMate.Application.Common.Interfaces;
-using JourneyMate.Application.Common.Security;
+﻿using AutoMapper;
+using JourneyMate.Application.Common.Models;
+using JourneyMate.Domain.Repositories;
 using MediatR;
 
 namespace JourneyMate.Application.Features.AdminFeature.Queries;
-[Authorize(Role = "Admin")]
-public record GetRolesForUser(Guid Id) : IRequest<List<string>>;
 
-internal sealed class GetUserByIdHandler : IRequestHandler<GetRolesForUser, List<string>>
+public record GetRolesForUser(Guid Id) : IRequest<List<RoleDto>>;
+
+internal sealed class GetRolesForHandler : IRequestHandler<GetRolesForUser, List<RoleDto>>
 {
-	private readonly IAuthorizationService _authorizationService;
+	private readonly IMapper _mapper;
+	private readonly IUserRepository _userRepository;
 
-	public GetUserByIdHandler(IAuthorizationService authorizationService)
+	public GetRolesForHandler(IUserRepository userRepository, IMapper mapper)
 	{
-		_authorizationService = authorizationService;
+		_userRepository = userRepository;
+		_mapper = mapper;
 	}
-	public async Task<List<string>> Handle(GetRolesForUser request, CancellationToken cancellationToken)
-	{
-		var result = await _authorizationService.GetRolesForUserAsync(request.Id);
 
-		return result.ToList();
+	public async Task<List<RoleDto>> Handle(GetRolesForUser request, CancellationToken cancellationToken)
+	{
+		var user = await _userRepository.GetByIdAsync(request.Id);
+		var result = _mapper.Map<List<RoleDto>>(user.Roles);
+
+		return result;
 	}
 }
