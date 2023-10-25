@@ -45,11 +45,20 @@ internal static class Extensions
 
 		services.AddAuthorization(authorization =>
 		{
-			authorization.AddPolicy("super-admin", policy => { policy.RequireRole("SuperAdmin"); });
+			authorization.AddPolicy("super-admin", policy =>
+			{
+				policy.RequireRole("SuperAdmin");
+			});
 
-			authorization.AddPolicy("admin", policy => { policy.RequireRole("Admin"); });
+			authorization.AddPolicy("admin", policy =>
+			{
+				policy.RequireRole("Admin");
+			});
 
-			authorization.AddPolicy("user", policy => { policy.RequireRole("User"); });
+			authorization.AddPolicy("user", policy =>
+			{
+				policy.RequireRole("User");
+			});
 		});
 
 		return services;

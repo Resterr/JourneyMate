@@ -21,13 +21,12 @@ public class ApplicationInitializer : IHostedService
 		using var scope = _serviceProvider.CreateScope();
 		var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
 
-		if (_env.IsDevelopment())
-			if (dbContext.Database.GetPendingMigrations()
-				.Any())
-				await dbContext.Database.MigrateAsync(cancellationToken);
 
-		if (!dbContext.Database.GetPendingMigrations()
-			.Any())
+		if ((await dbContext.Database.GetPendingMigrationsAsync(cancellationToken)).Any())
+		{
+			if (_env.IsDevelopment()) await dbContext.Database.MigrateAsync(cancellationToken);
+		}
+		else
 		{
 			var userSeeder = scope.ServiceProvider.GetRequiredService<IUsersSeeder>();
 			if (await dbContext.Roles.AnyAsync(cancellationToken) == false)

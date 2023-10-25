@@ -15,6 +15,8 @@ public class ApplicationDbContext : DbContext
 	public DbSet<User> Users => Set<User>();
 	public DbSet<Role> Roles => Set<Role>();
 	public DbSet<Address> Addresses => Set<Address>();
+	public DbSet<Place> Places => Set<Place>();
+	public DbSet<PlaceType> PlaceTypes => Set<PlaceType>();
 
 	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IMediator mediator, AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor) : base(options)
 	{
@@ -30,6 +32,17 @@ public class ApplicationDbContext : DbContext
 			.HasMany(x => x.Roles)
 			.WithMany(x => x.Users)
 			.UsingEntity(x => x.ToTable("UserRole"));
+
+		builder.Entity<Place>()
+			.HasMany(x => x.Types)
+			.WithMany(x => x.Places)
+			.UsingEntity(x => x.ToTable("PlaceTypeRelation"));
+
+		builder.Entity<Place>()
+			.HasOne(x => x.Address)
+			.WithMany(x => x.Places)
+			.HasForeignKey(x => x.AddressId)
+			.OnDelete(DeleteBehavior.NoAction);
 
 		base.OnModelCreating(builder);
 	}

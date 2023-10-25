@@ -18,7 +18,7 @@ internal sealed class AvailabilityService : IAvailabilityService
 	{
 		var query = _dbContext.Addresses;
 
-		if (await query.AnyAsync(x => x.PlaceId == placeId)) throw new DataAlreadyTakenException(placeId, "Address");
+		if (await query.AnyAsync(x => x.ApiPlaceId == placeId)) throw new DataAlreadyTakenException(placeId, "Address");
 
 		return true;
 	}

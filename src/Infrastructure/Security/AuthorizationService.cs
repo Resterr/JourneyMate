@@ -25,7 +25,8 @@ internal sealed class AuthorizationService : IAuthorizationService
 	public async Task<bool> AuthorizeUserAsync(Guid userId, string roleName)
 	{
 		var user = await _dbContext.Users.Include(x => x.Roles)
-			.SingleOrDefaultAsync(x => x.Id == userId) ?? throw new UnauthorizedAccessException();
+				.SingleOrDefaultAsync(x => x.Id == userId) ??
+			throw new UnauthorizedAccessException();
 
 		return user.Roles.Select(x => x.Name)
 			.Contains(roleName);

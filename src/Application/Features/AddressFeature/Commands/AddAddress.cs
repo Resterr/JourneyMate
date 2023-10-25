@@ -35,11 +35,11 @@ internal sealed class AddAddressHandler : IRequestHandler<AddAddress, Guid>
 		var available = await _availabilityService.CheckAddress(result.Place_Id);
 		var lat = result.Geometry.Location.Lat;
 
-		if (lat == 0.0) throw new ObjectNotFound("Latitude");
+		if (lat is null) throw new ObjectNotFound("Latitude");
 
 		var lng = result.Geometry.Location.Lng;
 
-		if (lng == 0.0) throw new ObjectNotFound("Longitude");
+		if (lng is null) throw new ObjectNotFound("Longitude");
 
 		var locality = result.Address_Components.FirstOrDefault(x => x.Types.Contains("locality")) ?? throw new ObjectNotFound("Locality");
 		var administrativeAreaLevel2 = result.Address_Components.FirstOrDefault(x => x.Types.Contains("administrative_area_level_2")) ?? throw new ObjectNotFound("Administrative area level 2");
@@ -47,7 +47,7 @@ internal sealed class AddAddressHandler : IRequestHandler<AddAddress, Guid>
 		var country = result.Address_Components.FirstOrDefault(x => x.Types.Contains("country")) ?? throw new ObjectNotFound("Country");
 		var postalCode = result.Address_Components.FirstOrDefault(x => x.Types.Contains("postal_code")) ?? throw new ObjectNotFound("Postal code");
 
-		var address = new Address(result.Place_Id, new Location(lat, lng), new AddressComponent(locality.Short_Name, locality.Long_Name),
+		var address = new Address(result.Place_Id, new Location((double)lat, (double)lng), new AddressComponent(locality.Short_Name, locality.Long_Name),
 			new AddressComponent(administrativeAreaLevel2.Short_Name, administrativeAreaLevel2.Long_Name),
 			new AddressComponent(administrativeAreaLevel1.Short_Name, administrativeAreaLevel1.Long_Name), new AddressComponent(country.Short_Name, country.Long_Name),
 			new AddressComponent(postalCode.Short_Name, postalCode.Long_Name));

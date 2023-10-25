@@ -33,7 +33,7 @@ internal sealed class AddressRepository : IAddressRepository
 
 	public async Task<Address> GetByPlaceIdAsync(string placeId)
 	{
-		var query = await _dbContext.Addresses.SingleOrDefaultAsync(x => x.PlaceId == placeId) ?? throw new AddressNotFound(placeId, "place id");
+		var query = await _dbContext.Addresses.SingleOrDefaultAsync(x => x.ApiPlaceId == placeId) ?? throw new AddressNotFound(placeId, "place id");
 
 		return query;
 	}

@@ -4,17 +4,16 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace JourneyMate.Infrastructure.Persistence.Configurations;
 
-public class RoleConfiguration : IEntityTypeConfiguration<Role>
+public class PlaceTypeConfiguration : IEntityTypeConfiguration<PlaceType>
 {
-	public void Configure(EntityTypeBuilder<Role> builder)
+	public void Configure(EntityTypeBuilder<PlaceType> builder)
 	{
 		builder.Property(x => x.Name)
-			.HasMaxLength(25)
 			.IsRequired();
 
 		builder.HasIndex(x => x.Name)
 			.IsUnique();
 
-		builder.ToTable("Role");
+		builder.ToTable("PlaceType");
 	}
 }

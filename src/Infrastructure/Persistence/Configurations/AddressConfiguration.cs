@@ -8,10 +8,10 @@ public class AddressConfiguration : IEntityTypeConfiguration<Address>
 {
 	public void Configure(EntityTypeBuilder<Address> builder)
 	{
-		builder.Property(x => x.PlaceId)
+		builder.Property(x => x.ApiPlaceId)
 			.IsRequired();
 
-		builder.HasIndex(x => x.PlaceId)
+		builder.HasIndex(x => x.ApiPlaceId)
 			.IsUnique();
 
 		builder.OwnsOne(x => x.Location)

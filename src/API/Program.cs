@@ -21,5 +21,6 @@ app.UsePresentationLayer();
 app.RegisterUsersRequests();
 app.RegisterAdminRequests();
 app.RegisterAddressRequests();
+app.RegisterPlaceRequests();
 
 app.Run();
