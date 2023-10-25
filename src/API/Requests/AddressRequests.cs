@@ -20,18 +20,18 @@ internal static class AddressRequests
 
 	private static RouteGroupBuilder MapAddressEndpoints(this RouteGroupBuilder group)
 	{
-		group.MapGet("", async (ISender mediator, [AsParameters] GetAllAddresses request) =>
+		group.MapGet("", async (ISender sender, [AsParameters] GetAllAddresses request) =>
 			{
-				var result = await mediator.Send(request);
+				var result = await sender.Send(request);
 				return Results.Ok(result);
 			})
 			.AllowAnonymous()
 			.Produces<AddressDto>()
 			.WithMetadata(new SwaggerOperationAttribute("Get addresses"));
 
-		group.MapPost("add", async (ISender mediator, [FromBody] AddAddress request) =>
+		group.MapPost("add", async (ISender sender, [FromBody] AddAddress request) =>
 			{
-				await mediator.Send(request);
+				await sender.Send(request);
 				return Results.Ok();
 			})
 			.RequireAuthorization("admin")
@@ -41,9 +41,9 @@ internal static class AddressRequests
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Add address location"));
 
-		group.MapDelete("remove", async (ISender mediator, [FromBody] RemoveAddress request) =>
+		group.MapDelete("remove", async (ISender sender, [FromBody] RemoveAddress request) =>
 			{
-				await mediator.Send(request);
+				await sender.Send(request);
 				return Results.NoContent();
 			})
 			.RequireAuthorization("admin")

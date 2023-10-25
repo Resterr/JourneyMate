@@ -18,9 +18,9 @@ internal static class PlaceRequests
 
 	private static RouteGroupBuilder MapPlaceEndpoints(this RouteGroupBuilder group)
 	{
-		group.MapPost("add", async (ISender mediator, [FromBody] AddPlacesFromAddress request) =>
+		group.MapPost("add", async (ISender sender, [FromBody] AddPlacesFromAddress request) =>
 			{
-				await mediator.Send(request);
+				await sender.Send(request);
 				return Results.Ok();
 			})
 			.RequireAuthorization("admin")
