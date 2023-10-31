@@ -1,8 +1,8 @@
-﻿using JourneyMate.Application.Common.Models.ReadModels;
+﻿using JourneyMate.Application.Common.Models;
 
 namespace JourneyMate.Application.Common.Interfaces;
 
 public interface IGeocodeApiService
 {
-	Task<AddressReadModel?> GetAddressAsync(string components);
+	Task<AddressDto?> GetAddressAsync(string components);
 }
