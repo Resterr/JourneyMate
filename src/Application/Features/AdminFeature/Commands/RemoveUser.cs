@@ -1,8 +1,9 @@
 ﻿using FluentValidation;
 using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
-using JourneyMate.Domain.Repositories;
+using JourneyMate.Infrastructure.Persistence;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Application.Features.AdminFeature.Commands;
 
@@ -10,20 +11,20 @@ public record RemoveUser(Guid Id) : IRequest<Unit>;
 
 internal sealed class RemoveUserHandler : IRequestHandler<RemoveUser, Unit>
 {
-	private readonly IAuthorizationService _authorizationService;
+	private readonly IApplicationDbContext _dbContext;
 	private readonly ICurrentUserService _currentUserService;
-	private readonly IUserRepository _userRepository;
 
-	public RemoveUserHandler(IUserRepository userRepository, ICurrentUserService currentUserService, IAuthorizationService authorizationService)
+	public RemoveUserHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService)
 	{
-		_userRepository = userRepository;
+		_dbContext = dbContext;
 		_currentUserService = currentUserService;
-		_authorizationService = authorizationService;
 	}
 
 	public async Task<Unit> Handle(RemoveUser request, CancellationToken cancellationToken)
 	{
-		var user = await _userRepository.GetByIdAsync(request.Id);
+		var user = await _dbContext.Users.Include(x => x.Roles)
+				.SingleOrDefaultAsync(x => x.Id == request.Id, cancellationToken) ??
+			throw new UserNotFoundException(request.Id);
 		var roles = user.Roles.Select(x => x.Name.ToLower())
 			.ToList();
 
@@ -31,10 +32,18 @@ internal sealed class RemoveUserHandler : IRequestHandler<RemoveUser, Unit>
 		if (roles.Contains("admin"))
 		{
 			var userId = _currentUserService.UserId ?? throw new AccessForbiddenException();
-			await _authorizationService.AuthorizeAsync(userId, "superadmin");
+			var currentUser = await _dbContext.Users.Include(x => x.Roles)
+				.SingleOrDefaultAsync(x => x.Id == userId, cancellationToken);
+
+			if (currentUser == null) throw new AccessForbiddenException();
+
+			if (!currentUser.Roles.Select(x => x.Name)
+				.Contains("SuperAdmin"))
+				throw new AccessForbiddenException();
 		}
 
-		await _userRepository.DeleteAsync(user);
+		_dbContext.Users.Remove(user);
+		await _dbContext.SaveChangesAsync(cancellationToken);
 
 		return Unit.Value;
 	}

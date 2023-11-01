@@ -1,6 +1,4 @@
-﻿using JourneyMate.Domain.Repositories;
-using JourneyMate.Infrastructure.Persistence.Interceptors;
-using JourneyMate.Infrastructure.Persistence.Repositories;
+﻿using JourneyMate.Infrastructure.Persistence.Interceptors;
 using JourneyMate.Infrastructure.Persistence.Seeders;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -15,15 +13,11 @@ internal static class Extensions
 		services.AddScoped<AuditableEntitySaveChangesInterceptor>();
 
 		services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
-
+		
+		services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 		services.AddScoped<ApplicationInitializer>();
 		services.AddScoped<IUsersSeeder, UsersSeeder>();
 		services.AddHostedService<ApplicationInitializer>();
-
-		services.AddScoped<IUserRepository, UserRepository>();
-		services.AddScoped<IAddressRepository, AddressRepository>();
-		services.AddScoped<IPlaceRepository, PlaceRepository>();
-		services.AddScoped<IPlaceTypeRepository, PlaceTypeRepository>();
 
 		return services;
 	}

@@ -2,8 +2,9 @@
 using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Domain.Entities;
-using JourneyMate.Domain.Repositories;
+using JourneyMate.Infrastructure.Persistence;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Application.Features.UserFeature.Commands;
 
@@ -11,17 +12,13 @@ public record RegisterUser(string Email, string UserName, string Password, strin
 
 internal sealed class RegisterUserHandler : IRequestHandler<RegisterUser, Unit>
 {
-	private readonly IAuthorizationService _authorizationService;
-	private readonly IAvailabilityService _availabilityService;
+	private readonly IApplicationDbContext _dbContext;
 	private readonly IPasswordManager _passwordManager;
-	private readonly IUserRepository _userRepository;
 
-	public RegisterUserHandler(IAuthorizationService authorizationService, IUserRepository userRepository, IPasswordManager passwordManager, IAvailabilityService availabilityService)
+	public RegisterUserHandler(IApplicationDbContext dbContext, IPasswordManager passwordManager)
 	{
-		_authorizationService = authorizationService;
-		_userRepository = userRepository;
+		_dbContext = dbContext;
 		_passwordManager = passwordManager;
-		_availabilityService = availabilityService;
 	}
 
 	public async Task<Unit> Handle(RegisterUser request, CancellationToken cancellationToken)
@@ -30,15 +27,28 @@ internal sealed class RegisterUserHandler : IRequestHandler<RegisterUser, Unit>
 		var userName = request.UserName;
 		var password = request.Password;
 
-		var available = await _availabilityService.CheckUser(email, userName);
+		if (email != null)
+			if (await _dbContext.Users.AnyAsync(x => x.Email == email))
+				throw new DataAlreadyTakenException(email, "Email");
 
-		if (available) throw new InvalidUserCredentials();
-
+		if (userName != null)
+			if (await _dbContext.Users.AnyAsync(x => x.UserName == userName))
+				throw new DataAlreadyTakenException(userName, "Username");
+		
 		var hashedPassword = _passwordManager.Secure(password);
 		var user = new User(email, hashedPassword, userName);
 
-		await _userRepository.AddAsync(user);
-		await _authorizationService.AddUserToRoleAsync(user.Id, "User");
+		await _dbContext.Users.AddAsync(user);
+		await _dbContext.SaveChangesAsync();
+		
+		var role = await _dbContext.Roles.SingleOrDefaultAsync(x => x.Name == "User", cancellationToken);
+		if (role != null)
+			user.AddRole(role);
+		else
+			throw new RoleNotFoundException("User");
+
+		await _dbContext.Users.AddAsync(user, cancellationToken);
+		await _dbContext.SaveChangesAsync(cancellationToken);
 
 		return Unit.Value;
 	}

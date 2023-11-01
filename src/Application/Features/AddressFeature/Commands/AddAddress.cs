@@ -3,8 +3,9 @@ using FluentValidation;
 using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Domain.Entities;
-using JourneyMate.Domain.Repositories;
+using JourneyMate.Infrastructure.Persistence;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Application.Features.AddressFeature.Commands;
 
@@ -15,16 +16,14 @@ public record AddAddress(string Locality, string AdministrativeArea, string Coun
 
 internal sealed class AddAddressHandler : IRequestHandler<AddAddress, Guid>
 {
-	private readonly IAddressRepository _addressRepository;
-	private readonly IMapper _mapper;
-	private readonly IAvailabilityService _availabilityService;
+	private readonly IApplicationDbContext _dbContext;
 	private readonly IGeocodeApiService _geocodeApi;
+	private readonly IMapper _mapper;
 
-	public AddAddressHandler(IGeocodeApiService geocodeApi, IAvailabilityService availabilityService, IAddressRepository addressRepository, IMapper mapper)
+	public AddAddressHandler(IApplicationDbContext dbContext, IGeocodeApiService geocodeApi, IMapper mapper)
 	{
+		_dbContext = dbContext;
 		_geocodeApi = geocodeApi;
-		_availabilityService = availabilityService;
-		_addressRepository = addressRepository;
 		_mapper = mapper;
 	}
 
@@ -33,21 +32,14 @@ internal sealed class AddAddressHandler : IRequestHandler<AddAddress, Guid>
 		var components = $"locality:{request.Locality}|administrative_area:{request.AdministrativeArea}|country:{request.Country}";
 		var response = await _geocodeApi.GetAddressAsync(components) ?? throw new AddressNotFound();
 
-		var isAvailable = await _availabilityService.CheckAddress(response.PlaceId);
-		if (isAvailable)
-		{
-			var address = new Address(response.PlaceId, response.Location, response.Locality, response.AdministrativeAreaLevel2, response.AdministrativeAreaLevel1, response.Country,
-				response.PostalCode);
-
-			await _addressRepository.AddAsync(address);
-			
-			return address.Id;
-		}
-		else
-		{
-			throw new AddressAlreadyAdded();
-		}
+		if (await _dbContext.Addresses.AnyAsync(x => x.ApiPlaceId == response.PlaceId)) throw new DataAlreadyTakenException(response.PlaceId, "Address");
 		
+		var address = new Address(response.PlaceId, response.Location, response.Locality, response.AdministrativeAreaLevel2, response.AdministrativeAreaLevel1, response.Country, response.PostalCode);
+
+		await _dbContext.Addresses.AddAsync(address);
+		await _dbContext.SaveChangesAsync();
+
+		return address.Id;
 	}
 }
 

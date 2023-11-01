@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using JourneyMate.Application.Common.Models;
-using JourneyMate.Domain.Repositories;
+using JourneyMate.Infrastructure.Persistence;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Application.Features.AdminFeature.Queries;
 
@@ -9,18 +10,24 @@ public record GetAllUsers : IRequest<List<UserDto>>;
 
 internal sealed class GetAllUsersHandler : IRequestHandler<GetAllUsers, List<UserDto>>
 {
+	private readonly IApplicationDbContext _dbContext;
 	private readonly IMapper _mapper;
-	private readonly IUserRepository _userRepository;
 
-	public GetAllUsersHandler(IUserRepository userRepository, IMapper mapper)
+	public GetAllUsersHandler(IApplicationDbContext dbContext, IMapper mapper)
 	{
-		_userRepository = userRepository;
+		_dbContext = dbContext;
 		_mapper = mapper;
 	}
 
 	public async Task<List<UserDto>> Handle(GetAllUsers request, CancellationToken cancellationToken)
 	{
-		var users = await _userRepository.GetAllAsync();
+		var users = await _dbContext.Users.Include(x => x.Roles)
+			.ToListAsync();
+		var superAdmin = users.Where(user => user.Roles.Any(role => role.Name == "SuperAdmin"))
+			.ToList();
+
+		users.Remove(superAdmin[0]);
+		
 		var result = _mapper.Map<List<UserDto>>(users);
 
 		return result;

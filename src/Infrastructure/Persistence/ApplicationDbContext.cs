@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Infrastructure.Persistence;
 
-public class ApplicationDbContext : DbContext
+public class ApplicationDbContext : DbContext, IApplicationDbContext
 {
 	private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
 	private readonly IMediator _mediator;

@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
-using JourneyMate.Domain.Repositories;
+using JourneyMate.Application.Common.Exceptions;
+using JourneyMate.Infrastructure.Persistence;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Application.Features.UserFeature.Commands;
 
@@ -8,20 +10,24 @@ public record TokenRemove(Guid UserId) : IRequest<Unit>;
 
 internal sealed class TokenRemoveHandler : IRequestHandler<TokenRemove, Unit>
 {
-	private readonly IUserRepository _userRepository;
+	private readonly IApplicationDbContext _dbContext;
 
-	public TokenRemoveHandler(IUserRepository userRepository)
+	public TokenRemoveHandler(IApplicationDbContext dbContext)
 	{
-		_userRepository = userRepository;
+		_dbContext = dbContext;
 	}
 
 	public async Task<Unit> Handle(TokenRemove request, CancellationToken cancellationToken)
 	{
-		var user = await _userRepository.GetByIdAsync(request.UserId);
+		var user = await _dbContext.Users.Include(x => x.Roles)
+				.SingleOrDefaultAsync(x => x.Id == request.UserId, cancellationToken) ??
+			throw new UserNotFoundException(request.UserId);
+
 		user.RemoveRefreshToken();
 
-		await _userRepository.UpdateAsync(user);
-
+		_dbContext.Users.Update(user);
+		await _dbContext.SaveChangesAsync(cancellationToken);
+		
 		return Unit.Value;
 	}
 }

@@ -2,8 +2,9 @@
 using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Application.Common.Models;
-using JourneyMate.Domain.Repositories;
+using JourneyMate.Infrastructure.Persistence;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Application.Features.UserFeature.Queries;
 
@@ -11,20 +12,23 @@ public record LoginUser(string UserName, string Password) : IRequest<TokensDto>;
 
 internal sealed class LoginUserHandler : IRequestHandler<LoginUser, TokensDto>
 {
+	private readonly IApplicationDbContext _dbContext;
 	private readonly IPasswordManager _passwordManager;
 	private readonly ITokenService _tokenService;
-	private readonly IUserRepository _userRepository;
 
-	public LoginUserHandler(IUserRepository userRepository, IPasswordManager passwordManager, ITokenService tokenService)
+	public LoginUserHandler(IApplicationDbContext dbContext, IPasswordManager passwordManager, ITokenService tokenService)
 	{
-		_userRepository = userRepository;
+		_dbContext = dbContext;
 		_passwordManager = passwordManager;
 		_tokenService = tokenService;
 	}
 
 	public async Task<TokensDto> Handle(LoginUser request, CancellationToken cancellationToken)
 	{
-		var user = await _userRepository.GetByUserNameAsync(request.UserName);
+		var user = await _dbContext.Users.Include(x => x.Roles)
+				.SingleOrDefaultAsync(x => x.UserName == request.UserName, cancellationToken) ??
+			throw new UserNotFoundException(request.UserName, "username");
+		
 		if (!_passwordManager.Validate(request.Password, user.PasswordHash)) throw new InvalidUserPassword();
 
 		var accessToken = _tokenService.GenerateAccessToken(user.Id, user.Email, user.UserName, user.Roles.Select(x => x.Name));
@@ -34,7 +38,8 @@ internal sealed class LoginUserHandler : IRequestHandler<LoginUser, TokensDto>
 		user.SetRefreshToken(refreshToken);
 		user.SetRefreshTokenExpiryTime(refreshTokenExpiryDate);
 
-		await _userRepository.UpdateAsync(user);
+		_dbContext.Users.Update(user);
+		await _dbContext.SaveChangesAsync(cancellationToken);
 
 		return new TokensDto
 		{

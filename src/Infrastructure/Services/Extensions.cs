@@ -16,7 +16,6 @@ internal static class Extensions
 			.Configure<ApiKeysOptions>(configuration.GetRequiredSection(_keysOptionsSectionName));
 
 		services.AddTransient<IDateTimeService, DateTimeService>();
-		services.AddTransient<IAvailabilityService, AvailabilityService>();
 		services.AddTransient<IGeocodeApiService, GeocodeApiService>();
 		services.AddTransient<IPlacesApiService, PlacesApiService>();
 		services.AddTransient<ICurrentUserService, CurrentUserService>();
