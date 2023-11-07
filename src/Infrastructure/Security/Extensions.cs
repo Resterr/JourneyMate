@@ -41,7 +41,6 @@ internal static class Extensions
 
 		services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 		services.AddSingleton<IPasswordManager, PasswordManager>();
-		services.AddScoped<IAuthorizationService, AuthorizationService>();
 
 		services.AddAuthorization(authorization =>
 		{

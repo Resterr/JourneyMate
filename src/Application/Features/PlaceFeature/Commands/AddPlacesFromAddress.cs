@@ -1,9 +1,11 @@
 ﻿using System.Globalization;
 using FluentValidation;
+using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Domain.Entities;
-using JourneyMate.Domain.Repositories;
+using JourneyMate.Infrastructure.Persistence;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Application.Features.PlaceFeature.Commands;
 
@@ -11,24 +13,18 @@ public record AddPlacesFromAddress(Guid AddressId, string Type) : IRequest<Unit>
 
 internal sealed class AddPlacesFromAddressHandler : IRequestHandler<AddPlacesFromAddress, Unit>
 {
-	private readonly IAddressRepository _addressRepository;
-	private readonly IPlaceRepository _placeRepository;
+	private readonly IApplicationDbContext _dbContext;
 	private readonly IPlacesApiService _placesApiService;
-	private readonly IPlaceTypeRepository _placeTypeRepository;
 
-
-	public AddPlacesFromAddressHandler(IAddressRepository addressRepository, IPlaceRepository placeRepository, IPlaceTypeRepository placeTypeRepository, IPlacesApiService placesApiService)
+	public AddPlacesFromAddressHandler(IApplicationDbContext dbContext, IPlacesApiService placesApiService)
 	{
-		_addressRepository = addressRepository;
-		_placeRepository = placeRepository;
-		_placeTypeRepository = placeTypeRepository;
+		_dbContext = dbContext;
 		_placesApiService = placesApiService;
 	}
 
 	public async Task<Unit> Handle(AddPlacesFromAddress request, CancellationToken cancellationToken)
 	{
-		var address = await _addressRepository.GetByIdAsync(request.AddressId);
-		//var locationString = address.Location.Latitude + "," + address.Location.Longitude.ToString();
+		var address = await _dbContext.Addresses.SingleOrDefaultAsync(x => x.Id == request.AddressId) ?? throw new AddressNotFound(request.AddressId);
 		var locationString = string.Join(',', address.Location.Latitude.ToString(CultureInfo.InvariantCulture), address.Location.Longitude.ToString(CultureInfo.InvariantCulture));
 		var response = await _placesApiService.GetPlacesAsync(locationString, "50000", request.Type, "prominence", address.Location.Latitude, address.Location.Longitude);
 
@@ -38,9 +34,13 @@ internal sealed class AddPlacesFromAddressHandler : IRequestHandler<AddPlacesFro
 				.DistinctBy(x => x.Name)
 				.Select(x => new PlaceType(x.Name))
 				.ToList();
-			await _placeTypeRepository.AddRangeAsync(types);
+			
+			foreach (var placeType in types)
+				if (await _dbContext.PlaceTypes.AnyAsync(x => x.Name == placeType.Name) == false)
+					await _dbContext.PlaceTypes.AddAsync(placeType);
+			await _dbContext.SaveChangesAsync();
 
-			var placeTypes = await _placeTypeRepository.GetAllAsync();
+			var placeTypes = await _dbContext.PlaceTypes.ToListAsync();
 
 			var places = new List<Place>();
 			foreach (var placeDto in response)
@@ -55,7 +55,11 @@ internal sealed class AddPlacesFromAddressHandler : IRequestHandler<AddPlacesFro
 				places.Add(place);
 			}
 
-			await _placeRepository.AddRangeAsync(places);
+			foreach (var placeType in placeTypes)
+				if (await _dbContext.PlaceTypes.AnyAsync(x => x.Name == placeType.Name) == false)
+					await _dbContext.PlaceTypes.AddAsync(placeType);
+			
+			await _dbContext.SaveChangesAsync();
 		}
 
 		return Unit.Value;

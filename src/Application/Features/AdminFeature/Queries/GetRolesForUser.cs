@@ -1,7 +1,9 @@
 ﻿using AutoMapper;
+using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Models;
-using JourneyMate.Domain.Repositories;
+using JourneyMate.Infrastructure.Persistence;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Application.Features.AdminFeature.Queries;
 
@@ -9,18 +11,19 @@ public record GetRolesForUser(Guid Id) : IRequest<List<RoleDto>>;
 
 internal sealed class GetRolesForHandler : IRequestHandler<GetRolesForUser, List<RoleDto>>
 {
+	private readonly IApplicationDbContext _dbContext;
 	private readonly IMapper _mapper;
-	private readonly IUserRepository _userRepository;
-
-	public GetRolesForHandler(IUserRepository userRepository, IMapper mapper)
+	
+	public GetRolesForHandler(IApplicationDbContext dbContext, IMapper mapper)
 	{
-		_userRepository = userRepository;
+		_dbContext = dbContext;
 		_mapper = mapper;
 	}
 
 	public async Task<List<RoleDto>> Handle(GetRolesForUser request, CancellationToken cancellationToken)
 	{
-		var user = await _userRepository.GetByIdAsync(request.Id);
+		var user = await _dbContext.Users.Include(x => x.Roles).SingleOrDefaultAsync(x => x.Id == request.Id) ?? throw new UserNotFoundException(request.Id);
+
 		var result = _mapper.Map<List<RoleDto>>(user.Roles);
 
 		return result;

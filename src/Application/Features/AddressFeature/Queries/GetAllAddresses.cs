@@ -1,7 +1,8 @@
 ﻿using AutoMapper;
 using FluentValidation;
+using JourneyMate.Application.Common.Mappings;
 using JourneyMate.Application.Common.Models;
-using JourneyMate.Domain.Repositories;
+using JourneyMate.Infrastructure.Persistence;
 using MediatR;
 
 namespace JourneyMate.Application.Features.AddressFeature.Queries;
@@ -10,18 +11,19 @@ public record GetAllAddresses(int PageNumber, int PageSize) : IRequest<Paginated
 
 internal sealed class GetAllAddressesHandler : IRequestHandler<GetAllAddresses, PaginatedList<AddressDto>>
 {
-	private readonly IAddressRepository _addressRepository;
+	private readonly IApplicationDbContext _dbContext;
 	private readonly IMapper _mapper;
 
-	public GetAllAddressesHandler(IAddressRepository addressRepository, IMapper mapper)
+	public GetAllAddressesHandler(IApplicationDbContext dbContext, IMapper mapper)
 	{
-		_addressRepository = addressRepository;
+		_dbContext = dbContext;
 		_mapper = mapper;
 	}
 
 	public async Task<PaginatedList<AddressDto>> Handle(GetAllAddresses request, CancellationToken cancellationToken)
 	{
-		var addresses = await _addressRepository.GetAllAsync(request.PageNumber, request.PageSize);
+		var addresses = await _dbContext.Addresses.OrderBy(x => x.Locality.LongName)
+			.PaginatedListAsync(request.PageNumber, request.PageSize);
 
 		var result = _mapper.Map<PaginatedList<AddressDto>>(addresses);
 

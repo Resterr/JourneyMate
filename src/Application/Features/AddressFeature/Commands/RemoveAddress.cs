@@ -1,6 +1,8 @@
 ﻿using FluentValidation;
-using JourneyMate.Domain.Repositories;
+using JourneyMate.Application.Common.Exceptions;
+using JourneyMate.Infrastructure.Persistence;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Application.Features.AddressFeature.Commands;
 
@@ -8,18 +10,19 @@ public record RemoveAddress(Guid Id) : IRequest<Unit>;
 
 internal sealed class RemoveAddressHandler : IRequestHandler<RemoveAddress, Unit>
 {
-	private readonly IAddressRepository _addressRepository;
+	private readonly IApplicationDbContext _dbContext;
 
-	public RemoveAddressHandler(IAddressRepository addressRepository)
+	public RemoveAddressHandler(IApplicationDbContext dbContext)
 	{
-		_addressRepository = addressRepository;
+		_dbContext = dbContext;
 	}
 
 	public async Task<Unit> Handle(RemoveAddress request, CancellationToken cancellationToken)
 	{
-		var address = await _addressRepository.GetByIdAsync(request.Id);
+		var address = await _dbContext.Addresses.SingleOrDefaultAsync(x => x.Id == request.Id) ?? throw new AddressNotFound(request.Id);
 
-		await _addressRepository.DeleteAsync(address);
+		_dbContext.Addresses.Remove(address);
+		await _dbContext.SaveChangesAsync();
 
 		return Unit.Value;
 	}
