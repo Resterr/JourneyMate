@@ -4,12 +4,12 @@ using JourneyMate.Domain.ValueObjects;
 
 namespace JourneyMate.Application.Common.Models;
 
-public class PlaceDto : IMapFrom<Place>
+public class PlaceAddDto : IMapFrom<Place>
 {
-	public Guid Id { get; set; }
+	public Guid? Id { get; set; }
 	public string ApiPlaceId { get; set; }
 	public AddressDto Address { get; set; }
-	public string BusinessStatus { get;  set; }
+	public string BusinessStatus { get; set; }
 	public string Name { get; set; }
 	public double Rating { get; set; }
 	public int UserRatingsTotal { get; set; }
@@ -17,5 +17,6 @@ public class PlaceDto : IMapFrom<Place>
 	public double DistanceFromAddress { get; set; }
 	public Location Location { get; set; }
 	public PlusCode PlusCode { get; set; }
-	public List<string> Types { get; set; } = new();
+	public Photo? Photo { get; set; }
+	public List<PlaceTypeDto> Types { get; set; }
 }

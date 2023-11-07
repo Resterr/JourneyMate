@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System.Diagnostics.CodeAnalysis;
+using FluentValidation;
 using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Application.Common.Models;
 using JourneyMate.Domain.ValueObjects;
@@ -20,11 +21,12 @@ internal sealed class PlacesApiService : IPlacesApiService
 		_keysOptions = keysOptions;
 	}
 
-	public async Task<List<PlaceDto>> GetPlacesAsync(string location, string radius, string type, string rankBy, double latitude, double longitude)
+	public async Task<List<PlaceAddDto>> GetPlacesAsync(string location, string radius, string type, string rankBy, double latitude, double longitude)
 	{
 		using var client = new HttpClient();
 
-		var response = await client.GetStringAsync($"{_urlOptions.Value.GoogleMapsApiUrl}/place/nearbysearch/json" + $"?location={location}&radius={radius}&type={type}&rankby={rankBy}&key={_keysOptions.Value.GooglePlacesApiKey}");
+		var response = await client.GetStringAsync($"{_urlOptions.Value.GoogleMapsApiUrl}/place/nearbysearch/json" +
+			$"?location={location}&radius={radius}&type={type}&rankby={rankBy}&key={_keysOptions.Value.GooglePlacesApiKey}");
 
 		var placeReadModel = JsonConvert.DeserializeObject<PlaceReadModel>(response);
 		var placeReadModels = new List<PlaceReadModel>();
@@ -54,7 +56,7 @@ internal sealed class PlacesApiService : IPlacesApiService
 			}
 		}
 
-		var result = new List<PlaceDto>();
+		var result = new List<PlaceAddDto>();
 		foreach (var model in placeReadModels)
 		{
 			var placeDto = MapToDto(model, latitude, longitude);
@@ -64,9 +66,9 @@ internal sealed class PlacesApiService : IPlacesApiService
 		return result;
 	}
 
-	private static List<PlaceDto> MapToDto(PlaceReadModel placeReadModel, double latitude, double longitude)
+	private static List<PlaceAddDto> MapToDto(PlaceReadModel placeReadModel, double latitude, double longitude)
 	{
-		var places = new List<PlaceDto>();
+		var places = new List<PlaceAddDto>();
 
 		foreach (var result in placeReadModel.Results)
 		{
@@ -76,7 +78,7 @@ internal sealed class PlacesApiService : IPlacesApiService
 			if (validationResult.IsValid)
 				if (result.Business_status == "OPERATIONAL")
 				{
-					var place = new PlaceDto
+					var place = new PlaceAddDto
 					{
 						ApiPlaceId = result.Place_id,
 						BusinessStatus = result.Business_status,
@@ -102,9 +104,12 @@ internal sealed class PlacesApiService : IPlacesApiService
 		return places;
 	}
 
+	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	private class PlaceReadModel
 	{
+		#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		public List<object> Html_attributions { get; set; }
+		
 		public string Next_page_token { get; }
 		public List<Result> Results { get; }
 		public string Status { get; }
@@ -160,22 +165,22 @@ internal sealed class PlacesApiService : IPlacesApiService
 
 		public class Result
 		{
-			public string Business_status { get; }
-			public Geometry Geometry { get; }
+			public string Business_status { get; set; }
+			public Geometry Geometry { get; set; }
 			public string Icon { get; set; }
 			public string Icon_background_color { get; set; }
 			public string Icon_mask_base_uri { get; set; }
-			public string Name { get; }
+			public string Name { get; set; }
 			public OpeningHours Opening_hours { get; set; }
-			public List<Photo> Photos { get; }
-			public string Place_id { get; }
-			public PlusCode Plus_code { get; }
-			public double Rating { get; }
+			public List<Photo> Photos { get; set; }
+			public string Place_id { get; set; }
+			public PlusCode Plus_code { get; set; }
+			public double Rating { get; set; }
 			public string Reference { get; set; }
 			public string Scope { get; set; }
-			public List<string> Types { get; }
-			public int User_ratings_total { get; }
-			public string Vicinity { get; }
+			public List<string> Types { get; set; }
+			public int User_ratings_total { get; set; }
+			public string Vicinity { get; set; }
 		}
 	}
 
@@ -200,5 +205,15 @@ internal sealed class PlacesApiService : IPlacesApiService
 			RuleFor(x => x.Vicinity)
 				.NotNull();
 		}
+	}
+
+	public async Task<Stream> LoadPhoto(string photoReference, int height, int width)
+	{
+		using var client = new HttpClient();
+
+		var response = await client.GetStreamAsync($"{_urlOptions.Value.GoogleMapsApiUrl}/place/photo" +
+			$"?photo_reference={photoReference}&maxheight={height}&maxwidth={width}&key={_keysOptions.Value.GooglePlacesApiKey}");
+		
+		return response;
 	}
 }
