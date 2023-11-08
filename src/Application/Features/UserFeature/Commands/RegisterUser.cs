@@ -27,13 +27,11 @@ internal sealed class RegisterUserHandler : IRequestHandler<RegisterUser, Unit>
 		var userName = request.UserName;
 		var password = request.Password;
 
-		if (email != null)
-			if (await _dbContext.Users.AnyAsync(x => x.Email == email))
-				throw new DataAlreadyTakenException(email, "Email");
+		if (await _dbContext.Users.AnyAsync(x => x.Email == email))
+			throw new DataAlreadyTakenException(email, "Email");
 
-		if (userName != null)
-			if (await _dbContext.Users.AnyAsync(x => x.UserName == userName))
-				throw new DataAlreadyTakenException(userName, "Username");
+		if (await _dbContext.Users.AnyAsync(x => x.UserName == userName))
+			throw new DataAlreadyTakenException(userName, "Username");
 		
 		var hashedPassword = _passwordManager.Secure(password);
 		var user = new User(email, hashedPassword, userName);

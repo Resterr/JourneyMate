@@ -13,16 +13,14 @@ public record TokenRefresh(string AccessToken, string RefreshToken) : IRequest<T
 
 internal sealed class TokenRefreshHandler : IRequestHandler<TokenRefresh, TokensDto>
 {
-	private readonly ICurrentUserService _currentUserService;
 	private readonly IDateTimeService _dateTimeService;
 	private readonly IApplicationDbContext _dbContext;
 	private readonly ITokenService _tokenService;
 
-	public TokenRefreshHandler(IApplicationDbContext dbContext, ITokenService tokenService, ICurrentUserService currentUserService, IDateTimeService dateTimeService)
+	public TokenRefreshHandler(IApplicationDbContext dbContext, ITokenService tokenService, IDateTimeService dateTimeService)
 	{
 		_dbContext = dbContext;
 		_tokenService = tokenService;
-		_currentUserService = currentUserService;
 		_dateTimeService = dateTimeService;
 	}
 
