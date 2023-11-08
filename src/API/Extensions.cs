@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using JourneyMate.API.Middlewares;
+using JourneyMate.API.Policies;
 using JourneyMate.Infrastructure.Persistence;
 using Microsoft.OpenApi.Models;
 
@@ -12,6 +13,7 @@ public static class Extensions
 
 	public static IServiceCollection AddPresentationLayer(this IServiceCollection services)
 	{
+		services.AddCorsPolicy();
 		services.AddHttpContextAccessor();
 		services.AddHealthChecks()
 			.AddDbContextCheck<ApplicationDbContext>();
@@ -35,6 +37,7 @@ public static class Extensions
 
 	public static WebApplication UsePresentationLayer(this WebApplication app)
 	{
+		app.UseCorsPolicy();
 		app.UseHttpsRedirection();
 		app.UseHealthChecks("/health");
 		app.UseMiddleware<ErrorHandlerMiddleware>();
