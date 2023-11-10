@@ -1,25 +1,21 @@
 {
   "profiles": {
-    "DEV": {
+    "https": {
       "commandName": "Project",
+      "dotnetRunMessages": true,
       "launchBrowser": true,
       "launchUrl": "swagger",
+      "applicationUrl": "https://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
-      },
-      "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:5000",
-      "nativeDebugging": true,
-      "sqlDebugging": false
+      }
     },
-    "PROD": {
-      "commandName": "Project",
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Production"
-      },
-      "dotnetRunMessages": true,
-      "applicationUrl": "https://localhost:5000",
-      "hotReloadEnabled": false
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     }
   },
   "$schema": "https://json.schemastore.org/launchsettings.json",

@@ -23,7 +23,7 @@ internal sealed class GetPhotoForPlaceHandler : IRequestHandler<GetPhotoForPlace
 	{
 		var place = _dbContext.Places.SingleOrDefault(x => x.Id == request.PlaceId) ?? throw new PlaceNotFound(request.PlaceId);
 		
-		var stream = await _placesApiService.LoadPhoto(place.Photo.PhotoReference, request.MaxHeight, request.MaxWidth);
+		var stream = await _placesApiService.LoadPhoto(place.Photo!.PhotoReference, request.MaxHeight, request.MaxWidth);
 
 		return stream;
 	}

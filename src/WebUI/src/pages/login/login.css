@@ -1,0 +1,12 @@
+.login__container {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-image: url("../../utils/world.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    object-fit: cover;
+    position: absolute;
+}

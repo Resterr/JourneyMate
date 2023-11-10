@@ -1,6 +1,7 @@
 ﻿using JourneyMate.Infrastructure.Persistence;
 using JourneyMate.Infrastructure.Security;
 using JourneyMate.Infrastructure.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -15,5 +16,12 @@ public static class Extensions
 		services.AddServices(configuration);
 
 		return services;
+	}
+
+	public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app)
+	{
+		app.SeedData();
+
+		return app;
 	}
 }

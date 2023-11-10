@@ -17,6 +17,7 @@ builder.Services.AddInfrastructureLayer(builder.Configuration);
 var app = builder.Build();
 
 app.UsePresentationLayer();
+app.UseInfrastructure();
 
 app.RegisterUsersRequests();
 app.RegisterAdminRequests();
