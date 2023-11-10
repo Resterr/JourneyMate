@@ -54,6 +54,7 @@ internal sealed class UsersSeeder : IUsersSeeder
 
 		if (!isSuperAdminExists)
 		{
+			superAdmin.Roles.Add(superAdminRole);
 			_applicationDbContext.Users.Add(superAdmin);
 			_applicationDbContext.SaveChanges();
 		}

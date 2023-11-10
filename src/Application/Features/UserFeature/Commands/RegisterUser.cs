@@ -35,9 +35,6 @@ internal sealed class RegisterUserHandler : IRequestHandler<RegisterUser, Unit>
 		
 		var hashedPassword = _passwordManager.Secure(password);
 		var user = new User(email, hashedPassword, userName);
-
-		await _dbContext.Users.AddAsync(user);
-		await _dbContext.SaveChangesAsync();
 		
 		var role = await _dbContext.Roles.SingleOrDefaultAsync(x => x.Name == "User", cancellationToken);
 		if (role != null)
