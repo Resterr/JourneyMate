@@ -36,8 +36,8 @@ public class GetAllAddressesValidator : AbstractValidator<GetAllAddresses>
 	public GetAllAddressesValidator()
 	{
 		RuleFor(x => x.PageNumber)
-			.GreaterThan(0);
+			.NotEmpty().GreaterThan(0);
 		RuleFor(x => x.PageSize)
-			.GreaterThan(0);
+			.NotEmpty().GreaterThan(0);
 	}
 }

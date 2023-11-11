@@ -71,8 +71,8 @@ public class AddPlacesFromAddressValidator : AbstractValidator<AddPlacesFromAddr
 	public AddPlacesFromAddressValidator()
 	{
 		RuleFor(x => x.AddressId)
-			.NotNull();
+			.NotEmpty();
 		RuleFor(x => x.Type)
-			.NotNull();
+			.NotEmpty();
 	}
 }

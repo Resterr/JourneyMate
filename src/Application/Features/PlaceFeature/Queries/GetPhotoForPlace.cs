@@ -34,12 +34,12 @@ public class GetPhotoForPlaceValidator : AbstractValidator<GetPhotoForPlace>
 	public GetPhotoForPlaceValidator()
 	{
 		RuleFor(x => x.PlaceId)
-			.NotNull().NotEmpty();
+			.NotEmpty();
 		
 		RuleFor(x => x.MaxHeight)
-			.NotNull().GreaterThan(0);
+			.NotEmpty().GreaterThan(0);
 		
 		RuleFor(x => x.MaxWidth)
-			.NotNull().GreaterThan(0);
+			.NotEmpty().GreaterThan(0);
 	}
 }

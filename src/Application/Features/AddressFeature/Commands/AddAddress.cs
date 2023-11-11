@@ -48,10 +48,10 @@ public class AddAddressValidator : AbstractValidator<AddAddress>
 	public AddAddressValidator()
 	{
 		RuleFor(x => x.Locality)
-			.NotNull();
+			.NotEmpty();
 		RuleFor(x => x.AdministrativeArea)
-			.NotNull();
+			.NotEmpty();
 		RuleFor(x => x.Country)
-			.NotNull();
+			.NotEmpty();
 	}
 }
