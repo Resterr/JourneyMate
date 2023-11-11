@@ -20,25 +20,37 @@ internal static class PlaceRequests
 
 	private static RouteGroupBuilder MapPlaceEndpoints(this RouteGroupBuilder group)
 	{
+		group.MapGet("report/{id:guid}", async (ISender sender, [AsParameters] GetReportById request) =>
+			{
+				var result = await sender.Send(request);
+				return Results.Ok(result);
+			})
+			.RequireAuthorization("user")
+			.Produces<PlaceDto>()
+			.Produces(StatusCodes.Status401Unauthorized)
+			.Produces(StatusCodes.Status403Forbidden)
+			.Produces(StatusCodes.Status400BadRequest)
+			.WithMetadata(new SwaggerOperationAttribute("Get photo for place"));
+		
 		group.MapGet("photo/{placeId:guid}", async (ISender sender, [AsParameters] GetPhotoForPlace request) =>
 			{
 				var result = await sender.Send(request);
 				return Results.Stream(result, "image/jpeg");
 			})
 			.RequireAuthorization("user")
-			.Produces<Stream>(StatusCodes.Status200OK)
+			.Produces<Stream>()
 			.Produces(StatusCodes.Status401Unauthorized)
 			.Produces(StatusCodes.Status403Forbidden)
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Get photo for place"));
 		
-		group.MapPost("search", async (ISender sender, [FromBody] SearchPlaces request) =>
+		group.MapPost("report/generate", async (ISender sender, [FromBody] GenerateReport request) =>
 			{
-				var results = await sender.Send(request);
-				return Results.Ok(results);
+				var id = await sender.Send(request);
+				return Results.Created($"api/place/report/{id}", null);
 			})
 			.RequireAuthorization("user")
-			.Produces<PlaceDto>(StatusCodes.Status200OK)
+			.Produces(StatusCodes.Status201Created)
 			.Produces(StatusCodes.Status401Unauthorized)
 			.Produces(StatusCodes.Status403Forbidden)
 			.Produces(StatusCodes.Status400BadRequest)

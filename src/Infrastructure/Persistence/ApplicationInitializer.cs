@@ -1,5 +1,4 @@
-﻿using JourneyMate.Infrastructure.Persistence.Seeders;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
