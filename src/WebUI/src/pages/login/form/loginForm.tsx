@@ -11,7 +11,7 @@ type FormData = {
 	password : string;
 };
 
-export const LoginForm : React.FC = () => {
+const LoginForm : React.FC = () => {
 	const userContext = useContext(UserContext);
 	const {
 		register,
@@ -55,12 +55,12 @@ export const LoginForm : React.FC = () => {
 	};
 
 	return (
-		<div className="login__form">
-			<div className="login__form--status">
+		<div className="login_form">
+			<div className="login_form__status">
 				<h1>{status}</h1>
 			</div>
 			<form onSubmit={handleSubmit(onSubmit)}>
-				<div className="login__form--login">
+				<div className="login_form__login">
 					<label htmlFor="fname">Username:</label>
 					<br/>
 					<input
@@ -73,7 +73,7 @@ export const LoginForm : React.FC = () => {
 					<br/>
 					<p>{errors.userName?.message}</p>
 				</div>
-				<div className="login__form--password">
+				<div className="login_form__password">
 					<label htmlFor="lname">Password:</label>
 					<br/>
 					<input
@@ -87,7 +87,7 @@ export const LoginForm : React.FC = () => {
 					<br/>
 					<p>{errors.userName?.message}</p>
 				</div>
-				<div className="login__form--button">
+				<div className="login_form__button">
 					<button type="submit">Sign in</button>
 				</div>
 			</form>

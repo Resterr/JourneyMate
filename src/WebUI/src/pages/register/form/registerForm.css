@@ -1,4 +1,4 @@
-.register__form {
+.register_form {
     background: rgba(53, 41, 97, 0.6);
     color: white;
     border-radius: 10px;
@@ -10,7 +10,7 @@
     padding: 10px
 }
 
-.register__form--button {
+.register_form__button {
     padding-top: 10px;
     padding-bottom: 10px;
     text-align: center;

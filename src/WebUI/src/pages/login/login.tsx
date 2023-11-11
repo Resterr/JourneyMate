@@ -2,9 +2,9 @@
 import LoginForm from "./form/loginForm";
 import './login.css';
 
-export const Login : React.FC = () => {
+const Login : React.FC = () => {
 	return (
-		<div className="login__container">
+		<div className="login">
 			<LoginForm></LoginForm>
 		</div>
 	)

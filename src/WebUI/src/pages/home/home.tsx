@@ -2,9 +2,9 @@
 import './home.css';
 import SearchForm from "./form/searchForm";
 
-export const Home : React.FC = () => {
+const Home : React.FC = () => {
 	return (
-		<div className="home__container">
+		<div className="home">
 			<SearchForm></SearchForm>
 		</div>
 	)
