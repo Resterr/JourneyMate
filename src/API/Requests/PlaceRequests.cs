@@ -26,11 +26,23 @@ internal static class PlaceRequests
 				return Results.Ok(result);
 			})
 			.RequireAuthorization("user")
-			.Produces<PlaceDto>()
+			.Produces<ReportDto>()
 			.Produces(StatusCodes.Status401Unauthorized)
 			.Produces(StatusCodes.Status403Forbidden)
 			.Produces(StatusCodes.Status400BadRequest)
-			.WithMetadata(new SwaggerOperationAttribute("Get photo for place"));
+			.WithMetadata(new SwaggerOperationAttribute("Get report data"));
+		
+		group.MapGet("report", async (ISender sender, [AsParameters] GetAllReports request) =>
+			{
+				var result = await sender.Send(request);
+				return Results.Ok(result);
+			})
+			.RequireAuthorization("user")
+			.Produces<List<ReportDto>>()
+			.Produces(StatusCodes.Status401Unauthorized)
+			.Produces(StatusCodes.Status403Forbidden)
+			.Produces(StatusCodes.Status400BadRequest)
+			.WithMetadata(new SwaggerOperationAttribute("Get all reports data"));
 		
 		group.MapGet("photo/{placeId:guid}", async (ISender sender, [AsParameters] GetPhotoForPlace request) =>
 			{
