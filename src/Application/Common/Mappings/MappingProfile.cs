@@ -10,8 +10,6 @@ public class MappingProfile : Profile
 	public MappingProfile()
 	{
 		ApplyMappingsFromAssembly(Assembly.GetExecutingAssembly());
-		CreateMap<PaginatedList<Address>, PaginatedList<AddressDto>>()
-			.ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
 	}
 
 	private void ApplyMappingsFromAssembly(Assembly assembly)

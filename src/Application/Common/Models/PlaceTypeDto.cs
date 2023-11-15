@@ -1,6 +1,9 @@
-﻿namespace JourneyMate.Application.Common.Models;
+﻿using JourneyMate.Application.Common.Mappings;
+using JourneyMate.Domain.Entities;
 
-public class PlaceTypeDto
+namespace JourneyMate.Application.Common.Models;
+
+public class PlaceTypeDto : IMapFrom<PlaceType>
 {
 	public Guid? Id { get; set; }
 	public string Name { get; set; }
