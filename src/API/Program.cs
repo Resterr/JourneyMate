@@ -24,4 +24,6 @@ app.RegisterAdminRequests();
 app.RegisterAddressRequests();
 app.RegisterPlaceRequests();
 
+app.MapGet("/", ctx => ctx.Response.WriteAsync("JourneyMate API"));
+
 app.Run();
