@@ -5,7 +5,7 @@ import Home from "./pages/home/home";
 import Navbar from "./components/navbar/navbar";
 import Login from "./pages/login/login";
 import Register from "./pages/register/register";
-import Result from "./pages/result/result";
+import Result, {SearchPlaces} from "./pages/searchPlaces/searchPlaces";
 import {AxiosResponse} from 'axios';
 import axiosInstance from './utils/axiosInstance';
 import {UserContext} from './contexts/userContext';
@@ -75,7 +75,7 @@ function App() {
 				<Route index element={<Home/>}/>
 				<Route path="login" element={<Login/>}/>
 				<Route path="register" element={<Register/>}/>
-				<Route path="result" element={<Result/>}/>
+				<Route path="searchPlaces" element={<SearchPlaces/>}/>
 			</Routes>
 		</BrowserRouter>
 	);

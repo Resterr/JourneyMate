@@ -23,6 +23,9 @@ const Navbar : React.FC = () => {
 		<div className="navbar">
 			<div className="navbar__navbar-wordmark"><Link to="/">JourneyMate</Link></div>
 			<div className="navbar__navbar-menu">
+				<Link to="/searchPlaces">
+					<button className="navbar__navbar-item">Search</button>
+				</Link>
 				{currentUser ? (
 					<button className="navbar__logout-button" onClick={logoutHandler}>
 						Log out{" "}
