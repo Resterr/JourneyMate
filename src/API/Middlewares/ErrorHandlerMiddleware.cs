@@ -52,22 +52,6 @@ internal sealed class ErrorHandlerMiddleware : IMiddleware
 			var json = JsonSerializer.Serialize(response);
 			await context.Response.WriteAsync(json);
 		}
-		// TO DO HANDLING THIS EXCEPTION TO VALIDATION EXCEPTION
-		catch (ArgumentNullException exception)
-		{
-			_logger.LogError("{ErrorCode} : {Message}", 400, exception.Message);
-			context.Response.StatusCode = 400;
-			context.Response.Headers.Add("content-type", "application/json");
-
-			var response = new
-			{
-				Code = GetErrorCode(exception),
-				Detail = exception.Message
-			};
-
-			var json = JsonSerializer.Serialize(response);
-			await context.Response.WriteAsync(json);
-		}
 		catch (Exception exception)
 		{
 			_logger.LogError("{ErrorCode} : {Message}", 500, exception.Message);

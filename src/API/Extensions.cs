@@ -1,7 +1,10 @@
-﻿using FluentValidation;
+﻿using System.ComponentModel;
+using FluentValidation;
+using JourneyMate.API.Converters;
 using JourneyMate.API.Middlewares;
 using JourneyMate.API.Policies;
 using JourneyMate.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Http.Json;
 using Microsoft.OpenApi.Models;
 
 namespace JourneyMate.API;
@@ -18,6 +21,10 @@ public static class Extensions
 		services.AddHealthChecks()
 			.AddDbContextCheck<ApplicationDbContext>();
 		services.AddScoped<ErrorHandlerMiddleware>();
+		services.Configure<JsonOptions>(options =>
+		{
+			options.SerializerOptions.Converters.Add(new CustomGuidConverter());
+		});
 		services.AddRouting(options => options.LowercaseUrls = true);
 		services.AddEndpointsApiExplorer();
 		ValidatorOptions.Global.LanguageManager.Enabled = false;
