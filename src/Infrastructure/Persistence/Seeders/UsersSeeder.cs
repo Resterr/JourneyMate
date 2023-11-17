@@ -48,6 +48,8 @@ internal sealed class UsersSeeder : IUsersSeeder
 		var securedPassword = _passwordManager.Secure(superAdminConfig.Password);
 		var superAdmin = new User(superAdminConfig.Email, securedPassword, superAdminConfig.UserName);
 		var superAdminRole = _applicationDbContext.Roles.Single(x => x.Name == "SuperAdmin");
+		var adminRole = _applicationDbContext.Roles.Single(x => x.Name == "Admin");
+		var userRole = _applicationDbContext.Roles.Single(x => x.Name == "User");
 
 		var isSuperAdminExists = _applicationDbContext.Users.Include(x => x.Roles)
 			.Any(x => x.Roles.Contains(superAdminRole));
@@ -55,6 +57,8 @@ internal sealed class UsersSeeder : IUsersSeeder
 		if (!isSuperAdminExists)
 		{
 			superAdmin.Roles.Add(superAdminRole);
+			superAdmin.Roles.Add(adminRole);
+			superAdmin.Roles.Add(userRole);
 			_applicationDbContext.Users.Add(superAdmin);
 			_applicationDbContext.SaveChanges();
 		}

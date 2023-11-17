@@ -5,9 +5,8 @@ namespace JourneyMate.Application.Common.Models;
 
 public class UserDto : IMapFrom<User>
 {
-	public Guid Id { get; }
-	public string Email { get; }
-	public string UserName { get; }
-	public DateTime Created { get; }
-	public DateTime? Verified { get; }
+	public Guid Id { get; set; }
+	public string Email { get; set; }
+	public string UserName { get; set; }
+	public DateTime Created { get; set; }
 }
