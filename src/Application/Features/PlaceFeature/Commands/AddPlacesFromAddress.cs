@@ -35,31 +35,47 @@ internal sealed class AddPlacesFromAddressHandler : IRequestHandler<AddPlacesFro
 				.Select(x => new PlaceType(x.Name))
 				.ToList();
 			
+			var existingPlaceTypes = await _dbContext.PlaceTypes.ToListAsync();
 			foreach (var placeType in types)
-				if (await _dbContext.PlaceTypes.AnyAsync(x => x.Name == placeType.Name) == false)
+			{
+				if (!existingPlaceTypes.Any(x => x.Name == placeType.Name))
+				{
 					await _dbContext.PlaceTypes.AddAsync(placeType);
+				}
+			}
 			await _dbContext.SaveChangesAsync();
 
 			var placeTypes = await _dbContext.PlaceTypes.ToListAsync();
-
-			var places = new List<Place>();
-			foreach (var placeDto in response)
+			var places = response.Select(placeDto =>
 			{
 				var place = new Place(placeDto.ApiPlaceId, placeDto.BusinessStatus, placeDto.Name, placeDto.Rating, placeDto.UserRatingsTotal, placeDto.Vicinity, placeDto.DistanceFromAddress, placeDto.Location,
 					placeDto.PlusCode, placeDto.Photo, address.Id);
+				
+				place.SetTypes(placeTypes.Where(placeType => placeDto.Types.Any(x => x.Name.Contains(placeType.Name)))
+					.ToList());
 
-				var currentPlaceTypes = placeTypes.Where(placeType => placeDto.Types.Any(x => x.Name.Contains(placeType.Name)))
-					.ToList();
+				return place;
+			}).ToList();
 
-				place.SetTypes(currentPlaceTypes);
-				places.Add(place);
+			foreach (var place in places)
+			{
+				var existingPlace = await _dbContext.Places.FirstOrDefaultAsync(x => x.ApiPlaceId == place.ApiPlaceId);
+				if (existingPlace == null)
+				{
+					await _dbContext.Places.AddAsync(place);
+				}
+				else
+				{
+					existingPlace.UpdateRatings(place.Rating, place.UserRatingsTotal);
+					_dbContext.Places.Update(existingPlace);
+				}
 			}
-
-			foreach (var placeType in placeTypes)
-				if (await _dbContext.PlaceTypes.AnyAsync(x => x.Name == placeType.Name) == false)
-					await _dbContext.PlaceTypes.AddAsync(placeType);
 			
 			await _dbContext.SaveChangesAsync();
+		}
+		else
+		{
+			throw new PlaceNotFound();
 		}
 
 		return Unit.Value;
