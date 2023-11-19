@@ -23,7 +23,7 @@ internal sealed class GetAllAddressesHandler : IRequestHandler<GetAllAddresses, 
 
 	public async Task<List<AddressDto>> Handle(GetAllAddresses request, CancellationToken cancellationToken)
 	{
-		var addresses = await _dbContext.Addresses.OrderBy(x => x.Locality.LongName)
+		var addresses = await _dbContext.Addresses.OrderBy(x => x.Locality)
 			.ToListAsync();
 
 		var result = _mapper.Map<List<AddressDto>>(addresses);

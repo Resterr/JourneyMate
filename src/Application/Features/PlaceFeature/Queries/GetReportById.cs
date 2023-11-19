@@ -41,7 +41,7 @@ internal sealed class GetReportByIdHandler : IRequestHandler<GetReportById, Repo
 		{
 			foreach (var placeDtoId in report.Places)
 			{
-				var place = await _dbContext.Places.Include(x => x.Address).FirstOrDefaultAsync(x => x.Id == placeDtoId);
+				var place = await _dbContext.Places.Include(x => x.Addresses).Include(x => x.Types).FirstOrDefaultAsync(x => x.Id == placeDtoId);
 
 				if (place != null)
 				{
@@ -54,7 +54,8 @@ internal sealed class GetReportByIdHandler : IRequestHandler<GetReportById, Repo
 		{
 			Id = report.Id,
 			Rating = report.Rating,
-			Places = placesDto
+			Places = placesDto,
+			Types = report.Types
 		};
 		
 		return result;

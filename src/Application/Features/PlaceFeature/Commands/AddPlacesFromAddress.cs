@@ -36,31 +36,37 @@ internal sealed class AddPlacesFromAddressHandler : IRequestHandler<AddPlacesFro
 				.Select(x => new PlaceType(x.Name))
 				.ToList();
 			
-			var existingPlaceTypes = await _dbContext.PlaceTypes.ToListAsync();
+			var existingPlaceTypes = _dbContext.PlaceTypes.ToList();
 			foreach (var placeType in types)
 			{
 				if (!existingPlaceTypes.Any(x => x.Name == placeType.Name))
 				{
-					await _dbContext.PlaceTypes.AddAsync(placeType);
+					_dbContext.PlaceTypes.Add(placeType);
 				}
 			}
-			await _dbContext.SaveChangesAsync();
+			_dbContext.SaveChanges();
 
 			var placeTypes = await _dbContext.PlaceTypes.ToListAsync();
 			var places = response.Select(placeDto =>
 			{
 				var place = new Place(placeDto.ApiPlaceId, placeDto.BusinessStatus, placeDto.Name, placeDto.Rating, placeDto.UserRatingsTotal, placeDto.Vicinity, placeDto.DistanceFromAddress, placeDto.Location,
-					placeDto.PlusCode, placeDto.Photo, address.Id);
+					placeDto.PlusCode, placeDto.Photo);
+
+				var placeAddress = new PlaceAddress(address, place, placeDto.DistanceFromAddress);
 				
-				place.SetTypes(placeTypes.Where(placeType => placeDto.Types.Any(x => x.Name.Contains(placeType.Name)))
-					.ToList());
+				place.AddAddress(placeAddress);
+				
+				var typesToSet = placeTypes.Where(placeType => placeDto.Types.Any(x => x.Name.Contains(placeType.Name)))
+					.ToList();
+				
+				place.SetTypes(typesToSet);
 
 				return place;
 			}).ToList();
 
 			foreach (var place in places)
 			{
-				var existingPlace = await _dbContext.Places.FirstOrDefaultAsync(x => x.ApiPlaceId == place.ApiPlaceId);
+				var existingPlace = await _dbContext.Places.Include(x => x.Addresses).FirstOrDefaultAsync(x => x.ApiPlaceId == place.ApiPlaceId);
 				if (existingPlace == null)
 				{
 					await _dbContext.Places.AddAsync(place);
@@ -68,6 +74,11 @@ internal sealed class AddPlacesFromAddressHandler : IRequestHandler<AddPlacesFro
 				else
 				{
 					existingPlace.UpdateRatings(place.Rating, place.UserRatingsTotal);
+					if (!existingPlace.CheckAddress(address.Id))
+					{
+						existingPlace.AddAddress(place.Addresses[0]);
+					}
+					
 					_dbContext.Places.Update(existingPlace);
 				}
 			}

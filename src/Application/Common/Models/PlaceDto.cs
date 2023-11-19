@@ -16,5 +16,5 @@ public class PlaceDto : IMapFrom<Place>
 	public double DistanceFromAddress { get; set; }
 	public Location Location { get; set; }
 	public PlusCode PlusCode { get; set; }
-	public List<string> Types { get; set; } = new();
+	public List<PlaceTypeDto> Types { get; set; } = new();
 }

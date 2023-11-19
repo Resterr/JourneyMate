@@ -7,16 +7,16 @@ public class Address : BaseEntity
 {
 	public string ApiPlaceId { get; private set; }
 	public Location Location { get; private set; }
-	public AddressComponent Locality { get; private set; }
-	public AddressComponent AdministrativeAreaLevel2 { get; private set; }
-	public AddressComponent AdministrativeAreaLevel1 { get; private set; }
-	public AddressComponent Country { get; private set; }
-	public AddressComponent PostalCode { get; private set; }
+	public string Locality { get; private set; }
+	public string AdministrativeAreaLevel2 { get; private set; }
+	public string AdministrativeAreaLevel1 { get; private set; }
+	public string Country { get; private set; }
+	public string PostalCode { get; private set; }
 
-	public List<Place> Places { get; private set; } = new();
+	public List<PlaceAddress> Places { get; private set; } = new();
 	private Address() { }
 
-	public Address(string apiPlaceId, Location location, AddressComponent locality, AddressComponent administrativeAreaLevel2, AddressComponent administrativeAreaLevel1, AddressComponent country, AddressComponent postalCode)
+	public Address(string apiPlaceId, Location location, string locality, string administrativeAreaLevel2, string administrativeAreaLevel1, string country, string postalCode)
 	{
 		ApiPlaceId = apiPlaceId;
 		Location = location;

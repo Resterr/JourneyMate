@@ -27,15 +27,19 @@ internal sealed class GenerateReportHandler : IRequestHandler<GenerateReport, Gu
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
 		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
-		
+
+		var address = await _dbContext.Addresses.FirstOrDefaultAsync(x => x.Id == request.AddressId) ?? throw new AddressNotFound(request.AddressId);
 		var types = await _dbContext.PlaceTypes.Where(x => request.Types.Contains(x.Name)).ToListAsync(cancellationToken);
 
-		var places = await _dbContext.Places.Include(x => x.Address)
-			.Include(x => x.Types)
-			.Where(x => x.AddressId == request.AddressId)
+		var placeAddresses = await _dbContext.PlaceAddress.Include(x => x.Place)
+			.ThenInclude(x => x.Types)
+			.Where(x => x.AddressId == address.Id)
 			.ToListAsync(cancellationToken);
 
-		places = places.Where(x => types.Any(y => types.Contains(y))).ToList();
+		var places = placeAddresses.Select(x => x.Place)
+			.ToList();
+		
+		places = places.Where(x => x.CheckType(types)).ToList();
 		places = places.Where(x => x.UserRatingsTotal > 100 && x.Rating >= 4.0).ToList();
 
 		var reportId = Guid.NewGuid();
