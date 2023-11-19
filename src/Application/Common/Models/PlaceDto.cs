@@ -8,7 +8,6 @@ public class PlaceDto : IMapFrom<Place>
 {
 	public Guid Id { get; set; }
 	public string ApiPlaceId { get; set; }
-	public AddressDto Address { get; set; }
 	public string BusinessStatus { get;  set; }
 	public string Name { get; set; }
 	public double Rating { get; set; }

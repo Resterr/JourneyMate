@@ -10,9 +10,9 @@ using MongoDB.Driver;
 
 namespace JourneyMate.Application.Features.PlaceFeature.Queries;
 
-public record GetAllReports : IRequest<List<ReportDto>>;
+public record GetAllReports : IRequest<List<ReportListDto>>;
 
-internal sealed class GetAllReportsHandler : IRequestHandler<GetAllReports, List<ReportDto>>
+internal sealed class GetAllReportsHandler : IRequestHandler<GetAllReports, List<ReportListDto>>
 {
 	private readonly IApplicationDbContext _dbContext;
 	private readonly IApplicationMongoClient _mongoClient;
@@ -27,7 +27,7 @@ internal sealed class GetAllReportsHandler : IRequestHandler<GetAllReports, List
 		_mapper = mapper;
 	}
 
-	public async Task<List<ReportDto>> Handle(GetAllReports request, CancellationToken cancellationToken)
+	public async Task<List<ReportListDto>> Handle(GetAllReports request, CancellationToken cancellationToken)
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
 		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
@@ -35,33 +35,14 @@ internal sealed class GetAllReportsHandler : IRequestHandler<GetAllReports, List
 		var reports = await _mongoClient.Reports.Find(filter)
 			.ToListAsync();
 
-		var result = new List<ReportDto>();
-		foreach (var report in reports)
+		var result = reports.Select(report => new ReportListDto
 		{
-			var placesDto = new List<PlaceDto>();
-			if (report.Places.Count > 0)
-			{
-				foreach (var placeDtoId in report.Places)
-				{
-					var place = await _dbContext.Places.Include(x => x.Address)
-						.FirstOrDefaultAsync(x => x.Id == placeDtoId);
-
-					if (place != null)
-					{
-						placesDto.Add(_mapper.Map<PlaceDto>(place));
-					}
-				}
-			}
-			
-			var reportDto = new ReportDto()
-			{
-				Id = report.Id,
-				Rating = report.Rating,
-				Places = placesDto
-			};
-			
-			result.Add(reportDto);
-		}
+			Id = report.Id,
+			AddressId = report.AddressId,
+			Rating = report.Rating,
+			Places = report.Places,
+			Types = report.Types
+		}).ToList();
 
 		return result;
 	}

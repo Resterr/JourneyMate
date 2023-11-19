@@ -30,6 +30,7 @@ internal sealed class AddPlacesFromAddressHandler : IRequestHandler<AddPlacesFro
 
 		if (response.Count > 0)
 		{
+			//Add missing types
 			var types = response.SelectMany(x => x.Types)
 				.DistinctBy(x => x.Name)
 				.Select(x => new PlaceType(x.Name))

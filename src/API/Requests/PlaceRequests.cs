@@ -38,7 +38,7 @@ internal static class PlaceRequests
 				return Results.Ok(result);
 			})
 			.RequireAuthorization("user")
-			.Produces<List<ReportDto>>()
+			.Produces<List<ReportListDto>>()
 			.Produces(StatusCodes.Status401Unauthorized)
 			.Produces(StatusCodes.Status403Forbidden)
 			.Produces(StatusCodes.Status400BadRequest)
@@ -59,7 +59,7 @@ internal static class PlaceRequests
 		group.MapPost("report/generate", async (ISender sender, [FromBody] GenerateReport request) =>
 			{
 				var id = await sender.Send(request);
-				return Results.Created($"api/place/report/{id}", null);
+				return Results.Created($"api/place/report/{id}", id);
 			})
 			.RequireAuthorization("user")
 			.Produces(StatusCodes.Status201Created)

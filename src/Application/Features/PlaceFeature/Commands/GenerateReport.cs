@@ -40,7 +40,7 @@ internal sealed class GenerateReportHandler : IRequestHandler<GenerateReport, Gu
 
 		var reportId = Guid.NewGuid();
 		var placesId = places.Select(x => x.Id).ToList();
-		var newReport = new Report(reportId, user.Id, placesId);
+		var newReport = new Report(reportId, user.Id, request.AddressId, placesId, request.Types);
 		
 		await _mongoClient.Reports.InsertOneAsync(newReport);
 
