@@ -64,6 +64,8 @@ internal sealed class AddPlacesFromAddressHandler : IRequestHandler<AddPlacesFro
 				return place;
 			}).ToList();
 
+			places = places.Where(x => x.UserRatingsTotal > 50 && x.Rating >= 3.0).ToList();
+			
 			foreach (var place in places)
 			{
 				var existingPlace = await _dbContext.Places.Include(x => x.Addresses).FirstOrDefaultAsync(x => x.ApiPlaceId == place.ApiPlaceId);

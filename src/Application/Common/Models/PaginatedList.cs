@@ -1,9 +1,8 @@
-﻿using JourneyMate.Domain.Common.Interfaces;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Application.Common.Models;
 
-public class PaginatedList<T> : IPaginatedList<T>
+public class PaginatedList<T>
 {
 	public PaginatedList(List<T> items, int count, int pageNumber, int pageSize)
 	{
@@ -12,7 +11,7 @@ public class PaginatedList<T> : IPaginatedList<T>
 		TotalCount = count;
 		Items = items;
 	}
-
+	
 	protected PaginatedList()
 	{
 		Items = new List<T>();
@@ -26,7 +25,7 @@ public class PaginatedList<T> : IPaginatedList<T>
 	public bool HasPreviousPage => PageNumber > 1;
 
 	public bool HasNextPage => PageNumber < TotalPages;
-
+	
 	public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageNumber, int pageSize)
 	{
 		var count = await source.CountAsync();

@@ -35,26 +35,11 @@ internal sealed class GetReportByIdHandler : IRequestHandler<GetReportById, Repo
 		var filter = Builders<Report>.Filter.Eq(x => x.Id, request.Id) & Builders<Report>.Filter.Eq(x => x.UserId, user.Id);
 		var report = await _mongoClient.Reports.Find(filter)
 			.FirstOrDefaultAsync() ?? throw new ReportNotFound(request.Id);
-
-		var placesDto = new List<PlaceDto>();
-		if (report.Places.Count > 0)
-		{
-			foreach (var placeDtoId in report.Places)
-			{
-				var place = await _dbContext.Places.Include(x => x.Addresses).Include(x => x.Types).FirstOrDefaultAsync(x => x.Id == placeDtoId);
-
-				if (place != null)
-				{
-					placesDto.Add(_mapper.Map<PlaceDto>(place));
-				}
-			}
-		}
-
+		
 		var result = new ReportDto()
 		{
 			Id = report.Id,
 			Rating = report.Rating,
-			Places = placesDto,
 			Types = report.Types
 		};
 		

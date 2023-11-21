@@ -37,11 +37,11 @@ internal sealed class GenerateReportHandler : IRequestHandler<GenerateReport, Gu
 			.ToListAsync(cancellationToken);
 
 		var places = placeAddresses.Select(x => x.Place)
+			.OrderBy(x => x.Rating)
 			.ToList();
 		
 		places = places.Where(x => x.CheckType(types)).ToList();
-		places = places.Where(x => x.UserRatingsTotal > 100 && x.Rating >= 4.0).ToList();
-
+		
 		var reportId = Guid.NewGuid();
 		var placesId = places.Select(x => x.Id).ToList();
 		var newReport = new Report(reportId, user.Id, request.AddressId, placesId, request.Types);
