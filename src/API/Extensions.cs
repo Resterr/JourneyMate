@@ -1,5 +1,4 @@
-﻿using System.ComponentModel;
-using FluentValidation;
+﻿using FluentValidation;
 using JourneyMate.API.Converters;
 using JourneyMate.API.Middlewares;
 using JourneyMate.API.Policies;

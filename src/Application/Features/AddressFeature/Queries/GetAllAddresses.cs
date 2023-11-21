@@ -1,6 +1,4 @@
 ﻿using AutoMapper;
-using FluentValidation;
-using JourneyMate.Application.Common.Mappings;
 using JourneyMate.Application.Common.Models;
 using JourneyMate.Infrastructure.Persistence;
 using MediatR;

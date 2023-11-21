@@ -1,7 +1,5 @@
 using System.Reflection;
 using AutoMapper;
-using JourneyMate.Application.Common.Models;
-using JourneyMate.Domain.Entities;
 
 namespace JourneyMate.Application.Common.Mappings;
 
