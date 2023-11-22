@@ -27,10 +27,10 @@ export const UserContext = createContext<UserContextType>({
 });
 
 export const UserProvider : React.FC<{ children : React.ReactNode }> = ({children}) => {
-	const [accessToken, setAccessToken] = useState<string | null>(null);
-	const [refreshToken, setRefreshToken] = useState<string | null>(null);
-	const [refreshTokenExpireDate, setRefreshTokenExpireDate] = useState<string | null>(null);
-	const [currentUser, setCurrentUserName] = useState<string | null>(null);
+	const [accessToken, setAccessToken] = useState<string | null>(localStorage.getItem("accessToken"));
+	const [refreshToken, setRefreshToken] = useState<string | null>(localStorage.getItem("refreshToken"));
+	const [refreshTokenExpireDate, setRefreshTokenExpireDate] = useState<string | null>(localStorage.getItem("refreshTokenExpireDate"));
+	const [currentUser, setCurrentUserName] = useState<string | null>(localStorage.getItem("currentUser"));
 
 	const setTokens = (newAccessToken : string | null, newRefreshToken : string | null, newRefreshTokenExpireDate : string | null) => {
 		setAccessToken(newAccessToken);

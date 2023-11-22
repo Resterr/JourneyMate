@@ -22,46 +22,21 @@ public class AddressConfiguration : IEntityTypeConfiguration<Address>
 			.Property(x => x.Longitude)
 			.IsRequired();
 
-		builder.OwnsOne(x => x.Locality)
-			.Property(x => x.ShortName)
+		builder.Property(x => x.Locality)
 			.IsRequired();
-
-		builder.OwnsOne(x => x.Locality)
-			.Property(x => x.LongName)
+		
+		builder.Property(x => x.AdministrativeAreaLevel2)
 			.IsRequired();
-
-		builder.OwnsOne(x => x.AdministrativeAreaLevel2)
-			.Property(x => x.ShortName)
+		
+		builder.Property(x => x.AdministrativeAreaLevel1)
 			.IsRequired();
-
-		builder.OwnsOne(x => x.AdministrativeAreaLevel2)
-			.Property(x => x.LongName)
+		
+		builder.Property(x => x.Country)
 			.IsRequired();
-
-		builder.OwnsOne(x => x.AdministrativeAreaLevel1)
-			.Property(x => x.ShortName)
+		
+		builder.Property(x => x.PostalCode)
 			.IsRequired();
-
-		builder.OwnsOne(x => x.AdministrativeAreaLevel1)
-			.Property(x => x.LongName)
-			.IsRequired();
-
-		builder.OwnsOne(x => x.Country)
-			.Property(x => x.ShortName)
-			.IsRequired();
-
-		builder.OwnsOne(x => x.Country)
-			.Property(x => x.LongName)
-			.IsRequired();
-
-		builder.OwnsOne(x => x.PostalCode)
-			.Property(x => x.ShortName)
-			.IsRequired();
-
-		builder.OwnsOne(x => x.PostalCode)
-			.Property(x => x.LongName)
-			.IsRequired();
-
+		
 		builder.ToTable("Address");
 	}
 }

@@ -12,7 +12,7 @@ type FormData = {
 	confirmPassword : string;
 }
 
-export const RegisterForm : React.FC = () => {
+const RegisterForm : React.FC = () => {
 	const userContext = useContext(UserContext);
 	const currentUser = userContext.currentUser;
 	const {
@@ -58,12 +58,12 @@ export const RegisterForm : React.FC = () => {
 	};
 
 	return (
-		<div className="register__form">
-			<div className="register__form--status">
+		<div className="register_form">
+			<div className="register_form__status">
 				<h1>{status}</h1>
 			</div>
 			<form onSubmit={handleSubmit(onSubmit)} id="my-form">
-				<div className="register__form--email">
+				<div className="register_form__email">
 					<label>Email:</label>
 					<br/>
 					<input
@@ -76,7 +76,7 @@ export const RegisterForm : React.FC = () => {
 					<br/>
 					<p>{errors.email?.message}</p>
 				</div>
-				<div className="register__form--username">
+				<div className="register_form__username">
 					<label>Username:</label>
 					<br/>
 					<input
@@ -89,7 +89,7 @@ export const RegisterForm : React.FC = () => {
 					<br/>
 					<p>{errors.userName?.message}</p>
 				</div>
-				<div className="register__form--password">
+				<div className="register_form__password">
 					<label>Password:</label>
 					<br/>
 					<input
@@ -103,7 +103,7 @@ export const RegisterForm : React.FC = () => {
 					<br/>
 					<p>{errors.password?.message}</p>
 				</div>
-				<div className="register__form-password--confirm">
+				<div className="register_form__password-confirm">
 					<label>Confirm password:</label>
 					<br/>
 					<input
@@ -117,7 +117,7 @@ export const RegisterForm : React.FC = () => {
 					<br/>
 					<p>{errors.confirmPassword?.message}</p>
 				</div>
-				<div className="register__form-button">
+				<div className="register_form__button">
 					<button type="submit">Register</button>
 				</div>
 			</form>

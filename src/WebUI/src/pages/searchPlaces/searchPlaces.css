@@ -1,9 +1,11 @@
-.result__container {
+.searchPlaces {
     height: 100%;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
+    text-align: center;
+    flex-direction: row;
     background-image: url("../../utils/world.png");
     background-repeat: no-repeat;
     background-size: cover;

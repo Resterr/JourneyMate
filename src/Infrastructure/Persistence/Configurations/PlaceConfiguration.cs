@@ -14,9 +14,6 @@ public class PlaceConfiguration : IEntityTypeConfiguration<Place>
 		builder.HasIndex(x => x.ApiPlaceId)
 			.IsUnique();
 
-		builder.Property(x => x.AddressId)
-			.IsRequired();
-
 		builder.Property(x => x.BusinessStatus)
 			.IsRequired();
 
@@ -31,10 +28,7 @@ public class PlaceConfiguration : IEntityTypeConfiguration<Place>
 
 		builder.Property(x => x.Vicinity)
 			.IsRequired();
-
-		builder.Property(x => x.DistanceFromAddress)
-			.IsRequired();
-
+		
 		builder.OwnsOne(x => x.Location)
 			.Property(x => x.Latitude)
 			.IsRequired();

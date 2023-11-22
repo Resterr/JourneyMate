@@ -32,9 +32,9 @@ internal sealed class AddAddressHandler : IRequestHandler<AddAddress, Guid>
 		var components = $"locality:{request.Locality}|administrative_area:{request.AdministrativeArea}|country:{request.Country}";
 		var response = await _geocodeApi.GetAddressAsync(components) ?? throw new AddressNotFound();
 
-		if (await _dbContext.Addresses.AnyAsync(x => x.ApiPlaceId == response.PlaceId)) throw new DataAlreadyTakenException(response.PlaceId, "Address");
+		if (await _dbContext.Addresses.AnyAsync(x => x.ApiPlaceId == response.ApiPlaceId)) throw new DataAlreadyTakenException(response.ApiPlaceId, "Address");
 		
-		var address = new Address(response.PlaceId, response.Location, response.Locality, response.AdministrativeAreaLevel2, response.AdministrativeAreaLevel1, response.Country, response.PostalCode);
+		var address = new Address(response.ApiPlaceId, response.Location, response.Locality, response.AdministrativeAreaLevel2, response.AdministrativeAreaLevel1, response.Country, response.PostalCode);
 
 		await _dbContext.Addresses.AddAsync(address);
 		await _dbContext.SaveChangesAsync();
@@ -48,10 +48,10 @@ public class AddAddressValidator : AbstractValidator<AddAddress>
 	public AddAddressValidator()
 	{
 		RuleFor(x => x.Locality)
-			.NotNull();
+			.NotEmpty();
 		RuleFor(x => x.AdministrativeArea)
-			.NotNull();
+			.NotEmpty();
 		RuleFor(x => x.Country)
-			.NotNull();
+			.NotEmpty();
 	}
 }

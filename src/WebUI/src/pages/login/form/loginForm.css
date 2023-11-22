@@ -1,4 +1,4 @@
-.login__form {
+.login_form {
     background: rgba(53, 41, 97, 0.6);
     color: white;
     border-radius: 10px;
@@ -10,22 +10,9 @@
     padding: 10px
 }
 
-.login__form--button {
+.login_form__button {
     padding-top: 10px;
     padding-bottom: 10px;
     text-align: center;
     width: 100%;
-}
-
-button {
-    height: 45px;
-    width: 160px;
-    background-color: gold;
-    border: none;
-    font-size: 18px;
-    border-radius: 10px;
-}
-
-button:hover {
-    background-color: #f1ad64;
 }

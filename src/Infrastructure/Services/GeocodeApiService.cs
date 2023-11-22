@@ -57,13 +57,13 @@ internal sealed class GeocodeApiService : IGeocodeApiService
 		var country = result.Address_Components.FirstOrDefault(x => x.Types.Contains("country")) ?? throw new ObjectNotFound("Country");
 		var postalCode = result.Address_Components.FirstOrDefault(x => x.Types.Contains("postal_code")) ?? throw new ObjectNotFound("Postal code");
 
-		address.PlaceId = result.Place_Id;
+		address.ApiPlaceId = result.Place_Id;
 		address.Location = new Location((double)result.Geometry.Location.Lat!, (double)result.Geometry.Location.Lng!);
-		address.Locality = new AddressComponent(locality.Short_Name, locality.Long_Name);
-		address.AdministrativeAreaLevel2 = new AddressComponent(administrativeAreaLevel2.Short_Name, administrativeAreaLevel2.Long_Name);
-		address.AdministrativeAreaLevel1 = new AddressComponent(administrativeAreaLevel1.Short_Name, administrativeAreaLevel1.Long_Name);
-		address.Country = new AddressComponent(country.Short_Name, country.Long_Name);
-		address.PostalCode = new AddressComponent(postalCode.Short_Name, postalCode.Long_Name);
+		address.Locality = locality.Long_Name;
+		address.AdministrativeAreaLevel2 = administrativeAreaLevel2.Long_Name;
+		address.AdministrativeAreaLevel1 = administrativeAreaLevel1.Long_Name;
+		address.Country = country.Long_Name;
+		address.PostalCode = postalCode.Long_Name;
 
 
 		return address;

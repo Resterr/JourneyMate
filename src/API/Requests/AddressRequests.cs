@@ -25,9 +25,18 @@ internal static class AddressRequests
 				var result = await sender.Send(request);
 				return Results.Ok(result);
 			})
-			.AllowAnonymous()
-			.Produces<AddressDto>()
+			.RequireAuthorization("user")
+			.Produces<List<AddressDto>>()
 			.WithMetadata(new SwaggerOperationAttribute("Get addresses"));
+		
+		group.MapGet("type", async (ISender sender, [AsParameters] GetAllTypes request) =>
+			{
+				var result = await sender.Send(request);
+				return Results.Ok(result);
+			})
+			.RequireAuthorization("user")
+			.Produces<List<PlaceTypeDto>>()
+			.WithMetadata(new SwaggerOperationAttribute("Get types"));
 
 		group.MapPost("add", async (ISender sender, [FromBody] AddAddress request) =>
 			{

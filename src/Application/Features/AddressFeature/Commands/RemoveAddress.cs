@@ -33,6 +33,6 @@ public class RemoveAddressValidator : AbstractValidator<RemoveAddress>
 	public RemoveAddressValidator()
 	{
 		RuleFor(x => x.Id)
-			.NotNull();
+			.NotEmpty();
 	}
 }

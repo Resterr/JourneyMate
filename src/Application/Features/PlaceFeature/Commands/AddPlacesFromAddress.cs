@@ -30,36 +30,66 @@ internal sealed class AddPlacesFromAddressHandler : IRequestHandler<AddPlacesFro
 
 		if (response.Count > 0)
 		{
+			//Add missing types
 			var types = response.SelectMany(x => x.Types)
 				.DistinctBy(x => x.Name)
 				.Select(x => new PlaceType(x.Name))
 				.ToList();
 			
+			var existingPlaceTypes = _dbContext.PlaceTypes.ToList();
 			foreach (var placeType in types)
-				if (await _dbContext.PlaceTypes.AnyAsync(x => x.Name == placeType.Name) == false)
-					await _dbContext.PlaceTypes.AddAsync(placeType);
-			await _dbContext.SaveChangesAsync();
+			{
+				if (!existingPlaceTypes.Any(x => x.Name == placeType.Name))
+				{
+					_dbContext.PlaceTypes.Add(placeType);
+				}
+			}
+			_dbContext.SaveChanges();
 
 			var placeTypes = await _dbContext.PlaceTypes.ToListAsync();
-
-			var places = new List<Place>();
-			foreach (var placeDto in response)
+			var places = response.Select(placeDto =>
 			{
 				var place = new Place(placeDto.ApiPlaceId, placeDto.BusinessStatus, placeDto.Name, placeDto.Rating, placeDto.UserRatingsTotal, placeDto.Vicinity, placeDto.DistanceFromAddress, placeDto.Location,
-					placeDto.PlusCode, placeDto.Photo, address.Id);
+					placeDto.PlusCode, placeDto.Photo);
 
-				var currentPlaceTypes = placeTypes.Where(placeType => placeDto.Types.Any(x => x.Name.Contains(placeType.Name)))
+				var placeAddress = new PlaceAddress(address, place, placeDto.DistanceFromAddress);
+				
+				place.AddAddress(placeAddress);
+				
+				var typesToSet = placeTypes.Where(placeType => placeDto.Types.Any(x => x.Name.Contains(placeType.Name)))
 					.ToList();
+				
+				place.SetTypes(typesToSet);
 
-				place.SetTypes(currentPlaceTypes);
-				places.Add(place);
+				return place;
+			}).ToList();
+
+			places = places.Where(x => x.UserRatingsTotal > 50 && x.Rating >= 3.0).ToList();
+			
+			foreach (var place in places)
+			{
+				var existingPlace = await _dbContext.Places.Include(x => x.Addresses).FirstOrDefaultAsync(x => x.ApiPlaceId == place.ApiPlaceId);
+				if (existingPlace == null)
+				{
+					await _dbContext.Places.AddAsync(place);
+				}
+				else
+				{
+					existingPlace.UpdateRatings(place.Rating, place.UserRatingsTotal);
+					if (!existingPlace.CheckAddress(address.Id))
+					{
+						existingPlace.AddAddress(place.Addresses[0]);
+					}
+					
+					_dbContext.Places.Update(existingPlace);
+				}
 			}
-
-			foreach (var placeType in placeTypes)
-				if (await _dbContext.PlaceTypes.AnyAsync(x => x.Name == placeType.Name) == false)
-					await _dbContext.PlaceTypes.AddAsync(placeType);
 			
 			await _dbContext.SaveChangesAsync();
+		}
+		else
+		{
+			throw new PlaceNotFound();
 		}
 
 		return Unit.Value;
@@ -71,8 +101,8 @@ public class AddPlacesFromAddressValidator : AbstractValidator<AddPlacesFromAddr
 	public AddPlacesFromAddressValidator()
 	{
 		RuleFor(x => x.AddressId)
-			.NotNull();
+			.NotEmpty();
 		RuleFor(x => x.Type)
-			.NotNull();
+			.NotEmpty();
 	}
 }

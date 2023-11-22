@@ -1,0 +1,9 @@
+.searchPlace__address{
+    width: 100%;
+    padding-bottom: 5%;
+}
+
+.searchPlace__address-form{
+    background-color: rgba(53, 41, 97, 1);
+    width: 800px;
+}

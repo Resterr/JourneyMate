@@ -1,0 +1,14 @@
+.searchPlaces_form {
+    background-color: rgba(53, 41, 97, 0.6);
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.searchPlaces_form__button {
+    padding-bottom: 10px;
+    text-align: center;
+    width: 100%;
+}

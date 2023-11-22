@@ -27,7 +27,7 @@ internal sealed class PlacesApiService : IPlacesApiService
 
 		var response = await client.GetStringAsync($"{_urlOptions.Value.GoogleMapsApiUrl}/place/nearbysearch/json" +
 			$"?location={location}&radius={radius}&type={type}&rankby={rankBy}&key={_keysOptions.Value.GooglePlacesApiKey}");
-
+		
 		var placeReadModel = JsonConvert.DeserializeObject<PlaceReadModel>(response);
 		var placeReadModels = new List<PlaceReadModel>();
 		if (placeReadModel != null)
@@ -103,21 +103,20 @@ internal sealed class PlacesApiService : IPlacesApiService
 
 		return places;
 	}
-
+	
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	private class PlaceReadModel
 	{
 		#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		public List<object> Html_attributions { get; set; }
-		
-		public string Next_page_token { get; }
-		public List<Result> Results { get; }
-		public string Status { get; }
+		public string Next_page_token { get; set; }
+		public List<Result> Results { get; set; }
+		public string Status { get; set; }
 
 		public class Location
 		{
-			public double? Lat { get; }
-			public double? Lng { get; }
+			public double? Lat { get; set; }
+			public double? Lng { get; set; }
 		}
 
 		public class Northeast
@@ -140,7 +139,7 @@ internal sealed class PlacesApiService : IPlacesApiService
 
 		public class Geometry
 		{
-			public Location Location { get; }
+			public Location Location { get; set; }
 			public Viewport Viewport { get; set; }
 		}
 
@@ -151,16 +150,16 @@ internal sealed class PlacesApiService : IPlacesApiService
 
 		public class Photo
 		{
-			public int? Height { get; }
+			public int? Height { get; set; }
 			public List<string> Html_attributions { get; set; }
-			public string Photo_reference { get; }
+			public string Photo_reference { get; set; }
 			public int? Width { get; set; }
 		}
 
 		public class PlusCode
 		{
-			public string Compound_code { get; }
-			public string Global_code { get; }
+			public string Compound_code { get; set; }
+			public string Global_code { get; set; }
 		}
 
 		public class Result
