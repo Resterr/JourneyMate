@@ -1,23 +1,18 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {BrowserRouter, Route, Routes} from 'react-router-dom';
+import {BrowserRouter, Navigate, Route, Routes} from 'react-router-dom';
 import './App.css';
 import Home from "./pages/home/home";
 import Navbar from "./components/navbar/navbar";
 import Login from "./pages/login/login";
 import Register from "./pages/register/register";
-import Result, {SearchPlaces} from "./pages/searchPlaces/searchPlaces";
+import SearchPlaces from "./pages/searchPlaces/searchPlaces";
 import {AxiosResponse} from 'axios';
 import axiosInstance from './utils/axiosInstance';
 import {UserContext} from './contexts/userContext';
+import SearchDisplay from './pages/searchDisplay/searchDisplay';
 
 function App() {
 	const userContext = useContext(UserContext);
-
-	useEffect(() => {
-		userContext.setTokens(localStorage.getItem("accessToken"), localStorage.getItem("refreshToken"),
-			localStorage.getItem("refreshToken"))
-		userContext.setUserName(localStorage.getItem("userName"));
-	}, [userContext]);
 
 	let currentUser = userContext.currentUser;
 	const [, setIntervalToken] = useState<number | null | NodeJS.Timer>(null);
@@ -38,19 +33,12 @@ function App() {
 					refreshToken: userContext.refreshToken,
 				};
 
-				let requestConfig : {
-					headers : { Authorization : string };
-				} = {
-					headers: {Authorization: `Bearer ${userContext.accessToken}`},
-				};
-
 				try {
-					console.log(data);
 					await axiosInstance
-						.post("/api/users/token/refresh", data, requestConfig)
+						.post("/api/users/token/refresh", data)
 						.then((response : AxiosResponse<any, any>) => {
 							if (response.status === 200) {
-								console.log(response);
+								console.log("Refreshed");
 
 								userContext.setTokens(response.data.accessToken, response.data.refreshToken, Date.now().toString());
 							} else {
@@ -76,6 +64,8 @@ function App() {
 				<Route path="login" element={<Login/>}/>
 				<Route path="register" element={<Register/>}/>
 				<Route path="searchPlaces" element={<SearchPlaces/>}/>
+{/*				<Route path="searchDisplay/:id" element={<SearchDisplay/>} />*/}
+				<Route path="*" element={<Navigate to="/" />} />
 			</Routes>
 		</BrowserRouter>
 	);

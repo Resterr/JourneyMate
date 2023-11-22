@@ -20,7 +20,7 @@ const LoginForm : React.FC = () => {
 	} = useForm<FormData>();
 	const [status, setStatus] = useState<string | null>(null);
 	let navigate = useNavigate();
-	const currentUser : string | null | undefined = localStorage.getItem("currentUser");
+	const currentUser : string | null | undefined = userContext.currentUser;
 
 	useEffect(() => {
 		if (currentUser) {
@@ -29,7 +29,6 @@ const LoginForm : React.FC = () => {
 	}, [currentUser, navigate]);
 
 	const onSubmit : SubmitHandler<FormData> = async (data : FormData) => {
-		console.log(data);
 		try {
 			const response : AxiosResponse<any> = await axiosInstance.post(
 				"/api/users/login",
@@ -37,8 +36,6 @@ const LoginForm : React.FC = () => {
 			);
 
 			if (response.status === 200) {
-				console.log(response);
-
 				userContext.setTokens(response.data.accessToken, response.data.refreshToken, Date.now().toString())
 				userContext.setUserName(data.userName);
 
