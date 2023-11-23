@@ -19,15 +19,10 @@ The **JourneyMate** app has been designed to facilitate efficient planning and o
 
 - The app allows users to create schedules for each travel list.
 
-### Notifications and Reminders: (to-do)
-
-- The notification system reminds users of upcoming attractions on their list.
-
 ### Reviews and Ratings: (to-do)
 
 - Users can add reviews and ratings for other users' lists.
 - Users can rate search results.
-- The comments feature allows the sharing of experiences and insights from the journey.
 
 The **JourneyMate** app aims to simplify trip planning, providing tools for personalized exploration of places, and sharing those experiences with fellow travelers. The goal is to create a comprehensive tool that not only facilitates trip organization but also inspires new discoveries and encourages the shared exploration of the world among travel enthusiasts.
 
