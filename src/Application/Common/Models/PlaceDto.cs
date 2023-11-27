@@ -17,4 +17,16 @@ public class PlaceDto : IMapFrom<Place>
 	public Location Location { get; set; }
 	public PlusCode PlusCode { get; set; }
 	public List<PlaceTypeDto> Types { get; set; } = new();
+
+	public void UpdateFromPlace(Place place)
+	{
+		ApiPlaceId = place.ApiPlaceId;
+		BusinessStatus = place.BusinessStatus;
+		Name = place.Name;
+		Rating = place.Rating;
+		UserRatingsTotal = place.UserRatingsTotal;
+		Vicinity = place.Vicinity;
+		Location = place.Location;
+		PlusCode = place.PlusCode;
+	}
 }

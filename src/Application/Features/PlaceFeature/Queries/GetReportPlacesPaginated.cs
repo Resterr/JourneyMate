@@ -2,6 +2,7 @@
 using FluentValidation;
 using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
+using JourneyMate.Application.Common.Mappings;
 using JourneyMate.Application.Common.Models;
 using JourneyMate.Domain.Entities;
 using JourneyMate.Infrastructure.Persistence;
@@ -36,24 +37,28 @@ internal sealed class GetReportPlacesPaginatedHandler : IRequestHandler<GetRepor
 		var report = await _mongoClient.Reports.Find(filter)
 				.FirstOrDefaultAsync() ??
 			throw new ReportNotFound(request.Id);
-
-		var reportPlacePaginated = new PaginatedList<Guid>(report.Places, report.Places.Count(), request.PageNumber, request.PageSize);
-		var placesDto = new List<PlaceDto>();
-
-		foreach (var placeDtoId in reportPlacePaginated.Items)
+		
+		var placesDto = report.Places.Select(x => new PlaceDto()
+		{
+			Id = x
+		}).ToList();
+		
+		var result = placesDto.AsQueryable().PaginatedListSync(request.PageNumber, request.PageSize);
+		
+		foreach (var placeDto in result.Items)
 		{
 			var place = await _dbContext.Places.Include(x => x.Addresses)
 				.Include(x => x.Types)
-				.FirstOrDefaultAsync(x => x.Id == placeDtoId);
+				.FirstOrDefaultAsync(x => x.Id == placeDto.Id);
 
 			if (place != null)
 			{
-				placesDto.Add(_mapper.Map<PlaceDto>(place));
+				placeDto.UpdateFromPlace(place);
+				placeDto.Types = _mapper.Map<List<PlaceTypeDto>>(place.Types);
+				placeDto.DistanceFromAddress = place.Addresses.Where(x => x.AddressId == report.AddressId).Select(x => x.DistanceFromAddress).FirstOrDefault();
 			}
 		}
 		
-		var result = new PaginatedList<PlaceDto>(placesDto, report.Places.Count(), request.PageNumber, request.PageSize);
-
 		return result;
 	}
 }
