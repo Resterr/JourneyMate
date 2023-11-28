@@ -1,4 +1,4 @@
-﻿using JourneyMate.Domain.Entities;
+﻿using JourneyMate.Domain.Entities.MongoDb;
 using MongoDB.Driver;
 
 namespace JourneyMate.Application.Common.Interfaces;

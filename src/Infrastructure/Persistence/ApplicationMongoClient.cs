@@ -1,5 +1,5 @@
 ﻿using JourneyMate.Application.Common.Interfaces;
-using JourneyMate.Domain.Entities;
+using JourneyMate.Domain.Entities.MongoDb;
 using MongoDB.Driver;
 
 namespace JourneyMate.Infrastructure.Persistence;

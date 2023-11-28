@@ -2,7 +2,7 @@
 using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Application.Common.Models;
-using JourneyMate.Domain.Entities;
+using JourneyMate.Domain.Entities.MongoDb;
 using JourneyMate.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;

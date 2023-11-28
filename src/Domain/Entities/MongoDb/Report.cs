@@ -1,7 +1,7 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
-namespace JourneyMate.Domain.Entities;
+namespace JourneyMate.Domain.Entities.MongoDb;
 
 public class Report
 {
