@@ -13,6 +13,7 @@ import {
 import {UserContext} from "../../contexts/userContext";
 import axiosInstance from "../../utils/axiosInstance";
 import {AxiosResponse} from "axios";
+import {Type} from "../../models/Type";
 
 const ITEM_HEIGHT = 80;
 const ITEM_PADDING_TOP = 8;
@@ -23,11 +24,6 @@ const MenuProps = {
 			width: 250,
 		},
 	},
-};
-
-type Type = {
-	id : string;
-	name : string;
 };
 
 type SearchTypesProps = {

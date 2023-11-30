@@ -64,7 +64,7 @@ function App() {
 				<Route path="login" element={<Login/>}/>
 				<Route path="register" element={<Register/>}/>
 				<Route path="searchPlaces" element={<SearchPlaces/>}/>
-{/*				<Route path="searchDisplay/:id" element={<SearchDisplay/>} />*/}
+				<Route path="searchDisplay/:id" element={<SearchDisplay/>} />
 				<Route path="*" element={<Navigate to="/" />} />
 			</Routes>
 		</BrowserRouter>

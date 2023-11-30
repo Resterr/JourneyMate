@@ -12,6 +12,7 @@ import {
 import {UserContext} from "../../contexts/userContext";
 import axiosInstance from "../../utils/axiosInstance";
 import {AxiosResponse} from "axios";
+import {Address} from "../../models/Address";
 
 const ITEM_HEIGHT = 80;
 const ITEM_PADDING_TOP = 8;
@@ -28,35 +29,6 @@ type SearchAddressProps = {
 	onSelectedAddressChange: (selectedAddress: string) => void;
 }
 
-type Address = {
-	id: string;
-	placeId: string;
-	location: {
-		latitude: number;
-		longitude: number;
-	};
-	locality: {
-		shortName: string;
-		longName: string;
-	};
-	administrativeAreaLevel2: {
-		shortName: string;
-		longName: string;
-	};
-	administrativeAreaLevel1: {
-		shortName: string;
-		longName: string;
-	};
-	country: {
-		shortName: string;
-		longName: string;
-	};
-	postalCode: {
-		shortName: string;
-		longName: string;
-	};
-};
-
 const SearchAddress : React.FC<SearchAddressProps> = ({ onSelectedAddressChange }) => {
 	const userContext = useContext(UserContext);
 	const [addresses, SetAddresses] = useState<Address[]>([]);
@@ -71,6 +43,7 @@ const SearchAddress : React.FC<SearchAddressProps> = ({ onSelectedAddressChange 
 		axiosInstance
 			.get<Address[]>("/api/address", config)
 			.then((response: AxiosResponse<Address[]>) => {
+				console.log(response.data);
 				if (response.data.length !== 0) {
 					SetAddresses(response.data);
 				}
@@ -88,8 +61,8 @@ const SearchAddress : React.FC<SearchAddressProps> = ({ onSelectedAddressChange 
 	return (
 		<div className="searchPlace__address">
 			<FormControl className="searchPlace__address-form">
-				<InputLabel style={{ color: '#00AAFF' }} className="searchPlace__address-form-label">Address</InputLabel>
-				<Select style={{ color: '#00AAFF' }} className="searchPlace__address-form-select"
+				<InputLabel sx={{ color: '#00AAFF' }} className="searchPlace__address-form-label">Address</InputLabel>
+				<Select sx={{ color: '#00AAFF' }} className="searchPlace__address-form-select"
 					id="searchPlace__address-form-select"
 					value={selectedAddress}
 					onChange={handleChange}
@@ -98,7 +71,7 @@ const SearchAddress : React.FC<SearchAddressProps> = ({ onSelectedAddressChange 
 				>
 					{addresses.map((x) => (
 						<MenuItem key={x.id} value={x.id}>
-							<ListItemText primary={x.locality.shortName} />
+							<ListItemText primary={x.locality} />
 						</MenuItem>
 					))}
 				</Select>
