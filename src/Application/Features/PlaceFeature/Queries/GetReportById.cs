@@ -36,12 +36,7 @@ internal sealed class GetReportByIdHandler : IRequestHandler<GetReportById, Repo
 		var report = await _mongoClient.Reports.Find(filter)
 			.FirstOrDefaultAsync() ?? throw new ReportNotFound(request.Id);
 		
-		var result = new ReportDto()
-		{
-			Id = report.Id,
-			Rating = report.Rating,
-			Types = report.Types
-		};
+		var result = _mapper.Map<ReportDto>(report);
 		
 		return result;
 	}

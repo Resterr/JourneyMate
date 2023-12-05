@@ -14,14 +14,19 @@ public class Report
 	public Guid AddressId { get; private set; }
 	public int Rating { get; private set; }
 	[BsonRepresentation(BsonType.String)]
+	public DateTime Created { get; private set; }
+	[BsonRepresentation(BsonType.String)]
 	public List<Guid> Places { get; private set; }
 	public List<string> Types { get; private set; }
 	
-	public Report(Guid id, Guid userId, Guid addressId, List<Guid> places, List<string> types)
+	private Report() { }
+	
+	public Report(Guid id, Guid userId, Guid addressId, DateTime created, List<Guid> places, List<string> types)
 	{
 		Id = id;
 		UserId = userId;
 		AddressId = addressId;
+		Created = created;
 		Rating = 0;
 		Places = places;
 		Types = types;

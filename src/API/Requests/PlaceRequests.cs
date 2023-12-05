@@ -44,13 +44,13 @@ internal static class PlaceRequests
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Get report place paginated"));
 		
-		group.MapGet("report", async (ISender sender, [AsParameters] GetAllReports request) =>
+		group.MapGet("report", async (ISender sender, [AsParameters] GetAllReportsPaginated request) =>
 			{
 				var result = await sender.Send(request);
 				return Results.Ok(result);
 			})
 			.RequireAuthorization("user")
-			.Produces<List<ReportListDto>>()
+			.Produces<PaginatedList<ReportDto>>()
 			.Produces(StatusCodes.Status401Unauthorized)
 			.Produces(StatusCodes.Status403Forbidden)
 			.Produces(StatusCodes.Status400BadRequest)

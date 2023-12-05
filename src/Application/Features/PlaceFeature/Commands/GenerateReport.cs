@@ -15,12 +15,14 @@ internal sealed class GenerateReportHandler : IRequestHandler<GenerateReport, Gu
 	private readonly IApplicationDbContext _dbContext;
 	private readonly IApplicationMongoClient _mongoClient;
 	private readonly ICurrentUserService _currentUserService;
+	private readonly IDateTimeService _dateTimeService;
 
-	public GenerateReportHandler(IApplicationDbContext dbContext, IApplicationMongoClient mongoClient, ICurrentUserService currentUserService)
+	public GenerateReportHandler(IApplicationDbContext dbContext, IApplicationMongoClient mongoClient, ICurrentUserService currentUserService, IDateTimeService dateTimeService)
 	{
 		_dbContext = dbContext;
 		_mongoClient = mongoClient;
 		_currentUserService = currentUserService;
+		_dateTimeService = dateTimeService;
 	}
 
 	public async Task<Guid> Handle(GenerateReport request, CancellationToken cancellationToken)
@@ -44,7 +46,8 @@ internal sealed class GenerateReportHandler : IRequestHandler<GenerateReport, Gu
 		
 		var reportId = Guid.NewGuid();
 		var placesId = places.Select(x => x.Id).ToList();
-		var newReport = new Report(reportId, user.Id, request.AddressId, placesId, request.Types);
+		var created = _dateTimeService.CurrentDate();
+		var newReport = new Report(reportId, user.Id, request.AddressId, created, placesId, request.Types);
 		
 		await _mongoClient.Reports.InsertOneAsync(newReport);
 
