@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
 using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
-using JourneyMate.Infrastructure.Persistence;
 using MediatR;
 
 namespace JourneyMate.Application.Features.PlaceFeature.Queries;

@@ -3,7 +3,6 @@ using FluentValidation;
 using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Domain.Entities;
-using JourneyMate.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -49,7 +48,7 @@ internal sealed class AddPlacesFromAddressHandler : IRequestHandler<AddPlacesFro
 			var placeTypes = await _dbContext.PlaceTypes.ToListAsync();
 			var places = response.Select(placeDto =>
 			{
-				var place = new Place(placeDto.ApiPlaceId, placeDto.BusinessStatus, placeDto.Name, placeDto.Rating, placeDto.UserRatingsTotal, placeDto.Vicinity, placeDto.DistanceFromAddress, placeDto.Location,
+				var place = new Place(placeDto.ApiPlaceId, placeDto.BusinessStatus, placeDto.Name, placeDto.Rating, placeDto.UserRatingsTotal, placeDto.Vicinity, placeDto.Location,
 					placeDto.PlusCode, placeDto.Photo);
 
 				var placeAddress = new PlaceAddress(address, place, placeDto.DistanceFromAddress);

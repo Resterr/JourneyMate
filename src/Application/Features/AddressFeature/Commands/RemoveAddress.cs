@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using JourneyMate.Application.Common.Exceptions;
-using JourneyMate.Infrastructure.Persistence;
+using JourneyMate.Application.Common.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

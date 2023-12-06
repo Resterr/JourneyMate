@@ -2,7 +2,6 @@
 using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Application.Common.Models;
-using JourneyMate.Infrastructure.Persistence;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 

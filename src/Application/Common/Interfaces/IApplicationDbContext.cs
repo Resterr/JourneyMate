@@ -1,7 +1,7 @@
 ﻿using JourneyMate.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
-namespace JourneyMate.Infrastructure.Persistence;
+namespace JourneyMate.Application.Common.Interfaces;
 
 public interface IApplicationDbContext
 {

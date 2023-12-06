@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Domain.Entities;
 using JourneyMate.Infrastructure.Common;
 using JourneyMate.Infrastructure.Persistence.Interceptors;
@@ -18,7 +19,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 	public DbSet<Place> Places => Set<Place>();
 	public DbSet<PlaceType> PlaceTypes => Set<PlaceType>();
 	public DbSet<PlaceAddress> PlaceAddress => Set<PlaceAddress>();
-
+	
 	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IMediator mediator, AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor) : base(options)
 	{
 		_mediator = mediator;
