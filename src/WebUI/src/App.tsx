@@ -10,6 +10,7 @@ import {AxiosResponse} from 'axios';
 import axiosInstance from './utils/axiosInstance';
 import {UserContext} from './contexts/userContext';
 import SearchDisplay from './pages/searchDisplay/searchDisplay';
+import SearchHistory from './pages/searchHistory/searchHistory';
 
 function App() {
 	const userContext = useContext(UserContext);
@@ -65,6 +66,7 @@ function App() {
 				<Route path="register" element={<Register/>}/>
 				<Route path="searchPlaces" element={<SearchPlaces/>}/>
 				<Route path="searchDisplay/:id" element={<SearchDisplay/>} />
+				<Route path="searchHistory" element={<SearchHistory/>} />
 				<Route path="*" element={<Navigate to="/" />} />
 			</Routes>
 		</BrowserRouter>

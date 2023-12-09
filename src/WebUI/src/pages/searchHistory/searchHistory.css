@@ -1,0 +1,34 @@
+.searchHistory {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    background-image: url("../../utils/world.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    object-fit: cover;
+    position: absolute;
+    color: white !important;
+}
+
+.searchHistory__reportList{
+    width: 1400px;
+    background-color: rgba(53, 41, 97, 0.6);
+    color: white;
+}
+
+.searchHistory__pagination{
+    width: 1400px;
+    background-color: rgba(53, 41, 97, 0.6);
+    color: white;
+    display: flex;
+    justify-content: center;
+}
+
+.searchHistory__pagination-items{
+    color: white;
+}
+

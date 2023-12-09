@@ -26,10 +26,12 @@ const Navbar : React.FC = () => {
 			<div className="navbar__navbar-wordmark"><Link to="/">JourneyMate</Link></div>
 			<div className="navbar__navbar-menu">
 				{userOptionsVisible ? (
-					<Link to="/searchPlaces">
-					<button className="navbar__navbar-item">Search</button>
-				</Link>
-					) : null}
+					<><Link to="/searchPlaces">
+						<button className="navbar__navbar-item">Search</button>
+					</Link><Link to="/searchHistory">
+						<button className="navbar__navbar-item">History</button>
+					</Link></>
+						) : null}
 				{currentUser ? (
 					<button className="navbar__logout-button" onClick={logoutHandler}>
 						Log out{" "}
