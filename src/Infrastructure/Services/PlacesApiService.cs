@@ -210,9 +210,11 @@ internal sealed class PlacesApiService : IPlacesApiService
 	{
 		using var client = new HttpClient();
 
-		var response = await client.GetStreamAsync($"{_urlOptions.Value.GoogleMapsApiUrl}/place/photo" +
+		var response = await client.GetByteArrayAsync($"{_urlOptions.Value.GoogleMapsApiUrl}/place/photo" +
 			$"?photo_reference={photoReference}&maxheight={height}&maxwidth={width}&key={_keysOptions.Value.GooglePlacesApiKey}");
-		
-		return response;
+		var memoryStream = new MemoryStream(response);
+		memoryStream.Seek(0, SeekOrigin.Begin);
+
+		return memoryStream;
 	}
 }

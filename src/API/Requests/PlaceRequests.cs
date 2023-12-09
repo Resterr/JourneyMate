@@ -59,7 +59,7 @@ internal static class PlaceRequests
 		group.MapGet("photo/{placeId:guid}", async (ISender sender, [AsParameters] GetPhotoForPlace request) =>
 			{
 				var result = await sender.Send(request);
-				return Results.Stream(result, "image/jpeg");
+				return Results.File(result, "image/jpeg");
 			})
 			.RequireAuthorization("user")
 			.Produces<Stream>()
