@@ -23,6 +23,7 @@ app.RegisterUsersRequests();
 app.RegisterAdminRequests();
 app.RegisterAddressRequests();
 app.RegisterPlaceRequests();
+app.RegisterPlanRequests();
 
 app.MapGet("/", ctx => ctx.Response.WriteAsync("JourneyMate API"));
 

@@ -16,6 +16,7 @@ public class Place : BaseAuditableEntity
 	public Photo? Photo { get; private set; }
 	public List<PlaceAddress> Addresses { get; private set; } = new();
 	public List<PlaceType> Types { get; private set; } = new();
+	public List<PlacePlan> Plans { get; private set; } = new();
 	
 	private Place() { }
 

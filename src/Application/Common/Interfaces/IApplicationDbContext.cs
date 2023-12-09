@@ -11,6 +11,8 @@ public interface IApplicationDbContext
 	DbSet<Place> Places { get; }
 	DbSet<PlaceType> PlaceTypes { get; }
 	DbSet<PlaceAddress> PlaceAddress { get; }
+	DbSet<Plan> Plans { get; }
+	DbSet<PlacePlan> PlacePlans { get; }
 	Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 	int SaveChanges();
 }

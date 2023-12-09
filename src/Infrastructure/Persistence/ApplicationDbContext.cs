@@ -19,6 +19,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 	public DbSet<Place> Places => Set<Place>();
 	public DbSet<PlaceType> PlaceTypes => Set<PlaceType>();
 	public DbSet<PlaceAddress> PlaceAddress => Set<PlaceAddress>();
+	public DbSet<Plan> Plans => Set<Plan>();
+	public DbSet<PlacePlan> PlacePlans => Set<PlacePlan>();
 	
 	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IMediator mediator, AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor) : base(options)
 	{
