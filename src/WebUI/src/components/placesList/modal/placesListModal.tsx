@@ -35,13 +35,12 @@ const PlacesListModal : React.FC<PlacesListModalProps> = (props) => {
 					console.log(error);
 				})
 				.finally(() => {
-					setLoading(false); // Set loading to false regardless of success or failure
+					setLoading(false);
 				});
 		};
 		
 		fetchImage();
-		
-		// Cleanup function to revoke the object URL when the component is unmounted
+        
 		return () => {
 			if (imageSrc) {
 				URL.revokeObjectURL(imageSrc);
