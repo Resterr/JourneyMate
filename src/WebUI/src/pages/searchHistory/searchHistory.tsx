@@ -7,7 +7,6 @@ import {UserContext} from "../../contexts/userContext";
 import {Pagination} from "@mui/material";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
-import IconButton from "@mui/material/IconButton";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import {PaginatedReports} from "../../models/PaginatedReports";
