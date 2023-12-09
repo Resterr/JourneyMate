@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, useState} from "react";
 import "./searchDisplay.css";
-import PlacesList from "../../components/placesList/placesList";
+import PlacesList from "../../components/searchDisplayList/searchDisplayList";
 import axiosInstance from "../../utils/axiosInstance";
 import {AxiosResponse} from "axios";
 import {useNavigate, useParams} from "react-router-dom";

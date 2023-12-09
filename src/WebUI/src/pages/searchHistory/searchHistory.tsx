@@ -11,7 +11,7 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import {PaginatedReports} from "../../models/PaginatedReports";
 
-const SearchDisplay : React.FC = () => {
+const SearchHistory : React.FC = () => {
 	const {id} = useParams();
 	const userContext = useContext(UserContext);
 	const currentUser = userContext.currentUser;
@@ -54,7 +54,7 @@ const SearchDisplay : React.FC = () => {
 	return (
 		<div className="searchHistory">
 			{paginatedReports !== null ? (
-				<><div className="searchHistory__reportList">
+				<><div className="searchHistory__report">
 					<List sx={{width: '100%', maxWidth: 1400}}>
 						{paginatedReports.items.map((report) => {
 							const labelId = `checkbox-list-label-${report.id}`;
@@ -84,4 +84,4 @@ const SearchDisplay : React.FC = () => {
 	);
 };
 
-export default SearchDisplay;
+export default SearchHistory;

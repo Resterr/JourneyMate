@@ -1,5 +1,5 @@
 import * as React from 'react';
-import './placesList.css';
+import './searchDisplayList.css';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
@@ -7,7 +7,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 import IconButton from '@mui/material/IconButton';
-import PlacesListModal from "./modal/placesListModal";
+import SearchDisplayListModal from "./modal/searchDisplayListModal";
 import {Place} from "../../models/Place";
 
 type PlacesListProps = {
@@ -15,7 +15,7 @@ type PlacesListProps = {
 	onSelectedPlacesChange : (checked : string[]) => void;
 }
 
-const PlacesList : React.FC<PlacesListProps> = ({places, onSelectedPlacesChange}) => {
+const SearchDisplayList : React.FC<PlacesListProps> = ({places, onSelectedPlacesChange}) => {
 	const [checked, setChecked] = React.useState<string[]>([]);
 
 	const handleToggle = (value : string) => () => {
@@ -31,9 +31,9 @@ const PlacesList : React.FC<PlacesListProps> = ({places, onSelectedPlacesChange}
 		setChecked(newChecked);
 		onSelectedPlacesChange(newChecked);
 	};
-
+    
 	return (
-		<div className="searchPlace__placesList">
+		<div className="searchDisplay__list">
 			<List sx={{width: '100%', maxWidth: 1400}}>
 				{places.map((place) => {
 					const labelId = `checkbox-list-label-${place.id}`;
@@ -42,8 +42,8 @@ const PlacesList : React.FC<PlacesListProps> = ({places, onSelectedPlacesChange}
 						<ListItem
 							key={place.id}
 							secondaryAction={
-								<IconButton edge="end" aria-label="comments">
-									<PlacesListModal placeDetails={place}></PlacesListModal>
+								<IconButton edge="end" aria-label="comments" >
+									<SearchDisplayListModal placeDetails={place}></SearchDisplayListModal>
 								</IconButton>
 							}
 							disablePadding
@@ -68,4 +68,4 @@ const PlacesList : React.FC<PlacesListProps> = ({places, onSelectedPlacesChange}
 	);
 }
 
-export default PlacesList;
+export default SearchDisplayList;

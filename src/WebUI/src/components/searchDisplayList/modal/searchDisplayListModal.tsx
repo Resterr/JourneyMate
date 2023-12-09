@@ -9,45 +9,40 @@ type PlacesListModalProps = {
 	placeDetails: Place;
 }
 
-const PlacesListModal : React.FC<PlacesListModalProps> = (props) => {
+const SearchDisplayListModal : React.FC<PlacesListModalProps> = (props) => {
 	const place : Place = props.placeDetails;
 	const [open, setOpen] = React.useState(false);
 	const userContext = useContext(UserContext);
-	const [maxHeight] = useState<number>(500);
-	const [maxWidth] = useState<number>(500);
+	const [height] = useState<number>(500);
+	const [width] = useState<number>(500);
 	const [imageSrc, setImageSrc] = useState<string | null>(null);
 	const [loading, setLoading] = useState<boolean>(true);
-	
-	useEffect(() => {
-		const fetchImage = () => {
-			let token : string | null = userContext.accessToken;
-			let config = {
-				headers: {Authorization: `Bearer ${token}`},
-				responseType: 'blob' as 'blob',
-			};
-			axiosInstance
-				.get(`/api/place/photo/${place.id}?MaxHeight=${maxHeight}&MaxWidth=${maxWidth}`, config)
-				.then((response) => {
-					const imageUrl = URL.createObjectURL(response.data);
-					setImageSrc(imageUrl);
-				})
-				.catch((error) => {
-					console.log(error);
-				})
-				.finally(() => {
-					setLoading(false);
-				});
-		};
-		
-		fetchImage();
-        
-		return () => {
-			if (imageSrc) {
-				URL.revokeObjectURL(imageSrc);
-			}
-		};
-	}, [imageSrc, maxHeight, maxWidth, place.id, userContext.accessToken]);
-		
+    
+    const fetchImage = () => {
+        let token : string | null = userContext.accessToken;
+        let config = {
+            headers: {Authorization: `Bearer ${token}`},
+            responseType: 'blob' as 'blob',
+        };
+        console.log("Test");
+        axiosInstance
+            .get(`/api/place/photo/${place.id}?Height=${height}&Width=${width}`, config)
+            .then((response) => {
+                const imageUrl = URL.createObjectURL(response.data);
+                setImageSrc(imageUrl);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    };
+    
+    useEffect(() => {
+        fetchImage();
+    }, []);
+    
 	const handleOpen = () => {
 		setOpen(true);
 	}
@@ -106,4 +101,4 @@ const PlacesListModal : React.FC<PlacesListModalProps> = (props) => {
 	);
 }
 
-export default PlacesListModal;
+export default SearchDisplayListModal;
