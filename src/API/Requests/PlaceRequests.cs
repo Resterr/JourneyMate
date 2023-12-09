@@ -62,7 +62,7 @@ internal static class PlaceRequests
 				return Results.File(result, "image/jpeg");
 			})
 			.RequireAuthorization("user")
-			.Produces<Stream>()
+			.Produces(StatusCodes.Status200OK, null, "image/jpeg")
 			.Produces(StatusCodes.Status401Unauthorized)
 			.Produces(StatusCodes.Status403Forbidden)
 			.Produces(StatusCodes.Status400BadRequest)
