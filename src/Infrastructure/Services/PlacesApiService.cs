@@ -78,6 +78,8 @@ internal sealed class PlacesApiService : IPlacesApiService
 			if (validationResult.IsValid)
 				if (result.Business_status == "OPERATIONAL")
 				{
+					var photo = result.Photos.IsNullOrEmpty() ? null : result.Photos[0].Photo_reference.IsNullOrEmpty() ? null : new Photo(result.Photos[0].Height, result.Photos[0].Width, result.Photos[0].Photo_reference);
+						
 					var place = new PlaceAddDto
 					{
 						ApiPlaceId = result.Place_id,
@@ -89,7 +91,7 @@ internal sealed class PlacesApiService : IPlacesApiService
 						DistanceFromAddress = MathOperations.CalculateDistance(latitude, longitude, (double)result.Geometry.Location.Lat!, (double)result.Geometry.Location.Lng!),
 						Location = new Location((double)result.Geometry.Location.Lat!, (double)result.Geometry.Location.Lng!),
 						PlusCode = new PlusCode(result.Plus_code.Compound_code, result.Plus_code.Global_code),
-						Photo = result.Photos.IsNullOrEmpty() ? null : new Photo(result.Photos[0].Height, result.Photos[0].Height, result.Photos[0].Photo_reference),
+						Photo = photo,
 						Types = result.Types.Select(x => new PlaceTypeDto
 							{
 								Name = x
@@ -150,10 +152,10 @@ internal sealed class PlacesApiService : IPlacesApiService
 
 		public class Photo
 		{
-			public int? Height { get; set; }
+			public int Height { get; set; }
 			public List<string> Html_attributions { get; set; }
 			public string Photo_reference { get; set; }
-			public int? Width { get; set; }
+			public int Width { get; set; }
 		}
 
 		public class PlusCode
@@ -206,15 +208,14 @@ internal sealed class PlacesApiService : IPlacesApiService
 		}
 	}
 
-	public async Task<Stream> LoadPhoto(string photoReference, int height, int width)
+	
+	public async Task<byte[]> LoadPhoto(string photoReference, int height, int width)
 	{
 		using var client = new HttpClient();
 
 		var response = await client.GetByteArrayAsync($"{_urlOptions.Value.GoogleMapsApiUrl}/place/photo" +
 			$"?photo_reference={photoReference}&maxheight={height}&maxwidth={width}&key={_keysOptions.Value.GooglePlacesApiKey}");
-		var memoryStream = new MemoryStream(response);
-		memoryStream.Seek(0, SeekOrigin.Begin);
-
-		return memoryStream;
+		
+		return response;
 	}
 }

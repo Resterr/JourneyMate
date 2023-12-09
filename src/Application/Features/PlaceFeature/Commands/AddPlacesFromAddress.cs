@@ -70,6 +70,18 @@ internal sealed class AddPlacesFromAddressHandler : IRequestHandler<AddPlacesFro
 				var existingPlace = await _dbContext.Places.Include(x => x.Addresses).FirstOrDefaultAsync(x => x.ApiPlaceId == place.ApiPlaceId);
 				if (existingPlace == null)
 				{
+					if (place.Photo != null)
+					{
+						if (place.Photo.Height is null || place.Photo.Width is null)
+						{
+							place.Photo.LoadPhotoData(await _placesApiService.LoadPhoto(place.Photo.PhotoReference, 500, 500));
+						}
+						else
+						{
+							place.Photo.LoadPhotoData(await _placesApiService.LoadPhoto(place.Photo.PhotoReference, (int)place.Photo.Height, (int)place.Photo.Width));
+						}
+						
+					}
 					await _dbContext.Places.AddAsync(place);
 				}
 				else
