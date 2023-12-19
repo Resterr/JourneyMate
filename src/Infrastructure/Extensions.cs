@@ -17,11 +17,4 @@ public static class Extensions
 
 		return services;
 	}
-
-	public static IApplicationBuilder UseInfrastructure(this IApplicationBuilder app)
-	{
-		app.SeedData();
-
-		return app;
-	}
 }

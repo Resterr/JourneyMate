@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using JourneyMate.Infrastructure.Persistence.Seeders;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -23,6 +25,11 @@ public class ApplicationInitializer : IHostedService
 		{
 			await context.Database.MigrateAsync(cancellationToken);
 		}
+		
+		var usersSeeder = scope.ServiceProvider.GetRequiredService<IUsersSeeder>();
+
+		usersSeeder.SeedDefaultRoles();
+		usersSeeder.SeedSuperAdmin();
 	}
 
 	public Task StopAsync(CancellationToken cancellationToken)
