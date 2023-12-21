@@ -1,7 +1,6 @@
 ﻿using JourneyMate.Infrastructure.Persistence;
 using JourneyMate.Infrastructure.Security;
 using JourneyMate.Infrastructure.Services;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 

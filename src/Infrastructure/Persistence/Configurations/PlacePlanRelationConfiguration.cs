@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace JourneyMate.Infrastructure.Persistence.Configurations;
 
-public class PlacePlanConfiguration : IEntityTypeConfiguration<PlacePlan>
+public class PlacePlanRelationConfiguration : IEntityTypeConfiguration<PlacePlanRelation>
 {
-	public void Configure(EntityTypeBuilder<PlacePlan> builder)
+	public void Configure(EntityTypeBuilder<PlacePlanRelation> builder)
 	{
 		builder
 			.HasKey(x => new { x.PlaceId, x.PlanId });
@@ -20,7 +20,7 @@ public class PlacePlanConfiguration : IEntityTypeConfiguration<PlacePlan>
 			.HasOne(x => x.Plan)
 			.WithMany(x => x.Places)
 			.HasForeignKey(x => x.PlanId);
-
-		builder.ToTable("PlacePlan");
+		
+		builder.ToTable("PlacePlanRelation");
 	}
 }

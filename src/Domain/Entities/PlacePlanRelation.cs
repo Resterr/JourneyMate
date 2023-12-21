@@ -1,8 +1,6 @@
-﻿using JourneyMate.Domain.Common;
+﻿namespace JourneyMate.Domain.Entities;
 
-namespace JourneyMate.Domain.Entities;
-
-public class PlacePlan
+public class PlacePlanRelation
 {
 	public Guid PlaceId { get; private set; }
 	public Place Place { get; private set; }
@@ -11,9 +9,8 @@ public class PlacePlan
 	public DateTime? StartingDate { get; private set; }
 	public DateTime? EndingDate { get; private set; }
 
-	private PlacePlan() { }
-	
-	public PlacePlan(Place place, Plan plan)
+	private PlacePlanRelation() { }
+	public PlacePlanRelation(Place place, Plan plan)
 	{
 		Place = place;
 		Plan = plan;

@@ -9,6 +9,7 @@ public class AddressConfiguration : IEntityTypeConfiguration<Address>
 	public void Configure(EntityTypeBuilder<Address> builder)
 	{
 		builder.Property(x => x.ApiPlaceId)
+			.HasMaxLength(512)
 			.IsRequired();
 
 		builder.HasIndex(x => x.ApiPlaceId)
@@ -16,25 +17,31 @@ public class AddressConfiguration : IEntityTypeConfiguration<Address>
 
 		builder.OwnsOne(x => x.Location)
 			.Property(x => x.Latitude)
+			.HasColumnName("Latitude")
 			.IsRequired();
 
 		builder.OwnsOne(x => x.Location)
 			.Property(x => x.Longitude)
+			.HasColumnName("Longitude")
 			.IsRequired();
 
-		builder.Property(x => x.Locality)
+		builder.OwnsOne(x => x.Locality)
+			.Property(x => x.ShortName)
+			.HasColumnName("LocalityShortName")
+			.HasMaxLength(256)
+			.IsRequired();
+
+		builder.OwnsOne(x => x.Locality)
+			.Property(x => x.LongName)
+			.HasColumnName("LocalityLongName")
+			.HasMaxLength(256)
 			.IsRequired();
 		
-		builder.Property(x => x.AdministrativeAreaLevel2)
+		builder.Property(x => x.AdministrativeAreaId)
 			.IsRequired();
-		
-		builder.Property(x => x.AdministrativeAreaLevel1)
-			.IsRequired();
-		
-		builder.Property(x => x.Country)
-			.IsRequired();
-		
+
 		builder.Property(x => x.PostalCode)
+			.HasMaxLength(8)
 			.IsRequired();
 		
 		builder.ToTable("Address");

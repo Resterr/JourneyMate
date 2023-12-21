@@ -4,18 +4,18 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace JourneyMate.Infrastructure.Persistence.Configurations;
 
-public class UserConfiguration : IEntityTypeConfiguration<User>
+public class CountryConfiguration : IEntityTypeConfiguration<Country>
 {
-	public void Configure(EntityTypeBuilder<User> builder)
+	public void Configure(EntityTypeBuilder<Country> builder)
 	{
-		builder.Property(x => x.Email)
-			.HasMaxLength(512)
+		builder.Property(x => x.ShortName)
+			.HasMaxLength(256)
 			.IsRequired();
-
-		builder.Property(x => x.UserName)
+		
+		builder.Property(x => x.LongName)
 			.HasMaxLength(256)
 			.IsRequired();
 
-		builder.ToTable("User");
+		builder.ToTable("Country");
 	}
 }

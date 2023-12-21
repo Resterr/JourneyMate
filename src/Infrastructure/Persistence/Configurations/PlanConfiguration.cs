@@ -9,6 +9,7 @@ public class PlanConfiguration : IEntityTypeConfiguration<Plan>
 	public void Configure(EntityTypeBuilder<Plan> builder)
 	{
 		builder.Property(x => x.Name)
+			.HasMaxLength(256)
 			.IsRequired();
 
 		builder.ToTable("Plan");
