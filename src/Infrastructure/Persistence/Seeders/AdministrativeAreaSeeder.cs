@@ -45,7 +45,7 @@ internal sealed class AdministrativeAreaSeeder : IAdministrativeAreaSeeder
 	public async Task SeedAdministrativeAreas()
 	{
 		var addressCount = await _dbContext.Addresses.CountAsync();
-		if(addressCount > 0)
+		if(addressCount == 0)
 		{
 			var country = await _dbContext.Countries.SingleOrDefaultAsync(x => x.LongName == "Poland") ?? throw new ObjectNotFound("Country");
 			var terytReadModel = await GetAdministrativeAreas();
