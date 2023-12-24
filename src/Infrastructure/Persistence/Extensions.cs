@@ -20,6 +20,7 @@ internal static class Extensions
 		services.AddScoped<ApplicationInitializer>();
 		services.AddScoped<IUsersSeeder, UsersSeeder>();
 		services.AddScoped<ITypesSeeder, TypesSeeder>();
+		services.AddScoped<IAdministrativeAreaSeeder, AdministrativeAreaSeeder>();
 		services.AddHostedService<ApplicationInitializer>();
 		
 		return services;

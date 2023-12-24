@@ -4,5 +4,6 @@ namespace JourneyMate.Application.Common.Interfaces;
 
 public interface IGeocodeApiService
 {
-	Task<AddressDto?> GetAddressAsync(string components);
+	Task<AddressAddDto?> GetAddressAsync(string components, string? localityName);
+	Task<AddressAddDto?> GetAddressFromTerytAsync(string county, string municipality, bool isCity);
 }

@@ -37,12 +37,11 @@ public class AddressConfiguration : IEntityTypeConfiguration<Address>
 			.HasMaxLength(256)
 			.IsRequired();
 		
-		builder.Property(x => x.AdministrativeAreaId)
+		builder.Property(x => x.AdministrativeAreaLevel2Id)
 			.IsRequired();
 
 		builder.Property(x => x.PostalCode)
-			.HasMaxLength(8)
-			.IsRequired();
+			.HasMaxLength(16);
 		
 		builder.ToTable("Address");
 	}

@@ -26,12 +26,12 @@ internal sealed class AddPlanHandler : IRequestHandler<AddPlan, Guid>
 		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
 		var plan = new Plan(user, request.Name);
 
-		var placePlans = new List<PlacePlan>();
+		var placePlans = new List<PlacePlanRelation>();
 
 		foreach (var placeId in request.PlacesId)
 		{
 			var place = await _dbContext.Places.SingleOrDefaultAsync(x => x.Id == placeId) ?? throw new PlaceNotFound(placeId);
-			placePlans.Add(new PlacePlan(place, plan));
+			placePlans.Add(new PlacePlanRelation(place, plan));
 		}
 
 		plan.AddPlaces(placePlans);

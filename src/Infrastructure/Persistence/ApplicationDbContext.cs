@@ -17,7 +17,8 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 	public DbSet<Role> Roles => Set<Role>();
 	public DbSet<Address> Addresses => Set<Address>();
 	public DbSet<Country> Countries => Set<Country>();
-	public DbSet<AdministrativeArea> AdministrativeArea => Set<AdministrativeArea>();
+	public DbSet<AdministrativeAreaLevel1> AdministrativeAreaLevel1 => Set<AdministrativeAreaLevel1>();
+	public DbSet<AdministrativeAreaLevel2> AdministrativeAreaLevel2 => Set<AdministrativeAreaLevel2>();
 	public DbSet<Place> Places => Set<Place>();
 	public DbSet<PlaceType> PlaceTypes => Set<PlaceType>();
 	public DbSet<PlaceAddressRelation> PlaceAddress => Set<PlaceAddressRelation>();

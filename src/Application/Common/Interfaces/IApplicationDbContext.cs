@@ -9,7 +9,8 @@ public interface IApplicationDbContext
 	DbSet<Role> Roles { get; }
 	DbSet<Address> Addresses { get; }
 	DbSet<Country> Countries { get; }
-	DbSet<AdministrativeArea> AdministrativeArea { get; }
+	DbSet<AdministrativeAreaLevel1> AdministrativeAreaLevel1 { get; }
+	DbSet<AdministrativeAreaLevel2> AdministrativeAreaLevel2 { get; }
 	DbSet<Place> Places { get; }
 	DbSet<PlaceType> PlaceTypes { get; }
 	DbSet<PlaceAddressRelation> PlaceAddress { get; }

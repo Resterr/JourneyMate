@@ -27,10 +27,13 @@ public class ApplicationInitializer : IHostedService
 		
 		var usersSeeder = scope.ServiceProvider.GetRequiredService<IUsersSeeder>();
 		var typesSeeder = scope.ServiceProvider.GetRequiredService<ITypesSeeder>();
+		var administrativeAreaSeeder = scope.ServiceProvider.GetRequiredService<IAdministrativeAreaSeeder>();
 		
 		usersSeeder.SeedDefaultRoles();
 		usersSeeder.SeedSuperAdmin();
 		typesSeeder.SeedTypes();
+		administrativeAreaSeeder.SeedCountries();
+		await administrativeAreaSeeder.SeedAdministrativeAreas();
 	}
 
 	public Task StopAsync(CancellationToken cancellationToken)

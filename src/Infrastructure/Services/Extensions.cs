@@ -1,5 +1,6 @@
 ﻿using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Infrastructure.Common.Options;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -19,14 +20,14 @@ internal static class Extensions
 		services.AddTransient<IGeocodeApiService, GeocodeApiService>();
 		services.AddTransient<IPlacesApiService, PlacesApiService>();
 		services.AddTransient<ICurrentUserService, CurrentUserService>();
-
+		
 		return services;
 	}
 }
 
 public static class MathOperations
 {
-	private const double EarthRadius = 6371; // Radius of the Earth in kilometers
+	private const double _earthRadius = 6371; // Radius of the Earth in kilometers
 
 	public static double CalculateDistance(double lat1, double lon1, double lat2, double lon2)
 	{
@@ -41,7 +42,7 @@ public static class MathOperations
 		var dLat = lat2 - lat1;
 		var a = Math.Pow(Math.Sin(dLat / 2), 2) + Math.Cos(lat1) * Math.Cos(lat2) * Math.Pow(Math.Sin(dLon / 2), 2);
 		var c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
-		var distance = EarthRadius * c;
+		var distance = Math.Round(_earthRadius * c, 2);
 
 		return distance;
 	}

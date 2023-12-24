@@ -4,6 +4,7 @@ using JourneyMate.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace JourneyMate.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231223124107_SplittedAdministativeArea")]
+    partial class SplittedAdministativeArea
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -151,7 +154,7 @@ namespace JourneyMate.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("PlaceId");
 
-                    b.ToTable("Photo", (string)null);
+                    b.ToTable("Photo");
                 });
 
             modelBuilder.Entity("JourneyMate.Domain.Entities.Place", b =>
@@ -416,7 +419,7 @@ namespace JourneyMate.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("PlaceTypeId");
 
-                    b.ToTable("PlacePlaceTypeRelation", (string)null);
+                    b.ToTable("PlacePlaceTypeRelation");
                 });
 
             modelBuilder.Entity("ReportPlaceRelation", b =>
@@ -431,7 +434,7 @@ namespace JourneyMate.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("PlaceId");
 
-                    b.ToTable("ReportPlaceRelation", (string)null);
+                    b.ToTable("ReportPlaceRelation");
                 });
 
             modelBuilder.Entity("ReportPlaceTypeRelation", b =>
@@ -446,7 +449,7 @@ namespace JourneyMate.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("PlaceTypeId");
 
-                    b.ToTable("ReportPlaceTypeRelation", (string)null);
+                    b.ToTable("ReportPlaceTypeRelation");
                 });
 
             modelBuilder.Entity("UserRoleRelation", b =>
@@ -461,7 +464,7 @@ namespace JourneyMate.Infrastructure.Persistence.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("UserRoleRelation", (string)null);
+                    b.ToTable("UserRoleRelation");
                 });
 
             modelBuilder.Entity("JourneyMate.Domain.Entities.Address", b =>
@@ -472,7 +475,28 @@ namespace JourneyMate.Infrastructure.Persistence.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.OwnsOne("JourneyMate.Domain.Entities.Address.Locality#JourneyMate.Domain.ValueObjects.AddressComponent", "Locality", b1 =>
+                    b.OwnsOne("JourneyMate.Domain.ValueObjects.Location", "Location", b1 =>
+                        {
+                            b1.Property<Guid>("AddressId")
+                                .HasColumnType("uniqueidentifier");
+
+                            b1.Property<double>("Latitude")
+                                .HasColumnType("float")
+                                .HasColumnName("Latitude");
+
+                            b1.Property<double>("Longitude")
+                                .HasColumnType("float")
+                                .HasColumnName("Longitude");
+
+                            b1.HasKey("AddressId");
+
+                            b1.ToTable("Address");
+
+                            b1.WithOwner()
+                                .HasForeignKey("AddressId");
+                        });
+
+                    b.OwnsOne("JourneyMate.Domain.ValueObjects.AddressComponent", "Locality", b1 =>
                         {
                             b1.Property<Guid>("AddressId")
                                 .HasColumnType("uniqueidentifier");
@@ -491,28 +515,7 @@ namespace JourneyMate.Infrastructure.Persistence.Migrations
 
                             b1.HasKey("AddressId");
 
-                            b1.ToTable("Address", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("AddressId");
-                        });
-
-                    b.OwnsOne("JourneyMate.Domain.Entities.Address.Location#JourneyMate.Domain.ValueObjects.Location", "Location", b1 =>
-                        {
-                            b1.Property<Guid>("AddressId")
-                                .HasColumnType("uniqueidentifier");
-
-                            b1.Property<double>("Latitude")
-                                .HasColumnType("float")
-                                .HasColumnName("Latitude");
-
-                            b1.Property<double>("Longitude")
-                                .HasColumnType("float")
-                                .HasColumnName("Longitude");
-
-                            b1.HasKey("AddressId");
-
-                            b1.ToTable("Address", (string)null);
+                            b1.ToTable("Address");
 
                             b1.WithOwner()
                                 .HasForeignKey("AddressId");
@@ -562,7 +565,7 @@ namespace JourneyMate.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("JourneyMate.Domain.Entities.Place", b =>
                 {
-                    b.OwnsOne("JourneyMate.Domain.Entities.Place.Location#JourneyMate.Domain.ValueObjects.Location", "Location", b1 =>
+                    b.OwnsOne("JourneyMate.Domain.ValueObjects.Location", "Location", b1 =>
                         {
                             b1.Property<Guid>("PlaceId")
                                 .HasColumnType("uniqueidentifier");
@@ -577,13 +580,13 @@ namespace JourneyMate.Infrastructure.Persistence.Migrations
 
                             b1.HasKey("PlaceId");
 
-                            b1.ToTable("Place", (string)null);
+                            b1.ToTable("Place");
 
                             b1.WithOwner()
                                 .HasForeignKey("PlaceId");
                         });
 
-                    b.OwnsOne("JourneyMate.Domain.Entities.Place.PlusCode#JourneyMate.Domain.ValueObjects.PlusCode", "PlusCode", b1 =>
+                    b.OwnsOne("JourneyMate.Domain.ValueObjects.PlusCode", "PlusCode", b1 =>
                         {
                             b1.Property<Guid>("PlaceId")
                                 .HasColumnType("uniqueidentifier");
@@ -602,7 +605,7 @@ namespace JourneyMate.Infrastructure.Persistence.Migrations
 
                             b1.HasKey("PlaceId");
 
-                            b1.ToTable("Place", (string)null);
+                            b1.ToTable("Place");
 
                             b1.WithOwner()
                                 .HasForeignKey("PlaceId");
