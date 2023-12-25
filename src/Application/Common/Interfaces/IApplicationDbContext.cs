@@ -17,6 +17,7 @@ public interface IApplicationDbContext
 	DbSet<Report> Reports { get; }
 	DbSet<Plan> Plans { get; }
 	DbSet<PlacePlanRelation> PlacePlans { get; }
+	DbSet<Photo> Photos { get; }
 	Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 	int SaveChanges();
 }

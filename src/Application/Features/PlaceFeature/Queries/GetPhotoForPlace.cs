@@ -22,11 +22,11 @@ internal sealed class GetPhotoForPlaceHandler : IRequestHandler<GetPhotoForPlace
 
 	public async Task<Stream> Handle(GetPhotoForPlace request, CancellationToken cancellationToken)
 	{
-		var place = await _dbContext.Places.SingleOrDefaultAsync(x => x.Id == request.PlaceId) ?? throw new PlaceNotFound(request.PlaceId);
-		if (place.Photo != null)
+		var photo = await _dbContext.Photos.SingleOrDefaultAsync(x => x.PlaceId == request.PlaceId);
+		if (photo != null)
 		{
-			var data = place.Photo.Data;
-			if (data != null)
+			var data = photo.Data;
+			if (data.Length > 0)
 			{
 				using (var memoryStream = new MemoryStream(data))
 				{
@@ -48,8 +48,7 @@ internal sealed class GetPhotoForPlaceHandler : IRequestHandler<GetPhotoForPlace
 				}
 			}
 		}
-
-
+		
 		throw new PhotoNotFoundException(request.PlaceId);
 	}
 }

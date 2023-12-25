@@ -22,6 +22,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 	public DbSet<Place> Places => Set<Place>();
 	public DbSet<PlaceType> PlaceTypes => Set<PlaceType>();
 	public DbSet<PlaceAddressRelation> PlaceAddress => Set<PlaceAddressRelation>();
+	public DbSet<Photo> Photos => Set<Photo>();
 	public DbSet<Report> Reports => Set<Report>();
 	public DbSet<Plan> Plans => Set<Plan>();
 	public DbSet<PlacePlanRelation> PlacePlans => Set<PlacePlanRelation>();

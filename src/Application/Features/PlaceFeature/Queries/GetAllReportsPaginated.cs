@@ -4,11 +4,8 @@ using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Application.Common.Mappings;
 using JourneyMate.Application.Common.Models;
-using JourneyMate.Domain.Entities.MongoDb;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using MongoDB.Bson;
-using MongoDB.Driver;
 
 namespace JourneyMate.Application.Features.PlaceFeature.Queries;
 
@@ -17,14 +14,12 @@ public record GetAllReportsPaginated(int PageNumber, int PageSize) : IRequest<Pa
 internal sealed class GetAllReportsHandler : IRequestHandler<GetAllReportsPaginated, PaginatedList<ReportDto>>
 {
 	private readonly IApplicationDbContext _dbContext;
-	private readonly IApplicationMongoClient _mongoClient;
 	private readonly ICurrentUserService _currentUserService;
 	private readonly IMapper _mapper;
 
-	public GetAllReportsHandler(IApplicationDbContext dbContext, IApplicationMongoClient mongoClient, ICurrentUserService currentUserService, IMapper mapper)
+	public GetAllReportsHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService, IMapper mapper)
 	{
 		_dbContext = dbContext;
-		_mongoClient = mongoClient;
 		_currentUserService = currentUserService;
 		_mapper = mapper;
 	}
@@ -33,14 +28,11 @@ internal sealed class GetAllReportsHandler : IRequestHandler<GetAllReportsPagina
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
 		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
-		var filter = Builders<Report>.Filter.Eq(x => x.UserId, user.Id);
-		var reports = await _mongoClient.Reports.Find(filter)
-			.ToListAsync();
-
-		var reportsPaginated = reports.AsQueryable().OrderByDescending(x => x.Created).PaginatedListSync(request.PageNumber, request.PageSize);
-		var result = _mapper.Map<List<ReportDto>>(reportsPaginated.Items);
-
-		return new PaginatedList<ReportDto>(result, reportsPaginated.TotalCount, request.PageNumber, request.PageSize);
+		var reports = await _dbContext.Reports.Where(x => x.UserId == user.Id).PaginatedListAsync(request.PageNumber, request.PageSize);
+		var reportsDto = _mapper.Map<List<ReportDto>>(reports.Items);
+		var result = new PaginatedList<ReportDto>(reportsDto, reports.TotalCount, request.PageNumber, request.PageSize);
+		
+		return result;
 	}
 }
 

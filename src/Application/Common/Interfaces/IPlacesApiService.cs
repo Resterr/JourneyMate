@@ -4,6 +4,6 @@ namespace JourneyMate.Application.Common.Interfaces;
 
 public interface IPlacesApiService
 {
-	Task<List<PlaceAddDto>> GetPlacesAsync(string location, string radius, string type, string rankBy, double latitude, double longitude);
+	Task<List<PlaceAddDto>> GetPlacesAsync(string location, List<string> types);
 	Task<byte[]> LoadPhoto(string photoReference, int height, int width);
 }

@@ -75,6 +75,11 @@ public class Place : BaseAuditableEntity
 		Types.Add(placeType);
 	}
 	
+	public void AddPhoto(Photo photo)
+	{
+		Photos.Add(photo);
+	}
+	
 	public bool CheckAddress(Guid addressId)
 	{
 		return Addresses.Any(x => x.AddressId == addressId);

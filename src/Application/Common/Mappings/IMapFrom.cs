@@ -13,6 +13,9 @@ public interface IMapFrom<T>
 			.ForMember(dest => dest.PlanName, opt => opt.MapFrom(src => src.Plan.Name))
 			.ForMember(dest => dest.PlaceId, opt => opt.MapFrom(src => src.Place.Id))
 			.ForMember(dest => dest.PlaceName, opt => opt.MapFrom(src => src.Place.Name));
+
+		profile.CreateMap<Place, PlaceDto>()
+			.ForMember(dest => dest.DistanceFromAddress, opt => opt.MapFrom(src => src.Addresses[0].DistanceFromAddress));
 		profile.CreateMap(typeof(T), GetType());
 	}
 }
