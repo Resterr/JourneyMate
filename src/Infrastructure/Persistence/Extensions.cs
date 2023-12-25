@@ -15,7 +15,8 @@ internal static class Extensions
 		var options = configuration.GetOptions<ConnectionStringsOptions>("ConnectionStrings");
 		
 		services.AddScoped<AuditableEntitySaveChangesInterceptor>();
-		services.AddDbContext<ApplicationDbContext>(x => x.UseSqlServer(options.SqlServer, builder => builder.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+		services.AddDbContext<ApplicationDbContext>(x => x.UseSqlServer(options.SqlServer,
+			o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 		services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 		services.AddScoped<ApplicationInitializer>();
 		services.AddScoped<IUsersSeeder, UsersSeeder>();
