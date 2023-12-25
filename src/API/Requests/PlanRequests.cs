@@ -53,7 +53,7 @@ internal static class PlanRequests
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Get places for plan"));
 		
-		group.MapPost("", async (ISender sender, [FromBody] AddPlan request) =>
+		group.MapPut("", async (ISender sender, [FromBody] AddOrUpdatePlan request) =>
 			{
 				await sender.Send(request);
 				return Results.Ok();
