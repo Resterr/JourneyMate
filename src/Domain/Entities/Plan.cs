@@ -8,6 +8,7 @@ public class Plan : BaseAuditableEntity
 	public User User { get; private set; }
 	public string Name { get; private set; }
 	public List<PlacePlanRelation> Places { get; private set; } = new();
+	public List<UserFollowerPlanRelation> Shared { get; private set; } = new();
 	
 	private Plan() { }
 	public Plan(User user, string name)
@@ -40,5 +41,11 @@ public class Plan : BaseAuditableEntity
 		{
 			Places.Remove(place);
 		}
+	}
+	
+	public void AddShare(UserFollowerPlanRelation share)
+	{
+		if (Shared.Contains(share)) return;
+		Shared.Add(share);
 	}
 }

@@ -2,6 +2,7 @@
 using JourneyMate.Application.Features.UserFeature.Commands;
 using JourneyMate.Application.Features.UserFeature.Queries;
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace JourneyMate.API.Requests;
@@ -29,7 +30,18 @@ internal static class UsersRequests
 			.Produces<UserDto>()
 			.Produces(StatusCodes.Status401Unauthorized)
 			.WithMetadata(new SwaggerOperationAttribute("Get current user"));
-
+		
+		group.MapGet("followers", async (ISender sender, [AsParameters] GetFollowers request) =>
+			{
+				var result = await sender.Send(request);
+				return Results.Ok(result);
+			})
+			.RequireAuthorization("user")
+			.Produces<List<string>>()
+			.Produces(StatusCodes.Status401Unauthorized)
+			.Produces(StatusCodes.Status400BadRequest)
+			.WithMetadata(new SwaggerOperationAttribute("Get followers for current user"));
+		
 		group.MapPost("register", async (ISender sender, RegisterUser request) =>
 			{
 				await sender.Send(request);
@@ -74,6 +86,30 @@ internal static class UsersRequests
 			.Produces(StatusCodes.Status401Unauthorized)
 			.Produces(StatusCodes.Status404NotFound)
 			.WithMetadata(new SwaggerOperationAttribute("Remove refresh token"));
+		
+		group.MapPost("follow", async (ISender sender, FollowUser request) =>
+			{
+				await sender.Send(request);
+				return Results.Ok();
+			})
+			.RequireAuthorization("user")
+			.Produces(StatusCodes.Status204NoContent)
+			.Produces(StatusCodes.Status400BadRequest)
+			.Produces(StatusCodes.Status401Unauthorized)
+			.Produces(StatusCodes.Status404NotFound)
+			.WithMetadata(new SwaggerOperationAttribute("Follow another user"));
+		
+		group.MapDelete("unfollow", async (ISender sender, [FromBody] UnfollowUser request) =>
+			{
+				await sender.Send(request);
+				return Results.NoContent();
+			})
+			.RequireAuthorization("user")
+			.Produces(StatusCodes.Status204NoContent)
+			.Produces(StatusCodes.Status400BadRequest)
+			.Produces(StatusCodes.Status401Unauthorized)
+			.Produces(StatusCodes.Status404NotFound)
+			.WithMetadata(new SwaggerOperationAttribute("Unfollow another user"));
 
 		return group;
 	}
