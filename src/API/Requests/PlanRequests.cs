@@ -31,7 +31,7 @@ internal static class PlanRequests
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Get plans for current user"));
 		
-		group.MapGet("plan/{PlanId:guid}/schedules", async (ISender sender, [AsParameters] GetSchedulesForPlanPaginated request) =>
+		group.MapGet("{PlanId:guid}/schedules", async (ISender sender, [AsParameters] GetSchedulesForPlanPaginated request) =>
 			{
 				var result = await sender.Send(request);
 				return Results.Ok(result);
@@ -42,7 +42,7 @@ internal static class PlanRequests
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Get schedules for plan"));
 		
-		group.MapGet("plan/{PlanId:guid}/places", async (ISender sender, [AsParameters] GetPlacesForPlanPaginated request) =>
+		group.MapGet("{PlanId:guid}/places", async (ISender sender, [AsParameters] GetPlacesForPlanPaginated request) =>
 			{
 				var result = await sender.Send(request);
 				return Results.Ok(result);

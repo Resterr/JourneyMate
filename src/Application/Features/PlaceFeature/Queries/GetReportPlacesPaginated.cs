@@ -34,10 +34,7 @@ internal sealed class GetReportPlacesPaginatedHandler : IRequestHandler<GetRepor
 			.OrderBy(x => x.Rating)
 			.PaginatedListAsync(request.PageNumber, request.PageSize) ?? throw new ReportNotFound(request.Id);
 		var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
-		foreach (var placeDto in placesDto)
-		{
-			placeDto.DistanceFromAddress = Math.Round(placeDto.DistanceFromAddress, 2);
-		}
+		placesDto.ForEach(placeDto => placeDto.DistanceFromAddress = Math.Round(placeDto.DistanceFromAddress, 2));
 		var result = new PaginatedList<PlaceDto>(placesDto, places.TotalCount, request.PageNumber, request.PageSize);
 		
 		return result;

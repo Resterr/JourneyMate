@@ -29,10 +29,16 @@ internal sealed class GetPlacesForPlanPaginatedHandler : IRequestHandler<GetPlac
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
 		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
 		var places = await _dbContext.Places.Include(x => x.Plans).ThenInclude(x => x.Plan)
-			.Where(x => x.Plans.Any(y => y.PlanId == request.PlanId) && x.Plans.Any(y => y.Plan.UserId == user.Id)).OrderBy(x=> x.Name).PaginatedListAsync(request.PageNumber, request.PageSize);
-		var placesDtos = _mapper.Map<List<PlaceDto>>(places.Items);
+			.Include(x => x.Addresses)
+			.Where(x => x.Plans.Any(y => y.PlanId == request.PlanId) && x.Plans.Any(y => y.Plan.UserId == user.Id))
+			.OrderBy(x=> x.Rating)
+			.PaginatedListAsync(request.PageNumber, request.PageSize);
+		
+		var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
+		placesDto.ForEach(placeDto => placeDto.DistanceFromAddress = Math.Round(placeDto.DistanceFromAddress, 2));
+		var result = new PaginatedList<PlaceDto>(placesDto, places.TotalCount, request.PageNumber, request.PageSize);
 
-		return new PaginatedList<PlaceDto>(placesDtos, places.TotalCount, request.PageNumber, request.PageSize);
+		return result;
 	}
 }
 
