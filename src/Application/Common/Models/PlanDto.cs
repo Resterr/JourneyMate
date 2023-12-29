@@ -7,4 +7,5 @@ public class PlanDto : IMapFrom<Plan>
 {
 	public Guid Id { get; set; }
 	public string Name { get; set; }
+	public DateTime Created { get; set; }
 }

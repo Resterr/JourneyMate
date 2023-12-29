@@ -27,7 +27,7 @@ internal sealed class GetReportByIdHandler : IRequestHandler<GetReportById, Repo
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
 		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
-		var report = await _dbContext.Reports.Where(x => x.UserId == user.Id).FirstOrDefaultAsync(x => x.Id == request.Id) ?? throw new ReportNotFound(request.Id);
+		var report = await _dbContext.Reports.Where(x => x.UserId == user.Id).FirstOrDefaultAsync(x => x.Id == request.Id) ?? throw new ReportNotFoundException(request.Id);
 		var result = _mapper.Map<ReportDto>(report);
 		
 		return result;

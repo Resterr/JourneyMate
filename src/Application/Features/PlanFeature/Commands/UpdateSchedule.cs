@@ -19,7 +19,7 @@ internal sealed class UpdateScheduleHandler : IRequestHandler<UpdateSchedule, Un
 
 	public async Task<Unit> Handle(UpdateSchedule request, CancellationToken cancellationToken)
 	{
-		var placePlan = await _dbContext.PlacePlans.SingleOrDefaultAsync(x => x.PlanId == request.PlanId && x.PlaceId == request.PlaceId) ?? throw new PlanNotFound(request.PlaceId);
+		var placePlan = await _dbContext.PlacePlans.SingleOrDefaultAsync(x => x.PlanId == request.PlanId && x.PlaceId == request.PlaceId) ?? throw new PlanNotFoundException(request.PlaceId);
 		placePlan.UpdateSchedule(request.StartingDate, request.EndingDate);
 		
 		_dbContext.PlacePlans.Update(placePlan);

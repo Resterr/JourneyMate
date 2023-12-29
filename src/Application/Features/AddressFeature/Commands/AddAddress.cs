@@ -26,8 +26,8 @@ internal sealed class AddAddressHandler : IRequestHandler<AddAddress, Guid>
 	public async Task<Guid> Handle(AddAddress request, CancellationToken cancellationToken)
 	{
 		var component = $"locality:{request.Locality}|administrative_area:{request.AdministrativeAreaLevel2}|country:Polska";
-		var country = await _dbContext.Countries.SingleOrDefaultAsync(x => x.LongName == "Poland") ?? throw new ObjectNotFound("Country");
-		var address = await _geocodeApiService.GetAddressAsync(component, request.Locality) ?? throw new AddressNotFound();
+		var country = await _dbContext.Countries.SingleOrDefaultAsync(x => x.LongName == "Poland") ?? throw new ObjectNotFoundException("Country");
+		var address = await _geocodeApiService.GetAddressAsync(component, request.Locality) ?? throw new AddressNotFoundException();
 
 		var level1 = _dbContext.AdministrativeAreaLevel1.SingleOrDefault(x => x.LongName == address.AdministrativeArea.Level1.LongName);
 		if (level1 == null)

@@ -26,13 +26,14 @@ internal sealed class FollowUserHandler : IRequestHandler<FollowUser, Unit>
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
 		var user = await _dbContext.Users.SingleOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
-		var userToFollow = await _dbContext.Users.SingleOrDefaultAsync(x => x.UserName == request.UserName) ?? throw new UserNotFoundException();
+		var userToFollow = await _dbContext.Users.Include(x => x.UserFollowers).SingleOrDefaultAsync(x => x.UserName == request.UserName) ?? throw new UserNotFoundException();
 
-		if (await _dbContext.Followers.AnyAsync(x => x.FollowerId == user.Id && x.FollowedId == userToFollow.Id)) throw new AlreadyFollowedException(request.UserName);
+		if (user.UserName == userToFollow.UserName) throw new CannotFollowYourselfException();
+		if (userToFollow.UserFollowers.Any(x => x.FollowerId == user.Id && x.FollowedId == userToFollow.Id)) throw new AlreadyFollowedException(request.UserName);
 		
-		var follow = new UserFollower(user, userToFollow, _dateTimeService.CurrentDate());
-		
-		_dbContext.Followers.Add(follow);
+		var follow = new Follow(user, userToFollow, _dateTimeService.CurrentDate());
+
+		await _dbContext.Followers.AddAsync(follow);
 		await _dbContext.SaveChangesAsync(cancellationToken);
 
 		return Unit.Value;

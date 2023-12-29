@@ -61,7 +61,13 @@ public class Place : BaseAuditableEntity
 	
 	public bool CheckType(List<PlaceType> placeTypes)
 	{
-		return Types.Any(x => placeTypes.Contains(x));
+		var hasType = false;
+		foreach (var placeType in placeTypes)
+		{
+			if (Types.Any(x => x.Id == placeType.Id)) hasType = true;
+		}
+		
+		return hasType;
 	}
 	
 	public void SetTypes(List<PlaceType> placeTypes)

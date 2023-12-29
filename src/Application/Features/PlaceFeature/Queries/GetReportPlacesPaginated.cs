@@ -9,12 +9,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Application.Features.PlaceFeature.Queries;
 
-public record GetReportPlacesPaginated(Guid Id, int PageNumber, int PageSize) : IRequest<PaginatedList<PlaceDto>>;
+public record GetReportPlacesPaginated(Guid Id, int PageNumber, int PageSize, string? TagsString) : IRequest<PaginatedList<PlaceDto>>;
 
 internal sealed class GetReportPlacesPaginatedHandler : IRequestHandler<GetReportPlacesPaginated, PaginatedList<PlaceDto>>
 {
-	private readonly IApplicationDbContext _dbContext;
 	private readonly ICurrentUserService _currentUserService;
+	private readonly IApplicationDbContext _dbContext;
 	private readonly IMapper _mapper;
 
 	public GetReportPlacesPaginatedHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService, IMapper mapper)
@@ -28,16 +28,44 @@ internal sealed class GetReportPlacesPaginatedHandler : IRequestHandler<GetRepor
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
 		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
-		var places = await _dbContext.Places.Include(x => x.Reports)
-			.Include(x => x.Addresses).Include(x => x.Types)
-			.Where(x => x.Reports.Any(y => y.UserId == user.Id) && x.Reports.Any(y => y.Id == request.Id))
-			.OrderBy(x => x.Rating)
-			.PaginatedListAsync(request.PageNumber, request.PageSize) ?? throw new ReportNotFound(request.Id);
-		var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
-		placesDto.ForEach(placeDto => placeDto.DistanceFromAddress = Math.Round(placeDto.DistanceFromAddress, 2));
-		var result = new PaginatedList<PlaceDto>(placesDto, places.TotalCount, request.PageNumber, request.PageSize);
-		
-		return result;
+		if (request.TagsString != null)
+		{
+			if (await _dbContext.Reports.AnyAsync(x => x.Id == request.Id) == false) throw new ReportNotFoundException(request.Id);
+
+			var typesNames = request.TagsString.Split('|');
+			var types = await _dbContext.PlaceTypes.Where(x => typesNames.Contains(x.Name))
+				.ToListAsync(cancellationToken);
+
+			var places = await _dbContext.Places.Include(x => x.Reports)
+				.Include(x => x.Addresses)
+				.Include(x => x.Types)
+				.Where(x => x.Reports.Any(y => y.UserId == user.Id) && x.Reports.Any(y => y.Id == request.Id) && x.Types.Any(y => types.Contains(y)))
+				.OrderBy(x => x.Rating)
+				.PaginatedListAsync(request.PageNumber, request.PageSize);
+
+			var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
+			placesDto.ForEach(placeDto => placeDto.DistanceFromAddress = Math.Round(placeDto.DistanceFromAddress, 2));
+			var result = new PaginatedList<PlaceDto>(placesDto, places.TotalCount, request.PageNumber, request.PageSize);
+
+			return result;
+		}
+		else
+		{
+			if (await _dbContext.Reports.AnyAsync(x => x.Id == request.Id) == false) throw new ReportNotFoundException(request.Id);
+
+			var places = await _dbContext.Places.Include(x => x.Reports)
+				.Include(x => x.Addresses)
+				.Include(x => x.Types)
+				.Where(x => x.Reports.Any(y => y.UserId == user.Id) && x.Reports.Any(y => y.Id == request.Id))
+				.OrderBy(x => x.Rating)
+				.PaginatedListAsync(request.PageNumber, request.PageSize);
+
+			var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
+			placesDto.ForEach(placeDto => placeDto.DistanceFromAddress = Math.Round(placeDto.DistanceFromAddress, 2));
+			var result = new PaginatedList<PlaceDto>(placesDto, places.TotalCount, request.PageNumber, request.PageSize);
+
+			return result;
+		}
 	}
 }
 

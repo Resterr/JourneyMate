@@ -2,8 +2,8 @@
 
 namespace JourneyMate.Application.Common.Exceptions;
 
-public class AddressAlreadyAdded : JourneyMateException
+public class AddressAlreadyAddedException : JourneyMateException
 {
 	public override HttpStatusCode StatusCode => HttpStatusCode.BadRequest;
-	public AddressAlreadyAdded() : base($"Address already added") { }
+	public AddressAlreadyAddedException() : base($"Address already added") { }
 }

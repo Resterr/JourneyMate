@@ -2,9 +2,9 @@
 
 namespace JourneyMate.Application.Common.Exceptions;
 
-public class ReportNotFound : JourneyMateException
+public class ReportNotFoundException : JourneyMateException
 {
 	public override HttpStatusCode StatusCode => HttpStatusCode.NotFound;
 	
-	public ReportNotFound(Guid id) : base($"Report with id: {id} not found") { }
+	public ReportNotFoundException(Guid id) : base($"Report with id: {id} not found") { }
 }

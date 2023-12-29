@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace JourneyMate.Infrastructure.Persistence.Configurations;
 
-public class UserFollowerConfiguration : IEntityTypeConfiguration<UserFollower>
+public class FollowConfiguration : IEntityTypeConfiguration<Follow>
 {
-	public void Configure(EntityTypeBuilder<UserFollower> builder)
+	public void Configure(EntityTypeBuilder<Follow> builder)
 	{
 		builder.Property(x => x.FollowDate)
 			.IsRequired();
@@ -23,6 +23,6 @@ public class UserFollowerConfiguration : IEntityTypeConfiguration<UserFollower>
 			.HasForeignKey(x => x.FollowedId)
 			.OnDelete(DeleteBehavior.NoAction);
 		
-		builder.ToTable("UserFollower");
+		builder.ToTable("Follow");
 	}
 }

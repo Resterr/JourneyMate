@@ -28,7 +28,9 @@ internal sealed class GetAllReportsHandler : IRequestHandler<GetAllReportsPagina
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
 		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
-		var reports = await _dbContext.Reports.Where(x => x.UserId == user.Id).PaginatedListAsync(request.PageNumber, request.PageSize);
+		var reports = await _dbContext.Reports.Where(x => x.UserId == user.Id)
+			.OrderBy(x => x.Created)
+			.PaginatedListAsync(request.PageNumber, request.PageSize);
 		var reportsDto = _mapper.Map<List<ReportDto>>(reports.Items);
 		var result = new PaginatedList<ReportDto>(reportsDto, reports.TotalCount, request.PageNumber, request.PageSize);
 		

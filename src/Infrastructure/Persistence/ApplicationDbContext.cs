@@ -26,7 +26,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 	public DbSet<Report> Reports => Set<Report>();
 	public DbSet<Plan> Plans => Set<Plan>();
 	public DbSet<PlacePlanRelation> PlacePlans => Set<PlacePlanRelation>();
-	public DbSet<UserFollower> Followers => Set<UserFollower>();
+	public DbSet<Follow> Followers => Set<Follow>();
 	
 	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IMediator mediator, AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor) : base(options)
 	{

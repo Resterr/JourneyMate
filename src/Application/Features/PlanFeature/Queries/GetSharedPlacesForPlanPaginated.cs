@@ -9,12 +9,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Application.Features.PlanFeature.Queries;
 
-public record GetSharedPlacesForPlanPaginated(Guid PlanId, int PageNumber, int PageSize) : IRequest<PaginatedList<PlaceDto>>;
+public record GetSharedPlacesForPlanPaginated(Guid PlanId, int PageNumber, int PageSize, string? TagsString) : IRequest<PaginatedList<PlaceDto>>;
 
 internal sealed class GetSharedPlacesForPlanPaginatedHandler : IRequestHandler<GetSharedPlacesForPlanPaginated, PaginatedList<PlaceDto>>
 {
-	private readonly IApplicationDbContext _dbContext;
 	private readonly ICurrentUserService _currentUserService;
+	private readonly IApplicationDbContext _dbContext;
 	private readonly IMapper _mapper;
 
 	public GetSharedPlacesForPlanPaginatedHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService, IMapper mapper)
@@ -28,21 +28,56 @@ internal sealed class GetSharedPlacesForPlanPaginatedHandler : IRequestHandler<G
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
 		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
-		var places = await _dbContext.Places.Include(x => x.Plans).ThenInclude(x => x.Plan)
-			.ThenInclude(x => x.Shared)
-			.ThenInclude(x => x.Follower)
-			.Include(x => x.Addresses)
-			.Where(x => x.Plans.Any(y => y.PlanId == request.PlanId) && x.Plans.Any(y => y.Plan.Shared.Any(z => z.Follower.FollowerId == user.Id)))
-			.OrderBy(x=> x.Rating)
-			.PaginatedListAsync(request.PageNumber, request.PageSize);
-		
-		if (places.Items.Count == 0) throw new PlanNotFound(request.PlanId);
-		
-		var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
-		placesDto.ForEach(placeDto => placeDto.DistanceFromAddress = Math.Round(placeDto.DistanceFromAddress, 2));
-		var result = new PaginatedList<PlaceDto>(placesDto, places.TotalCount, request.PageNumber, request.PageSize);
+		if (request.TagsString != null)
+		{
+			if (await _dbContext.Plans.AnyAsync(x => x.Id == request.PlanId) == false) throw new PlanNotFoundException(request.PlanId);
 
-		return result;
+			var typesNames = request.TagsString.Split('|');
+			var types = await _dbContext.PlaceTypes.Where(x => typesNames.Contains(x.Name))
+				.ToListAsync(cancellationToken);
+
+			var places = await _dbContext.Places.Include(x => x.Plans)
+				.ThenInclude(x => x.Plan)
+				.ThenInclude(x => x.Shared)
+				.ThenInclude(x => x.Follow)
+				.Include(x => x.Addresses)
+				.Include(x => x.Types)
+				.Where(x => x.Plans.Any(y => y.PlanId == request.PlanId)
+					&& x.Plans.Any(y => y.Plan.Shared.Any(z => z.Follow.FollowerId == user.Id) 
+						&& x.Types.Any(z => types.Contains(z))))
+				.OrderBy(x => x.Rating)
+				.PaginatedListAsync(request.PageNumber, request.PageSize);
+
+			if (places.Items.Count == 0) throw new PlanNotFoundException(request.PlanId);
+
+			var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
+			placesDto.ForEach(placeDto => placeDto.DistanceFromAddress = Math.Round(placeDto.DistanceFromAddress, 2));
+			var result = new PaginatedList<PlaceDto>(placesDto, places.TotalCount, request.PageNumber, request.PageSize);
+
+			return result;
+		}
+		else
+		{
+			if (await _dbContext.Plans.AnyAsync(x => x.Id == request.PlanId) == false) throw new PlanNotFoundException(request.PlanId);
+
+			var places = await _dbContext.Places.Include(x => x.Plans)
+				.ThenInclude(x => x.Plan)
+				.ThenInclude(x => x.Shared)
+				.ThenInclude(x => x.Follow)
+				.Include(x => x.Addresses)
+				.Include(x => x.Types)
+				.Where(x => x.Plans.Any(y => y.PlanId == request.PlanId) && x.Plans.Any(y => y.Plan.Shared.Any(z => z.Follow.FollowerId == user.Id)))
+				.OrderBy(x => x.Rating)
+				.PaginatedListAsync(request.PageNumber, request.PageSize);
+
+			if (places.Items.Count == 0) throw new PlanNotFoundException(request.PlanId);
+
+			var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
+			placesDto.ForEach(placeDto => placeDto.DistanceFromAddress = Math.Round(placeDto.DistanceFromAddress, 2));
+			var result = new PaginatedList<PlaceDto>(placesDto, places.TotalCount, request.PageNumber, request.PageSize);
+
+			return result;
+		}
 	}
 }
 
@@ -53,8 +88,10 @@ public class GetSharedPlacesForPlanPaginatedValidator : AbstractValidator<GetSha
 		RuleFor(x => x.PlanId)
 			.NotEmpty();
 		RuleFor(x => x.PageNumber)
-			.NotEmpty().GreaterThan(0);
+			.NotEmpty()
+			.GreaterThan(0);
 		RuleFor(x => x.PageSize)
-			.NotEmpty().GreaterThan(0);
+			.NotEmpty()
+			.GreaterThan(0);
 	}
 }

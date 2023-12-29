@@ -34,7 +34,7 @@ internal sealed class AddOrUpdateHandler : IRequestHandler<AddOrUpdatePlan, Guid
 
 			foreach (var placeId in request.PlacesId)
 			{
-				var place = await _dbContext.Places.SingleOrDefaultAsync(x => x.Id == placeId) ?? throw new PlaceNotFound(placeId);
+				var place = await _dbContext.Places.SingleOrDefaultAsync(x => x.Id == placeId) ?? throw new PlaceNotFoundException(placeId);
 				placePlans.Add(new PlacePlanRelation(place, plan));
 			}
 
@@ -51,7 +51,7 @@ internal sealed class AddOrUpdateHandler : IRequestHandler<AddOrUpdatePlan, Guid
 
 			foreach (var placeId in placePlansToadd)
 			{
-				var place = await _dbContext.Places.SingleOrDefaultAsync(x => x.Id == placeId) ?? throw new PlaceNotFound(placeId);
+				var place = await _dbContext.Places.SingleOrDefaultAsync(x => x.Id == placeId) ?? throw new PlaceNotFoundException(placeId);
 				placePlans.Add(new PlacePlanRelation(place, plan));
 			}
 

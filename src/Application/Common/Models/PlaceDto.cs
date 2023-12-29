@@ -1,6 +1,7 @@
 ﻿using JourneyMate.Application.Common.Mappings;
 using JourneyMate.Domain.Entities;
 using JourneyMate.Domain.ValueObjects;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace JourneyMate.Application.Common.Models;
 
@@ -16,6 +17,7 @@ public class PlaceDto : IMapFrom<Place>
 	public double DistanceFromAddress { get; set; }
 	public Location Location { get; set; }
 	public PlusCode PlusCode { get; set; }
+	public Stream? Photo { get; set; }
 	public List<PlaceTypeDto> Types { get; set; } = new();
 
 	public void UpdateFromPlace(Place place)

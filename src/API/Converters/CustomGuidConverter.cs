@@ -11,7 +11,7 @@ public class CustomGuidConverter : JsonConverter<Guid>
 		var value = reader.GetString();
 		if (!Guid.TryParse(value, out var guid))
 		{
-			throw new InvalidGuidFormat(value);
+			throw new InvalidGuidFormatException(value);
 		}
 
 		return guid;

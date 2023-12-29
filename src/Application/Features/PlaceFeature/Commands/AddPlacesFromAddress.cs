@@ -24,7 +24,7 @@ internal sealed class AddPlacesFromAddressHandler : IRequestHandler<AddPlacesFro
 
 	public async Task<Unit> Handle(AddPlacesFromAddress request, CancellationToken cancellationToken)
 	{
-		var address = await _dbContext.Addresses.SingleOrDefaultAsync(x => x.Id == request.AddressId) ?? throw new AddressNotFound(request.AddressId);
+		var address = await _dbContext.Addresses.SingleOrDefaultAsync(x => x.Id == request.AddressId) ?? throw new AddressNotFoundException(request.AddressId);
 		var locationString = string.Join(',', address.Location.Latitude.ToString(CultureInfo.InvariantCulture), address.Location.Longitude.ToString(CultureInfo.InvariantCulture));
 		var placeTypes = await _dbContext.PlaceTypes.ToListAsync();
 		var places = await _placesApiService.GetPlacesAsync(locationString,  placeTypes.Select(x => x.ApiName).ToList());
@@ -80,7 +80,7 @@ internal sealed class AddPlacesFromAddressHandler : IRequestHandler<AddPlacesFro
 		}
 		else
 		{
-			throw new PlaceNotFound();
+			throw new PlaceNotFoundException();
 		}
 
 		return Unit.Value;

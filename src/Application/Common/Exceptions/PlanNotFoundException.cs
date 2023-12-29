@@ -2,9 +2,9 @@
 
 namespace JourneyMate.Application.Common.Exceptions;
 
-public class PlanNotFound : JourneyMateException
+public class PlanNotFoundException : JourneyMateException
 {
 	public override HttpStatusCode StatusCode => HttpStatusCode.NotFound;
 	
-	public PlanNotFound(Guid id) : base($"Plan with id: {id} not found") { }
+	public PlanNotFoundException(Guid id) : base($"Plan with id: {id} not found") { }
 }

@@ -120,7 +120,7 @@ internal sealed class GeocodeApiService : IGeocodeApiService
 
 		if (!validationResult.IsValid)
 		{
-			throw new AddressNotFound();
+			throw new AddressNotFoundException();
 		}
 		
 		var address = new AddressAddDto();
@@ -128,16 +128,16 @@ internal sealed class GeocodeApiService : IGeocodeApiService
 		AddressReadModel.AddressComponent locality;
 		if (result.Address_Components.Any(x => x.Types.Contains("locality")))
 		{
-			locality = result.Address_Components.FirstOrDefault(x => x.Types.Contains("locality")) ?? throw new ObjectNotFound("Locality");
+			locality = result.Address_Components.FirstOrDefault(x => x.Types.Contains("locality")) ?? throw new ObjectNotFoundException("Locality");
 		}
 		else
 		{
-			locality = result.Address_Components.FirstOrDefault(x => x.Types.Contains("administrative_area_level_3")) ?? throw new ObjectNotFound("Administrative Area Level_3");
+			locality = result.Address_Components.FirstOrDefault(x => x.Types.Contains("administrative_area_level_3")) ?? throw new ObjectNotFoundException("Administrative Area Level_3");
 		}
 		
-		var administrativeAreaLevel2 = result.Address_Components.FirstOrDefault(x => x.Types.Contains("administrative_area_level_2")) ?? throw new ObjectNotFound("Administrative area level 2");
-		var administrativeAreaLevel1 = result.Address_Components.FirstOrDefault(x => x.Types.Contains("administrative_area_level_1")) ?? throw new ObjectNotFound("Administrative area level 1");
-		var country = result.Address_Components.FirstOrDefault(x => x.Types.Contains("country")) ?? throw new ObjectNotFound("Country");
+		var administrativeAreaLevel2 = result.Address_Components.FirstOrDefault(x => x.Types.Contains("administrative_area_level_2")) ?? throw new ObjectNotFoundException("Administrative area level 2");
+		var administrativeAreaLevel1 = result.Address_Components.FirstOrDefault(x => x.Types.Contains("administrative_area_level_1")) ?? throw new ObjectNotFoundException("Administrative area level 1");
+		var country = result.Address_Components.FirstOrDefault(x => x.Types.Contains("country")) ?? throw new ObjectNotFoundException("Country");
 		var postalCode = result.Address_Components.FirstOrDefault(x => x.Types.Contains("postal_code"));
 
 		address.ApiPlaceId = result.Place_Id;

@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JourneyMate.Application.Features.PlaceFeature.Commands;
 
-public record GenerateReport(Guid AddressId, List<Guid> Types) : IRequest<Guid>;
+public record GenerateReport(Guid AddressId, List<string> Types) : IRequest<Guid>;
 
 internal sealed class GenerateReportHandler : IRequestHandler<GenerateReport, Guid>
 {
@@ -25,12 +25,12 @@ internal sealed class GenerateReportHandler : IRequestHandler<GenerateReport, Gu
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
 		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
 
-		var address = await _dbContext.Addresses.FirstOrDefaultAsync(x => x.Id == request.AddressId) ?? throw new AddressNotFound(request.AddressId);
-		var types = await _dbContext.PlaceTypes.Where(x => request.Types.Contains(x.Id)).ToListAsync(cancellationToken);
+		var address = await _dbContext.Addresses.FirstOrDefaultAsync(x => x.Id == request.AddressId) ?? throw new AddressNotFoundException(request.AddressId);
+		var types = await _dbContext.PlaceTypes.Where(x => request.Types.Contains(x.Name)).ToListAsync(cancellationToken);
 
 		var placeAddresses = await _dbContext.PlaceAddress.Include(x => x.Place)
 			.ThenInclude(x => x.Types)
-			.Where(x => x.AddressId == address.Id)
+			.Where(x => x.AddressId == address.Id && x.Place.UserRatingsTotal > 10 && x.Place.Rating > 3.0)
 			.ToListAsync(cancellationToken);
 
 		var places = placeAddresses.Select(x => x.Place)

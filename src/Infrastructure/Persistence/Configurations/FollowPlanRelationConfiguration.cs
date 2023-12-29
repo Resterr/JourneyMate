@@ -4,23 +4,23 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace JourneyMate.Infrastructure.Persistence.Configurations;
 
-public class UserFollowerPlanRelationConfiguration : IEntityTypeConfiguration<UserFollowerPlanRelation>
+public class FollowPlanRelationConfiguration : IEntityTypeConfiguration<FollowPlanRelation>
 {
-	public void Configure(EntityTypeBuilder<UserFollowerPlanRelation> builder)
+	public void Configure(EntityTypeBuilder<FollowPlanRelation> builder)
 	{
 		builder
-			.HasKey(x => new { x.FollowerId, x.PlanId });
+			.HasKey(x => new { x.FollowId, x.PlanId });
 
 		builder
-			.HasOne(x => x.Follower)
+			.HasOne(x => x.Follow)
 			.WithMany(x => x.Shared)
-			.HasForeignKey(x => x.FollowerId);
+			.HasForeignKey(x => x.FollowId);
 
 		builder
 			.HasOne(x => x.Plan)
 			.WithMany(x => x.Shared)
 			.HasForeignKey(x => x.PlanId);
 		
-		builder.ToTable("UserFollowerPlanRelation");
+		builder.ToTable("FollowPlanRelation");
 	}
 } 

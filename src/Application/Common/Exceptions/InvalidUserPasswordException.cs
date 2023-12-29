@@ -2,9 +2,8 @@
 
 namespace JourneyMate.Application.Common.Exceptions;
 
-internal class InvalidUserCredentials : JourneyMateException
+public class InvalidUserPasswordException : JourneyMateException
 {
 	public override HttpStatusCode StatusCode => HttpStatusCode.BadRequest;
-
-	public InvalidUserCredentials() : base("Invalid user credentials") { }
+	public InvalidUserPasswordException() : base("Invalid password") { }
 }

@@ -28,7 +28,7 @@ internal sealed class LoginUserHandler : IRequestHandler<LoginUser, TokensDto>
 				.SingleOrDefaultAsync(x => x.UserName == request.UserName, cancellationToken) ??
 			throw new UserNotFoundException(request.UserName, "username");
 		
-		if (!_passwordManager.Validate(request.Password, user.PasswordHash)) throw new InvalidUserPassword();
+		if (!_passwordManager.Validate(request.Password, user.PasswordHash)) throw new InvalidUserPasswordException();
 
 		var accessToken = _tokenService.GenerateAccessToken(user.Id, user.Email, user.UserName, user.Roles.Select(x => x.Name));
 		var refreshToken = _tokenService.GenerateRefreshToken();

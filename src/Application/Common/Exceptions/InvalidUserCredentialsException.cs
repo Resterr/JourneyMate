@@ -2,8 +2,9 @@
 
 namespace JourneyMate.Application.Common.Exceptions;
 
-public class InvalidGuidFormat : JourneyMateException
+internal class InvalidUserCredentialsException : JourneyMateException
 {
 	public override HttpStatusCode StatusCode => HttpStatusCode.BadRequest;
-	public InvalidGuidFormat(string? value) : base($"Could not parse '{value}' as a GUID.") { }
+
+	public InvalidUserCredentialsException() : base("Invalid user credentials") { }
 }

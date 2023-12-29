@@ -11,7 +11,7 @@ public class User : BaseAuditableEntity
 	public string? RefreshToken { get; private set; }
 	public DateTime? RefreshTokenExpiryTime { get; private set; }
 	public List<Role> Roles { get; private set; } = new();
-	public List<UserFollower> UserFollowers { get; private set; } = new();
+	public List<Follow> UserFollowers { get; private set; } = new();
 	
 	private User() { }
 	public User(string email, string passwordHash, string userName)

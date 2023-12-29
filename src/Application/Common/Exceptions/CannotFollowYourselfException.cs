@@ -2,8 +2,8 @@
 
 namespace JourneyMate.Application.Common.Exceptions;
 
-public class InvalidUserPassword : JourneyMateException
+public class CannotFollowYourselfException : JourneyMateException
 {
 	public override HttpStatusCode StatusCode => HttpStatusCode.BadRequest;
-	public InvalidUserPassword() : base("Invalid password") { }
+	public CannotFollowYourselfException() : base($"You cannot follow yourself") { }
 }
