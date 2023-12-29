@@ -47,9 +47,7 @@ internal sealed class GetSharedPlacesForPlanPaginatedHandler : IRequestHandler<G
 						&& x.Types.Any(z => types.Contains(z))))
 				.OrderBy(x => x.Rating)
 				.PaginatedListAsync(request.PageNumber, request.PageSize);
-
-			if (places.Items.Count == 0) throw new PlanNotFoundException(request.PlanId);
-
+			
 			var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
 			placesDto.ForEach(placeDto => placeDto.DistanceFromAddress = Math.Round(placeDto.DistanceFromAddress, 2));
 			var result = new PaginatedList<PlaceDto>(placesDto, places.TotalCount, request.PageNumber, request.PageSize);
@@ -69,9 +67,7 @@ internal sealed class GetSharedPlacesForPlanPaginatedHandler : IRequestHandler<G
 				.Where(x => x.Plans.Any(y => y.PlanId == request.PlanId) && x.Plans.Any(y => y.Plan.Shared.Any(z => z.Follow.FollowerId == user.Id)))
 				.OrderBy(x => x.Rating)
 				.PaginatedListAsync(request.PageNumber, request.PageSize);
-
-			if (places.Items.Count == 0) throw new PlanNotFoundException(request.PlanId);
-
+			
 			var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
 			placesDto.ForEach(placeDto => placeDto.DistanceFromAddress = Math.Round(placeDto.DistanceFromAddress, 2));
 			var result = new PaginatedList<PlaceDto>(placesDto, places.TotalCount, request.PageNumber, request.PageSize);
