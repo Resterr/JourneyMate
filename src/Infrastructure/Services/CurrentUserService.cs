@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using JourneyMate.Application.Common;
 using JourneyMate.Application.Common.Interfaces;
 using Microsoft.AspNetCore.Http;
 
@@ -18,3 +19,4 @@ internal sealed class CurrentUserService : ICurrentUserService
 	public Guid? UserId => Principal?.FindFirstValue(ClaimTypes.NameIdentifier)
 		.ToGuid();
 }
+

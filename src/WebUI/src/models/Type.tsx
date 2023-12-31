@@ -1,4 +1,5 @@
 export type Type = {
-	id : string;
-	name : string;
+  id: string;
+  apiName: string;
+  name: string;
 };

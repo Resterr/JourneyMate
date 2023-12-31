@@ -1,0 +1,37 @@
+.addSchedule {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    background-image: url("../../utils/world.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    object-fit: cover;
+    position: absolute;
+    color: white;
+}
+
+.addSchedule__form-calendar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.addSchedule__form-calendar-item {
+    background-color: rgba(53, 41, 97, 1);
+    color: white;
+    width: 400px;
+    height: 80px;
+    margin-bottom: 2%;
+}
+
+.addSchedule__form-button {
+    background-color: rgba(53, 41, 97, 1);
+    border-radius: 0;
+    color: white;
+    width: 400px;
+    height: 80px;
+}

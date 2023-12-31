@@ -28,7 +28,7 @@ internal sealed class GetAllPlansForUserPaginatedHandler : IRequestHandler<GetAl
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
 		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
-		var plans = await _dbContext.Plans.Where(x => x.UserId == user.Id).OrderBy(x=> x.Name).PaginatedListAsync(request.PageNumber, request.PageNumber);
+		var plans = await _dbContext.Plans.Where(x => x.UserId == user.Id).OrderBy(x=> x.Name).PaginatedListAsync(request.PageNumber, request.PageSize);
 		var planDtos = _mapper.Map<List<PlanDto>>(plans.Items);
 
 		return new PaginatedList<PlanDto>(planDtos, plans.TotalCount, request.PageNumber, request.PageSize);

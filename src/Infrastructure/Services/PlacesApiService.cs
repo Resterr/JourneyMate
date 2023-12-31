@@ -21,52 +21,55 @@ internal sealed class PlacesApiService : IPlacesApiService
 		_keysOptions = keysOptions;
 	}
 
-	public async Task<List<PlaceAddDto>> GetPlacesAsync(string location, string radius, string type, string rankBy, double latitude, double longitude)
+	public async Task<List<PlaceAddDto>> GetPlacesAsync(string location, List<string> types)
 	{
 		using var client = new HttpClient();
-
-		var response = await client.GetStringAsync($"{_urlOptions.Value.GoogleMapsApiUrl}/place/nearbysearch/json" +
-			$"?location={location}&radius={radius}&type={type}&rankby={rankBy}&key={_keysOptions.Value.GooglePlacesApiKey}");
+		var result = new List<PlaceAddDto>();
 		
-		var placeReadModel = JsonConvert.DeserializeObject<PlaceReadModel>(response);
-		var placeReadModels = new List<PlaceReadModel>();
-		if (placeReadModel != null)
+		foreach (var type in types)
 		{
-			placeReadModels.Add(placeReadModel);
-			var nextPageToken = placeReadModel.Next_page_token;
+			var response = await client.GetStringAsync($"{_urlOptions.Value.GoogleMapsApiUrl}/place/nearbysearch/json" +
+				$"?location={location}&type={type}&rankby=distance&key={_keysOptions.Value.GooglePlacesApiKey}");
 
-			while (!nextPageToken.IsNullOrEmpty())
+			var placeReadModel = JsonConvert.DeserializeObject<PlaceReadModel>(response);
+			var placeReadModels = new List<PlaceReadModel>();
+			if (placeReadModel != null)
 			{
-				Thread.Sleep(2000);
-				response = await client.GetStringAsync($"{_urlOptions.Value.GoogleMapsApiUrl}/place/nearbysearch/json" +
-					$"?location={location}&radius={radius}&type={type}&rankby={rankBy}&key={_keysOptions.Value.GooglePlacesApiKey}&pagetoken={nextPageToken}");
-				placeReadModel = JsonConvert.DeserializeObject<PlaceReadModel>(response);
+				placeReadModels.Add(placeReadModel);
+				var nextPageToken = placeReadModel.Next_page_token;
 
-				if (placeReadModel != null)
+				while (!nextPageToken.IsNullOrEmpty())
 				{
-					if (placeReadModel.Status != "OK") break;
+					Thread.Sleep(1600);
+					response = await client.GetStringAsync($"{_urlOptions.Value.GoogleMapsApiUrl}/place/nearbysearch/json" +
+						$"?location={location}&type={type}&rankby=distance&key={_keysOptions.Value.GooglePlacesApiKey}&pagetoken={nextPageToken}&language=pl");
+					placeReadModel = JsonConvert.DeserializeObject<PlaceReadModel>(response);
 
-					nextPageToken = placeReadModel.Next_page_token;
-					placeReadModels.Add(placeReadModel);
-				}
-				else
-				{
-					break;
+					if (placeReadModel != null)
+					{
+						if (placeReadModel.Status != "OK") break;
+
+						nextPageToken = placeReadModel.Next_page_token;
+						placeReadModels.Add(placeReadModel);
+					}
+					else
+					{
+						break;
+					}
 				}
 			}
-		}
-
-		var result = new List<PlaceAddDto>();
-		foreach (var model in placeReadModels)
-		{
-			var placeDto = MapToDto(model, latitude, longitude);
-			result.AddRange(placeDto);
+			
+			foreach (var model in placeReadModels)
+			{
+				var placeDto = MapToDto(model);
+				result.AddRange(placeDto);
+			}
 		}
 
 		return result;
 	}
 
-	private static List<PlaceAddDto> MapToDto(PlaceReadModel placeReadModel, double latitude, double longitude)
+	private static List<PlaceAddDto> MapToDto(PlaceReadModel placeReadModel)
 	{
 		var places = new List<PlaceAddDto>();
 
@@ -78,8 +81,8 @@ internal sealed class PlacesApiService : IPlacesApiService
 			if (validationResult.IsValid)
 				if (result.Business_status == "OPERATIONAL")
 				{
-					var photo = result.Photos.IsNullOrEmpty() ? null : result.Photos[0].Photo_reference.IsNullOrEmpty() ? null : new Photo(result.Photos[0].Height, result.Photos[0].Width, result.Photos[0].Photo_reference);
-						
+					var photo = result.Photos.IsNullOrEmpty() ? null : result.Photos[0].Photo_reference.IsNullOrEmpty() ? null : new PhotoAddDto(result.Photos[0].Height, result.Photos[0].Width, result.Photos[0].Photo_reference);
+
 					var place = new PlaceAddDto
 					{
 						ApiPlaceId = result.Place_id,
@@ -88,15 +91,10 @@ internal sealed class PlacesApiService : IPlacesApiService
 						Rating = result.Rating,
 						UserRatingsTotal = result.User_ratings_total,
 						Vicinity = result.Vicinity,
-						DistanceFromAddress = MathOperations.CalculateDistance(latitude, longitude, (double)result.Geometry.Location.Lat!, (double)result.Geometry.Location.Lng!),
 						Location = new Location((double)result.Geometry.Location.Lat!, (double)result.Geometry.Location.Lng!),
 						PlusCode = new PlusCode(result.Plus_code.Compound_code, result.Plus_code.Global_code),
 						Photo = photo,
-						Types = result.Types.Select(x => new PlaceTypeDto
-							{
-								Name = x
-							})
-							.ToList()
+						Types = result.Types
 					};
 
 					places.Add(place);
@@ -207,7 +205,6 @@ internal sealed class PlacesApiService : IPlacesApiService
 				.NotNull();
 		}
 	}
-
 	
 	public async Task<byte[]> LoadPhoto(string photoReference, int height, int width)
 	{

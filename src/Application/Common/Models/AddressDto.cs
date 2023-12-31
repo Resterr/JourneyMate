@@ -4,7 +4,7 @@ using JourneyMate.Domain.ValueObjects;
 
 namespace JourneyMate.Application.Common.Models;
 
-public class AddressDto : IMapFrom<Address>
+public class AddressDto
 {
 	public Guid Id { get; set; }
 	public string ApiPlaceId { get; set; }

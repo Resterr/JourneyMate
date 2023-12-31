@@ -1,12 +1,8 @@
 ﻿import React from "react";
-import './home.css';
+import "./home.css";
 
-const Home : React.FC = () => {
-	return (
-		<div className="home">
-			
-		</div>
-	)
-}
+const Home: React.FC = () => {
+  return <div className="home"></div>;
+};
 
 export default Home;

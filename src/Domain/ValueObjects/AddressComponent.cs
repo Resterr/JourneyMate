@@ -6,7 +6,7 @@ public class AddressComponent : ValueObject
 {
 	public string ShortName { get; set; }
 	public string LongName { get; set; }
-
+	
 	public AddressComponent(string shortName, string longName)
 	{
 		ShortName = shortName;

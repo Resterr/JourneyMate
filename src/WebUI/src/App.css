@@ -23,10 +23,22 @@ button:hover {
     background-color: #f1ad64;
 }
 
-.MuiSvgIcon-root{
+.MuiSvgIcon-root {
     color: #00AAFF;
 }
 
 .MuiPaginationItem-page {
+    color: white !important;
+}
+
+.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
+    color: white !important;
+}
+
+.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
+    color: white !important;
+}
+
+.css-1jy569b-MuiFormLabel-root-MuiInputLabel-root {
     color: white !important;
 }

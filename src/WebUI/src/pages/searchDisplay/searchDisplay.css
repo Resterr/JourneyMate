@@ -14,7 +14,7 @@
     color: white !important;
 }
 
-.searchDisplay__pagination{
+.searchDisplay__pagination {
     width: 1400px;
     background-color: rgba(53, 41, 97, 0.6);
     color: white;
@@ -22,7 +22,7 @@
     justify-content: center;
 }
 
-.searchDisplay__pagination-items{
+.searchDisplay__pagination-items {
     color: white;
 }
 

@@ -9,11 +9,11 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 	public void Configure(EntityTypeBuilder<User> builder)
 	{
 		builder.Property(x => x.Email)
-			.HasMaxLength(500)
+			.HasMaxLength(512)
 			.IsRequired();
 
 		builder.Property(x => x.UserName)
-			.HasMaxLength(100)
+			.HasMaxLength(256)
 			.IsRequired();
 
 		builder.ToTable("User");

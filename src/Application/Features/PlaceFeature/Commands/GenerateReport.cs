@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
-using JourneyMate.Domain.Entities.MongoDb;
+using JourneyMate.Domain.Entities;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 
@@ -12,16 +12,12 @@ public record GenerateReport(Guid AddressId, List<string> Types) : IRequest<Guid
 internal sealed class GenerateReportHandler : IRequestHandler<GenerateReport, Guid>
 {
 	private readonly IApplicationDbContext _dbContext;
-	private readonly IApplicationMongoClient _mongoClient;
 	private readonly ICurrentUserService _currentUserService;
-	private readonly IDateTimeService _dateTimeService;
 
-	public GenerateReportHandler(IApplicationDbContext dbContext, IApplicationMongoClient mongoClient, ICurrentUserService currentUserService, IDateTimeService dateTimeService)
+	public GenerateReportHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService)
 	{
 		_dbContext = dbContext;
-		_mongoClient = mongoClient;
 		_currentUserService = currentUserService;
-		_dateTimeService = dateTimeService;
 	}
 
 	public async Task<Guid> Handle(GenerateReport request, CancellationToken cancellationToken)
@@ -29,12 +25,12 @@ internal sealed class GenerateReportHandler : IRequestHandler<GenerateReport, Gu
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
 		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
 
-		var address = await _dbContext.Addresses.FirstOrDefaultAsync(x => x.Id == request.AddressId) ?? throw new AddressNotFound(request.AddressId);
+		var address = await _dbContext.Addresses.FirstOrDefaultAsync(x => x.Id == request.AddressId) ?? throw new AddressNotFoundException(request.AddressId);
 		var types = await _dbContext.PlaceTypes.Where(x => request.Types.Contains(x.Name)).ToListAsync(cancellationToken);
 
 		var placeAddresses = await _dbContext.PlaceAddress.Include(x => x.Place)
 			.ThenInclude(x => x.Types)
-			.Where(x => x.AddressId == address.Id)
+			.Where(x => x.AddressId == address.Id && x.Place.UserRatingsTotal > 10 && x.Place.Rating > 3.0)
 			.ToListAsync(cancellationToken);
 
 		var places = placeAddresses.Select(x => x.Place)
@@ -43,14 +39,12 @@ internal sealed class GenerateReportHandler : IRequestHandler<GenerateReport, Gu
 		
 		places = places.Where(x => x.CheckType(types)).ToList();
 		
-		var reportId = Guid.NewGuid();
-		var placesId = places.Select(x => x.Id).ToList();
-		var created = _dateTimeService.CurrentDate();
-		var newReport = new Report(reportId, user.Id, request.AddressId, created, placesId, request.Types);
-		
-		await _mongoClient.Reports.InsertOneAsync(newReport);
+		var newReport = new Report(user, address, places, types);
 
-		return reportId;
+		await _dbContext.Reports.AddAsync(newReport);
+		await _dbContext.SaveChangesAsync();
+
+		return newReport.Id;
 	}
 }
 

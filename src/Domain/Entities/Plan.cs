@@ -7,10 +7,10 @@ public class Plan : BaseAuditableEntity
 	public Guid UserId { get; private set; }
 	public User User { get; private set; }
 	public string Name { get; private set; }
-	public List<PlacePlan> Places { get; private set; } = new();
+	public List<Place> Places { get; private set; } = new();
+	public List<FollowPlanRelation> Shared { get; private set; } = new();
 	
 	private Plan() { }
-    
 	public Plan(User user, string name)
 	{
 		User = user;
@@ -22,13 +22,18 @@ public class Plan : BaseAuditableEntity
 		Name = name;
 	}
 
-	public void AddPlaces(List<PlacePlan> places)
+	public void AddPlaces(List<Place> places)
 	{
 		var placesToAdd = places.Where(x => !Places.Contains(x));
-		Places.AddRange(placesToAdd);
+		
+		foreach (var placeToAdd in placesToAdd)
+		{
+			Places.Add(placeToAdd);
+		}
+		
 	}
 	
-	public void RemovePlaces(List<PlacePlan> places)
+	public void RemovePlaces(List<Place> places)
 	{
 		var placesToRemove = places.Where(x => Places.Contains(x));
 		
@@ -36,5 +41,11 @@ public class Plan : BaseAuditableEntity
 		{
 			Places.Remove(place);
 		}
+	}
+	
+	public void AddShare(FollowPlanRelation share)
+	{
+		if (Shared.Contains(share)) return;
+		Shared.Add(share);
 	}
 }

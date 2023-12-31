@@ -19,7 +19,7 @@ internal sealed class UpdatePlanHandler : IRequestHandler<UpdatePlan, Unit>
 
 	public async Task<Unit> Handle(UpdatePlan request, CancellationToken cancellationToken)
 	{
-		var plan = await _dbContext.Plans.SingleOrDefaultAsync(x => x.Id == request.Id) ?? throw new PlanNotFound(request.Id);
+		var plan = await _dbContext.Plans.SingleOrDefaultAsync(x => x.Id == request.Id) ?? throw new PlanNotFoundException(request.Id);
 		plan.Update(request.Name);
 		
 		_dbContext.Plans.Update(plan);

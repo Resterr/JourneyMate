@@ -1,0 +1,55 @@
+.schedulesList {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    background-image: url("../../utils/world.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    object-fit: cover;
+    position: absolute;
+    color: white;
+}
+
+.schedulesList__search {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.schedulesList__calendar {
+    background-color: rgba(53, 41, 97, 1);
+    color: white;
+    width: 400px;
+    height: 80px;
+}
+
+.schedulesList__search-add-button {
+    background-color: rgba(53, 41, 97, 1);
+    border-radius: 0;
+    color: white;
+    width: 200px;
+    height: 80px;
+}
+
+.schedulesList__content {
+    width: 1400px;
+    background-color: rgba(53, 41, 97, 0.6);
+    color: white;
+}
+
+.schedulesList__pagination {
+    width: 1400px;
+    background-color: rgba(53, 41, 97, 0.6);
+    color: white;
+    display: flex;
+    justify-content: center;
+}
+
+.schedulesList__pagination-items {
+    color: white;
+}
+

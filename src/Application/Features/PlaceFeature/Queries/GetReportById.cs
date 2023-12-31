@@ -3,10 +3,8 @@ using FluentValidation;
 using JourneyMate.Application.Common.Exceptions;
 using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Application.Common.Models;
-using JourneyMate.Domain.Entities.MongoDb;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
-using MongoDB.Driver;
 
 namespace JourneyMate.Application.Features.PlaceFeature.Queries;
 
@@ -15,14 +13,12 @@ public record GetReportById(Guid Id) : IRequest<ReportDto>;
 internal sealed class GetReportByIdHandler : IRequestHandler<GetReportById, ReportDto>
 {
 	private readonly IApplicationDbContext _dbContext;
-	private readonly IApplicationMongoClient _mongoClient;
 	private readonly ICurrentUserService _currentUserService;
 	private readonly IMapper _mapper;
 
-	public GetReportByIdHandler(IApplicationDbContext dbContext, IApplicationMongoClient mongoClient, ICurrentUserService currentUserService, IMapper mapper)
+	public GetReportByIdHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService, IMapper mapper)
 	{
 		_dbContext = dbContext;
-		_mongoClient = mongoClient;
 		_currentUserService = currentUserService;
 		_mapper = mapper;
 	}
@@ -31,10 +27,7 @@ internal sealed class GetReportByIdHandler : IRequestHandler<GetReportById, Repo
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
 		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
-		var filter = Builders<Report>.Filter.Eq(x => x.Id, request.Id) & Builders<Report>.Filter.Eq(x => x.UserId, user.Id);
-		var report = await _mongoClient.Reports.Find(filter)
-			.FirstOrDefaultAsync() ?? throw new ReportNotFound(request.Id);
-		
+		var report = await _dbContext.Reports.Where(x => x.UserId == user.Id).FirstOrDefaultAsync(x => x.Id == request.Id) ?? throw new ReportNotFoundException(request.Id);
 		var result = _mapper.Map<ReportDto>(report);
 		
 		return result;

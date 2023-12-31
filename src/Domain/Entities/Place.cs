@@ -13,13 +13,13 @@ public class Place : BaseAuditableEntity
 	public string Vicinity { get; private set; }
 	public Location Location { get; private set; }
 	public PlusCode PlusCode { get; private set; }
-	public Photo? Photo { get; private set; }
-	public List<PlaceAddress> Addresses { get; private set; } = new();
+	public List<Photo> Photos { get; private set; } = new();
+	public List<PlaceAddressRelation> Addresses { get; private set; } = new();
 	public List<PlaceType> Types { get; private set; } = new();
-	public List<PlacePlan> Plans { get; private set; } = new();
+	public List<Report> Reports { get; private set; } = new();
+	public List<Plan> Plans { get; private set; } = new();
 	
 	private Place() { }
-
 	public Place(
 		string apiPlaceId,
 		string businessStatus,
@@ -28,8 +28,7 @@ public class Place : BaseAuditableEntity
 		int userRatingsTotal,
 		string vicinity,
 		Location location,
-		PlusCode plusCode,
-		Photo? photo)
+		PlusCode plusCode)
 	{
 		ApiPlaceId = apiPlaceId;
 		BusinessStatus = businessStatus;
@@ -39,7 +38,6 @@ public class Place : BaseAuditableEntity
 		Vicinity = vicinity;
 		Location = location;
 		PlusCode = plusCode;
-		Photo = photo;
 	}
 
 	public void UpdateRatings(double rating, int userRatingsTotal)
@@ -60,15 +58,16 @@ public class Place : BaseAuditableEntity
 		Location = location;
 		PlusCode = plusCode;
 	}
-
-	public void UpdatePhoto(Photo? photo)
-	{
-		Photo = photo;
-	}
-
+	
 	public bool CheckType(List<PlaceType> placeTypes)
 	{
-		return Types.Any(x => placeTypes.Contains(x));
+		var hasType = false;
+		foreach (var placeType in placeTypes)
+		{
+			if (Types.Any(x => x.Id == placeType.Id)) hasType = true;
+		}
+		
+		return hasType;
 	}
 	
 	public void SetTypes(List<PlaceType> placeTypes)
@@ -82,14 +81,19 @@ public class Place : BaseAuditableEntity
 		Types.Add(placeType);
 	}
 	
+	public void AddPhoto(Photo photo)
+	{
+		Photos.Add(photo);
+	}
+	
 	public bool CheckAddress(Guid addressId)
 	{
 		return Addresses.Any(x => x.AddressId == addressId);
 	}
 	
-	public void AddAddress(PlaceAddress address)
+	public void AddAddress(PlaceAddressRelation addressRelation)
 	{
-		if (Addresses.Contains(address)) return;
-		Addresses.Add(address);
+		if (Addresses.Contains(addressRelation)) return;
+		Addresses.Add(addressRelation);
 	}
 }

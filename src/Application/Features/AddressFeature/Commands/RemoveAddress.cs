@@ -19,7 +19,7 @@ internal sealed class RemoveAddressHandler : IRequestHandler<RemoveAddress, Unit
 
 	public async Task<Unit> Handle(RemoveAddress request, CancellationToken cancellationToken)
 	{
-		var address = await _dbContext.Addresses.SingleOrDefaultAsync(x => x.Id == request.Id) ?? throw new AddressNotFound(request.Id);
+		var address = await _dbContext.Addresses.SingleOrDefaultAsync(x => x.Id == request.Id) ?? throw new AddressNotFoundException(request.Id);
 
 		_dbContext.Addresses.Remove(address);
 		await _dbContext.SaveChangesAsync();

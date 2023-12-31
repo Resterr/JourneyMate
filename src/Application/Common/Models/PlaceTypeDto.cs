@@ -6,5 +6,6 @@ namespace JourneyMate.Application.Common.Models;
 public class PlaceTypeDto : IMapFrom<PlaceType>
 {
 	public Guid? Id { get; set; }
+	public string ApiName { get; set; }
 	public string Name { get; set; }
 }
