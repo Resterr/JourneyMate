@@ -16,7 +16,7 @@ public interface IApplicationDbContext
 	DbSet<PlaceAddressRelation> PlaceAddress { get; }
 	DbSet<Report> Reports { get; }
 	DbSet<Plan> Plans { get; }
-	DbSet<PlacePlanRelation> PlacePlans { get; }
+	DbSet<Schedule> Schedules { get; }
 	DbSet<Photo> Photos { get; }
 	DbSet<Follow> Followers { get; }
 	Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);

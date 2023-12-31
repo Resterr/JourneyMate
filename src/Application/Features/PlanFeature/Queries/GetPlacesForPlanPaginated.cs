@@ -38,10 +38,9 @@ internal sealed class GetPlacesForPlanPaginatedHandler : IRequestHandler<GetPlac
 				.ToListAsync(cancellationToken);
 
 			var places = await _dbContext.Places.Include(x => x.Plans)
-				.ThenInclude(x => x.Plan)
 				.Include(x => x.Addresses)
 				.Include(x => x.Types)
-				.Where(x => x.Plans.Any(y => y.PlanId == request.PlanId) && x.Plans.Any(y => y.Plan.UserId == user.Id && x.Types.Any(z => types.Contains(z))))
+				.Where(x => x.Plans.Any(y => y.Id == request.PlanId) && x.Plans.Any(y => y.UserId == user.Id && x.Types.Any(z => types.Contains(z))))
 				.OrderBy(x => x.Rating)
 				.PaginatedListAsync(request.PageNumber, request.PageSize);
 
@@ -56,10 +55,9 @@ internal sealed class GetPlacesForPlanPaginatedHandler : IRequestHandler<GetPlac
 			if (await _dbContext.Plans.AnyAsync(x => x.Id == request.PlanId) == false) throw new PlanNotFoundException(request.PlanId);
 
 			var places = await _dbContext.Places.Include(x => x.Plans)
-				.ThenInclude(x => x.Plan)
 				.Include(x => x.Addresses)
 				.Include(x => x.Types)
-				.Where(x => x.Plans.Any(y => y.PlanId == request.PlanId) && x.Plans.Any(y => y.Plan.UserId == user.Id))
+				.Where(x => x.Plans.Any(y => y.Id == request.PlanId) && x.Plans.Any(y => y.UserId == user.Id))
 				.OrderBy(x => x.Rating)
 				.PaginatedListAsync(request.PageNumber, request.PageSize);
 

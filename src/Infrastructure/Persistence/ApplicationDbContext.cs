@@ -25,7 +25,7 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 	public DbSet<Photo> Photos => Set<Photo>();
 	public DbSet<Report> Reports => Set<Report>();
 	public DbSet<Plan> Plans => Set<Plan>();
-	public DbSet<PlacePlanRelation> PlacePlans => Set<PlacePlanRelation>();
+	public DbSet<Schedule> Schedules => Set<Schedule>();
 	public DbSet<Follow> Followers => Set<Follow>();
 	
 	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IMediator mediator, AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor) : base(options)
@@ -73,6 +73,15 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 				x => x.HasOne(typeof(Place)).WithMany().HasForeignKey("PlaceId").HasPrincipalKey(nameof(Place.Id)),
 				x => x.HasOne(typeof(Report)).WithMany().HasForeignKey("ReportId").HasPrincipalKey(nameof(Report.Id)),
 				x => x.HasKey("ReportId", "PlaceId"));
+		
+		builder.Entity<Plan>()
+			.HasMany(x => x.Places)
+			.WithMany(x => x.Plans)
+			.UsingEntity(
+				"PlacePlanRelation",
+				x => x.HasOne(typeof(Place)).WithMany().HasForeignKey("PlaceId").HasPrincipalKey(nameof(Place.Id)),
+				x => x.HasOne(typeof(Plan)).WithMany().HasForeignKey("PlanId").HasPrincipalKey(nameof(Plan.Id)),
+				x => x.HasKey("PlanId", "PlaceId"));
 		
 		base.OnModelCreating(builder);
 	}

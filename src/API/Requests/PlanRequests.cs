@@ -1,7 +1,6 @@
 ﻿using JourneyMate.Application.Common.Models;
 using JourneyMate.Application.Features.PlanFeature.Commands;
 using JourneyMate.Application.Features.PlanFeature.Queries;
-using JourneyMate.Application.Features.UserFeature.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
@@ -43,17 +42,6 @@ internal static class PlanRequests
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Get shared plans for current user"));
 		
-		group.MapGet("{PlanId:guid}/schedules", async (ISender sender, [AsParameters] GetSchedulesForPlanPaginated request) =>
-			{
-				var result = await sender.Send(request);
-				return Results.Ok(result);
-			})
-			.RequireAuthorization("user")
-			.Produces<PaginatedList<PlanScheduleDto>>()
-			.Produces(StatusCodes.Status401Unauthorized)
-			.Produces(StatusCodes.Status400BadRequest)
-			.WithMetadata(new SwaggerOperationAttribute("Get schedules for plan"));
-		
 		group.MapGet("{PlanId:guid}/places", async (ISender sender, [AsParameters] GetPlacesForPlanPaginated request) =>
 			{
 				var result = await sender.Send(request);
@@ -76,6 +64,28 @@ internal static class PlanRequests
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Get places for shared plan"));
 		
+		group.MapGet("names", async (ISender sender, [AsParameters] GetPlanNames request) =>
+			{
+				var result = await sender.Send(request);
+				return Results.Ok(result);
+			})
+			.RequireAuthorization("user")
+			.Produces<List<PlanNameDto>>()
+			.Produces(StatusCodes.Status401Unauthorized)
+			.Produces(StatusCodes.Status400BadRequest)
+			.WithMetadata(new SwaggerOperationAttribute("Get plan names for user"));
+		
+		group.MapGet("{PlanId:guid}/names", async (ISender sender, [AsParameters] GetPlacesNameForPlan request) =>
+			{
+				var result = await sender.Send(request);
+				return Results.Ok(result);
+			})
+			.RequireAuthorization("user")
+			.Produces<List<PlaceNameDto>>()
+			.Produces(StatusCodes.Status401Unauthorized)
+			.Produces(StatusCodes.Status400BadRequest)
+			.WithMetadata(new SwaggerOperationAttribute("Get places names for plan"));
+		
 		group.MapPut("", async (ISender sender, [FromBody] AddOrUpdatePlan request) =>
 			{
 				await sender.Send(request);
@@ -97,17 +107,6 @@ internal static class PlanRequests
 			.Produces(StatusCodes.Status401Unauthorized)
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Update plan name"));
-		
-		group.MapPatch("schedule", async (ISender sender, [FromBody] UpdateSchedule request) =>
-			{
-				await sender.Send(request);
-				return Results.Ok();
-			})
-			.RequireAuthorization("user")
-			.Produces(StatusCodes.Status200OK)
-			.Produces(StatusCodes.Status401Unauthorized)
-			.Produces(StatusCodes.Status400BadRequest)
-			.WithMetadata(new SwaggerOperationAttribute("Update schedule for plan"));
 		
 		group.MapDelete("", async (ISender sender, [FromBody] RemovePlan request) =>
 			{

@@ -17,7 +17,7 @@ public class Place : BaseAuditableEntity
 	public List<PlaceAddressRelation> Addresses { get; private set; } = new();
 	public List<PlaceType> Types { get; private set; } = new();
 	public List<Report> Reports { get; private set; } = new();
-	public List<PlacePlanRelation> Plans { get; private set; } = new();
+	public List<Plan> Plans { get; private set; } = new();
 	
 	private Place() { }
 	public Place(

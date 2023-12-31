@@ -30,15 +30,15 @@ internal sealed class AddOrUpdateHandler : IRequestHandler<AddOrUpdatePlan, Guid
 		{
 			plan = new Plan(user, request.Name);
 
-			var placePlans = new List<PlacePlanRelation>();
+			var places = new List<Place>();
 
 			foreach (var placeId in request.PlacesId)
 			{
 				var place = await _dbContext.Places.SingleOrDefaultAsync(x => x.Id == placeId) ?? throw new PlaceNotFoundException(placeId);
-				placePlans.Add(new PlacePlanRelation(place, plan));
+				places.Add(place);
 			}
 
-			plan.AddPlaces(placePlans);
+			plan.AddPlaces(places);
 			await _dbContext.Plans.AddAsync(plan);
 			await _dbContext.SaveChangesAsync();
 			
@@ -46,16 +46,16 @@ internal sealed class AddOrUpdateHandler : IRequestHandler<AddOrUpdatePlan, Guid
 		}
 		else
 		{
-			var placePlans = new List<PlacePlanRelation>();
-			var placePlansToadd = request.PlacesId.Where(x => !plan.Places.Any(y => y.PlaceId == x)).ToList();
+			var places = new List<Place>();
+			var placePlansToadd = request.PlacesId.Where(x => !plan.Places.Any(y => y.Id == x)).ToList();
 
 			foreach (var placeId in placePlansToadd)
 			{
 				var place = await _dbContext.Places.SingleOrDefaultAsync(x => x.Id == placeId) ?? throw new PlaceNotFoundException(placeId);
-				placePlans.Add(new PlacePlanRelation(place, plan));
+				places.Add(place);
 			}
 
-			plan.AddPlaces(placePlans);
+			plan.AddPlaces(places);
 			_dbContext.Plans.Update(plan);
 			await _dbContext.SaveChangesAsync();
 

@@ -7,7 +7,7 @@ public class Plan : BaseAuditableEntity
 	public Guid UserId { get; private set; }
 	public User User { get; private set; }
 	public string Name { get; private set; }
-	public List<PlacePlanRelation> Places { get; private set; } = new();
+	public List<Place> Places { get; private set; } = new();
 	public List<FollowPlanRelation> Shared { get; private set; } = new();
 	
 	private Plan() { }
@@ -22,7 +22,7 @@ public class Plan : BaseAuditableEntity
 		Name = name;
 	}
 
-	public void AddPlaces(List<PlacePlanRelation> places)
+	public void AddPlaces(List<Place> places)
 	{
 		var placesToAdd = places.Where(x => !Places.Contains(x));
 		
@@ -33,7 +33,7 @@ public class Plan : BaseAuditableEntity
 		
 	}
 	
-	public void RemovePlaces(List<PlacePlanRelation> places)
+	public void RemovePlaces(List<Place> places)
 	{
 		var placesToRemove = places.Where(x => Places.Contains(x));
 		
