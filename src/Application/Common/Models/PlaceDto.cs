@@ -14,10 +14,8 @@ public class PlaceDto : IMapFrom<Place>
 	public double Rating { get; set; }
 	public int UserRatingsTotal { get; set; }
 	public string Vicinity { get; set; }
-	public double DistanceFromAddress { get; set; }
 	public Location Location { get; set; }
 	public PlusCode PlusCode { get; set; }
-	public Stream? Photo { get; set; }
 	public List<PlaceTypeDto> Types { get; set; } = new();
 
 	public void UpdateFromPlace(Place place)

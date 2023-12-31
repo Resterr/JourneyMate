@@ -33,6 +33,12 @@ public class Plan : BaseAuditableEntity
 		
 	}
 	
+	public void RemovePlace(Place place)
+	{
+		if (!Places.Contains(place)) return;
+		Places.Remove(place);
+	}
+	
 	public void RemovePlaces(List<Place> places)
 	{
 		var placesToRemove = places.Where(x => Places.Contains(x));

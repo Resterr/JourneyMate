@@ -28,10 +28,9 @@ internal sealed class GetReportPlacesPaginatedHandler : IRequestHandler<GetRepor
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
 		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
+		if (await _dbContext.Reports.AnyAsync(x => x.Id == request.Id) == false) throw new ReportNotFoundException(request.Id);
 		if (request.TagsString != null)
 		{
-			if (await _dbContext.Reports.AnyAsync(x => x.Id == request.Id) == false) throw new ReportNotFoundException(request.Id);
-
 			var typesNames = request.TagsString.Split('|');
 			var types = await _dbContext.PlaceTypes.Where(x => typesNames.Contains(x.Name))
 				.ToListAsync(cancellationToken);
@@ -44,15 +43,12 @@ internal sealed class GetReportPlacesPaginatedHandler : IRequestHandler<GetRepor
 				.PaginatedListAsync(request.PageNumber, request.PageSize);
 
 			var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
-			placesDto.ForEach(placeDto => placeDto.DistanceFromAddress = Math.Round(placeDto.DistanceFromAddress, 2));
 			var result = new PaginatedList<PlaceDto>(placesDto, places.TotalCount, request.PageNumber, request.PageSize);
 
 			return result;
 		}
 		else
 		{
-			if (await _dbContext.Reports.AnyAsync(x => x.Id == request.Id) == false) throw new ReportNotFoundException(request.Id);
-
 			var places = await _dbContext.Places.Include(x => x.Reports)
 				.Include(x => x.Addresses)
 				.Include(x => x.Types)
@@ -61,7 +57,6 @@ internal sealed class GetReportPlacesPaginatedHandler : IRequestHandler<GetRepor
 				.PaginatedListAsync(request.PageNumber, request.PageSize);
 
 			var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
-			placesDto.ForEach(placeDto => placeDto.DistanceFromAddress = Math.Round(placeDto.DistanceFromAddress, 2));
 			var result = new PaginatedList<PlaceDto>(placesDto, places.TotalCount, request.PageNumber, request.PageSize);
 
 			return result;

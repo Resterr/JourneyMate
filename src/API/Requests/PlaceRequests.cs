@@ -80,6 +80,18 @@ internal static class PlaceRequests
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Search places"));
 		
+		group.MapPatch("report/rate", async (ISender sender, [FromBody] RateReport request) =>
+			{
+				var id = await sender.Send(request);
+				return Results.Ok();
+			})
+			.RequireAuthorization("user")
+			.Produces(StatusCodes.Status201Created)
+			.Produces(StatusCodes.Status401Unauthorized)
+			.Produces(StatusCodes.Status403Forbidden)
+			.Produces(StatusCodes.Status400BadRequest)
+			.WithMetadata(new SwaggerOperationAttribute("Rate report"));
+		
 		group.MapPost("add", async (ISender sender, [FromBody] AddPlacesFromAddress request) =>
 			{
 				await sender.Send(request);

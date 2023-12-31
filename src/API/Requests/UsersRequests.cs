@@ -42,6 +42,17 @@ internal static class UsersRequests
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Get followers for current user"));
 		
+		group.MapGet("followed", async (ISender sender, [AsParameters] GetFollowed request) =>
+			{
+				var result = await sender.Send(request);
+				return Results.Ok(result);
+			})
+			.RequireAuthorization("user")
+			.Produces<List<string>>()
+			.Produces(StatusCodes.Status401Unauthorized)
+			.Produces(StatusCodes.Status400BadRequest)
+			.WithMetadata(new SwaggerOperationAttribute("Get followed by current user"));
+		
 		group.MapPost("register", async (ISender sender, RegisterUser request) =>
 			{
 				await sender.Send(request);

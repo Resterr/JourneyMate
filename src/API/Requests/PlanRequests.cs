@@ -119,6 +119,17 @@ internal static class PlanRequests
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Remove plan"));
 		
+		group.MapDelete("place", async (ISender sender, [FromBody] RemovePlaceFromPlan request) =>
+			{
+				await sender.Send(request);
+				return Results.NoContent();
+			})
+			.RequireAuthorization("user")
+			.Produces(StatusCodes.Status200OK)
+			.Produces(StatusCodes.Status401Unauthorized)
+			.Produces(StatusCodes.Status400BadRequest)
+			.WithMetadata(new SwaggerOperationAttribute("Remove plan place"));
+		
 		group.MapPut("share", async (ISender sender, [FromBody] SharePlan request) =>
 			{
 				await sender.Send(request);

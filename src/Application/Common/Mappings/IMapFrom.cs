@@ -14,9 +14,6 @@ public interface IMapFrom<T>
 			.ForMember(dest => dest.AdministrativeAreaLevel1, opt => opt.MapFrom(src => src.AdministrativeAreaLevel2.AdministrativeAreaLevel1.LongName))
 			.ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.AdministrativeAreaLevel2.AdministrativeAreaLevel1.Country.LongName));
 		
-		profile.CreateMap<Place, PlaceDto>()
-			.ForMember(dest => dest.DistanceFromAddress, opt => opt.MapFrom(src => src.Addresses[0].DistanceFromAddress));
-		
 		profile.CreateMap<Schedule, ScheduleDto>()
 			.ForMember(dest => dest.PlanName, opt => opt.MapFrom(src => src.Plan.Name))
 			.ForMember(dest => dest.PlaceName, opt => opt.MapFrom(src => src.Place.Name));
