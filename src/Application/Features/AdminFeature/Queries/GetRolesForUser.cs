@@ -22,7 +22,7 @@ internal sealed class GetRolesForHandler : IRequestHandler<GetRolesForUser, List
 
 	public async Task<List<RoleDto>> Handle(GetRolesForUser request, CancellationToken cancellationToken)
 	{
-		var user = await _dbContext.Users.Include(x => x.Roles).SingleOrDefaultAsync(x => x.Id == request.Id) ?? throw new UserNotFoundException(request.Id);
+		var user = await _dbContext.Users.Include(x => x.Roles).AsNoTracking().SingleOrDefaultAsync(x => x.Id == request.Id) ?? throw new UserNotFoundException(request.Id);
 
 		var result = _mapper.Map<List<RoleDto>>(user.Roles);
 

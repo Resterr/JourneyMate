@@ -22,6 +22,7 @@ internal sealed class GetAllUsersHandler : IRequestHandler<GetAllUsers, List<Use
 	public async Task<List<UserDto>> Handle(GetAllUsers request, CancellationToken cancellationToken)
 	{
 		var users = await _dbContext.Users.Include(x => x.Roles)
+			.AsNoTracking()
 			.ToListAsync();
 		var superAdmin = users.Where(user => user.Roles.Any(role => role.Name == "SuperAdmin"))
 			.ToList();

@@ -27,10 +27,10 @@ internal sealed class GetAllSharedPlansForUserPaginatedHandler : IRequestHandler
 	public async Task<PaginatedList<PlanDto>> Handle(GetAllSharedPlansForUserPaginated request, CancellationToken cancellationToken)
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
-		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
+		var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
 		var plans = await _dbContext.Plans.Include(x => x.Shared)
 			.ThenInclude(x => x.Follow).Where(x => x.Shared.Any(y => y.Follow.FollowerId == user.Id)).OrderBy(x=> x.Name)
-			.PaginatedListAsync(request.PageNumber, request.PageNumber);
+			.AsNoTracking().PaginatedListAsync(request.PageNumber, request.PageNumber);
 		
 		var planDtos = _mapper.Map<List<PlanDto>>(plans.Items);
 

@@ -34,6 +34,7 @@ internal sealed class GetReportPlacesPaginatedHandler : IRequestHandler<GetRepor
 
 			var typesNames = request.TagsString.Split('|');
 			var types = await _dbContext.PlaceTypes.Where(x => typesNames.Contains(x.Name))
+				.AsNoTracking()
 				.ToListAsync(cancellationToken);
 
 			var places = await _dbContext.Places.Include(x => x.Reports)
@@ -41,6 +42,7 @@ internal sealed class GetReportPlacesPaginatedHandler : IRequestHandler<GetRepor
 				.Include(x => x.Types)
 				.Where(x => x.Reports.Any(y => y.UserId == user.Id) && x.Reports.Any(y => y.Id == request.Id) && x.Types.Any(y => types.Contains(y)))
 				.OrderBy(x => x.Rating)
+				.AsNoTracking()
 				.PaginatedListAsync(request.PageNumber, request.PageSize);
 
 			var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);

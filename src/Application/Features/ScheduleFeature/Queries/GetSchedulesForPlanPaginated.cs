@@ -27,12 +27,12 @@ internal sealed class GetSchedulesForPlanPaginatedHandler : IRequestHandler<GetS
 	public async Task<PaginatedList<ScheduleDto>> Handle(GetSchedulesForPlanPaginated request, CancellationToken cancellationToken)
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
-		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
+		var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
 		var schedules = await _dbContext.Schedules.Include(x => x.Plan)
 			.Include(x => x.Place)
 			.Where(x => x.PlanId == request.PlanId && x.Plan.UserId == user.Id && x.StartingDate <= request.Date && (x.EndingDate == null || request.Date <= x.EndingDate))
 			.OrderBy(x=> x.StartingDate)
-			.PaginatedListAsync(request.PageNumber, request.PageSize);
+			.AsNoTracking().PaginatedListAsync(request.PageNumber, request.PageSize);
 		var planScheduleDtos = _mapper.Map<List<ScheduleDto>>(schedules.Items);
 		var result = new PaginatedList<ScheduleDto>(planScheduleDtos, schedules.TotalCount, request.PageNumber, request.PageSize);
 		

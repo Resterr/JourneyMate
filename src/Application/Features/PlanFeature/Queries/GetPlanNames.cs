@@ -25,8 +25,8 @@ internal sealed class GetPlanNamesHandler : IRequestHandler<GetPlanNames, List<P
 	public async Task<List<PlanNameDto>> Handle(GetPlanNames request, CancellationToken cancellationToken)
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
-		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
-		var plans = await _dbContext.Plans.Where(x => x.UserId == user.Id).OrderBy(x=> x.Name).ToListAsync();
+		var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
+		var plans = await _dbContext.Plans.Where(x => x.UserId == user.Id).OrderBy(x=> x.Name).AsNoTracking().ToListAsync();
 		var result = _mapper.Map<List<PlanNameDto>>(plans);
  
 		return result;

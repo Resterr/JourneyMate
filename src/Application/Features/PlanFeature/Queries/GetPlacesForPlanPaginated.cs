@@ -35,14 +35,14 @@ internal sealed class GetPlacesForPlanPaginatedHandler : IRequestHandler<GetPlac
 
 			var typesNames = request.TagsString.Split('|');
 			var types = await _dbContext.PlaceTypes.Where(x => typesNames.Contains(x.Name))
-				.ToListAsync(cancellationToken);
+				.AsNoTracking().ToListAsync(cancellationToken);
 
 			var places = await _dbContext.Places.Include(x => x.Plans)
 				.Include(x => x.Addresses)
 				.Include(x => x.Types)
 				.Where(x => x.Plans.Any(y => y.Id == request.PlanId) && x.Plans.Any(y => y.UserId == user.Id && x.Types.Any(z => types.Contains(z))))
 				.OrderBy(x => x.Rating)
-				.PaginatedListAsync(request.PageNumber, request.PageSize);
+				.AsNoTracking().PaginatedListAsync(request.PageNumber, request.PageSize);
 
 			var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
 			placesDto.ForEach(placeDto => placeDto.DistanceFromAddress = Math.Round(placeDto.DistanceFromAddress, 2));
@@ -59,7 +59,7 @@ internal sealed class GetPlacesForPlanPaginatedHandler : IRequestHandler<GetPlac
 				.Include(x => x.Types)
 				.Where(x => x.Plans.Any(y => y.Id == request.PlanId) && x.Plans.Any(y => y.UserId == user.Id))
 				.OrderBy(x => x.Rating)
-				.PaginatedListAsync(request.PageNumber, request.PageSize);
+				.AsNoTracking().PaginatedListAsync(request.PageNumber, request.PageSize);
 
 			var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
 			placesDto.ForEach(placeDto => placeDto.DistanceFromAddress = Math.Round(placeDto.DistanceFromAddress, 2));

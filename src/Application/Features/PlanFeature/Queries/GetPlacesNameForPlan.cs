@@ -29,7 +29,7 @@ internal sealed class GetPlacesNameForPlanHandler : IRequestHandler<GetPlacesNam
 		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
 		var plan = await _dbContext.Plans.Include(x => x.Places)
 			.Where(x => x.UserId == user.Id)
-			.SingleOrDefaultAsync(x => x.Id == request.PlanId) ?? throw new PlanNotFoundException(request.PlanId);
+			.AsNoTracking().SingleOrDefaultAsync(x => x.Id == request.PlanId) ?? throw new PlanNotFoundException(request.PlanId);
 		var result = _mapper.Map<List<PlaceNameDto>>(plan.Places);
  
 		return result;

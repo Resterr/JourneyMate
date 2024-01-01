@@ -22,6 +22,7 @@ internal sealed class GetAllTypesHandler : IRequestHandler<GetAllTypes, List<Pla
 	public async Task<List<PlaceTypeDto>> Handle(GetAllTypes request, CancellationToken cancellationToken)
 	{
 		var placeTypes = await _dbContext.PlaceTypes.OrderBy(x => x.Name)
+			.AsNoTracking()
 			.ToListAsync();
 
 		var result = _mapper.Map<List<PlaceTypeDto>>(placeTypes);

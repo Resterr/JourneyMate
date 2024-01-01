@@ -23,6 +23,7 @@ internal sealed class GetAllAddressesHandler : IRequestHandler<GetAllAddresses, 
 	{
 		var addresses = await _dbContext.Addresses.Include(x => x.AdministrativeAreaLevel2)
 			.ThenInclude(x => x.AdministrativeAreaLevel1).ThenInclude(x => x.Country).OrderBy(x => x.Locality.LongName)
+			.AsNoTracking()
 			.ToListAsync();
 
 		var result = _mapper.Map<List<AddressDto>>(addresses);

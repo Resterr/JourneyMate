@@ -26,7 +26,7 @@ internal sealed class SelfGetUserHandler : IRequestHandler<SelfGetUser, UserDto>
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
 		var user = await _dbContext.Users.Include(x => x.Roles)
-				.SingleOrDefaultAsync(x => x.Id == userId, cancellationToken) ??
+				.AsNoTracking().SingleOrDefaultAsync(x => x.Id == userId, cancellationToken) ??
 			throw new UserNotFoundException(userId);
 		var result = _mapper.Map<UserDto>(user);
 
