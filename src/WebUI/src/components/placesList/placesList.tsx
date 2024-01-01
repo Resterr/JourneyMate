@@ -13,11 +13,13 @@ import { Place } from "../../models/Place";
 import axiosInstance from "../../utils/axiosInstance";
 import { UserContext } from "../../contexts/userContext";
 import PhotoModal from "./modal/photoModal";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { set, SubmitHandler, useForm } from "react-hook-form";
 import { AxiosResponse } from "axios";
 
 type PlacesListProps = {
   places: Place[];
+  isEditMode: boolean;
+  planId: string | undefined;
 };
 
 type FormData = {
@@ -28,6 +30,7 @@ type FormData = {
 const PlacesList: React.FC<PlacesListProps> = (props) => {
   const places = props.places;
   const [checked, setChecked] = React.useState<string[]>([]);
+  const [name, setName] = React.useState<string | null>(null);
   const userContext = useContext(UserContext);
   const [maxHeight] = useState<number>(500);
   const [maxWidth] = useState<number>(500);
@@ -79,7 +82,6 @@ const PlacesList: React.FC<PlacesListProps> = (props) => {
 
   const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
     try {
-      console.log("SEND");
       let token: string | null = userContext.accessToken;
       let config = {
         headers: { Authorization: `Bearer ${token}` },
@@ -90,11 +92,41 @@ const PlacesList: React.FC<PlacesListProps> = (props) => {
         data,
         config,
       );
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
-      if (response.status === 201) {
-        console.log(response.data);
-        //navigate(`/searchDisplay/${response.data}`);
-      }
+  const changeName = async () => {
+    try {
+      let token: string | null = userContext.accessToken;
+      let config = {
+        headers: { Authorization: `Bearer ${token}` },
+      };
+
+      let formData = {
+        id: props.planId,
+        name: name,
+      };
+
+      await axiosInstance.patch("/api/plan", formData, config);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const deleteSelectedNames = async () => {
+    try {
+      let token: string | null = userContext.accessToken;
+      let config = {
+        headers: { Authorization: `Bearer ${token}` },
+        data: {
+          planId: props.planId,
+          places: checked,
+        },
+      };
+
+      await axiosInstance.delete("/api/plan/places", config);
     } catch (error) {
       console.error(error);
     }
@@ -115,13 +147,35 @@ const PlacesList: React.FC<PlacesListProps> = (props) => {
                 required: "This is required",
                 minLength: 3,
               })}
+              onChange={(e) => {
+                setName(e.target.value as string);
+              }}
             />
             <br />
             <p>{errors.name?.message}</p>
           </div>
-          <div className="searchPlace_form__button">
-            <button type="submit">Create</button>
-          </div>
+          {props.isEditMode ? (
+            <div className="searchPlace_form__button">
+              <button
+                className="searchPlace_form__button-item"
+                onClick={changeName}
+              >
+                New Name
+              </button>
+              <button
+                className="searchPlace_form__button-item"
+                onClick={deleteSelectedNames}
+              >
+                Delete selected
+              </button>
+            </div>
+          ) : (
+            <div className="searchPlace_form__button">
+              <button className="searchPlace_form__button-item" type="submit">
+                Create new plan
+              </button>
+            </div>
+          )}
           <List sx={{ width: "100%", maxWidth: 1300 }}>
             {places.map((place) => {
               const labelId = `checkbox-list-label-${place.id}`;

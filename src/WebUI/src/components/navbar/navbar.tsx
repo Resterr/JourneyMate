@@ -45,7 +45,7 @@ const Navbar: React.FC = () => {
               <button className="navbar__navbar-item">Shared plans</button>
             </Link>
             <Link to="/follow">
-              <button className="navbar__navbar-item">Follow user</button>
+              <button className="navbar__navbar-item">Follow</button>
             </Link>
           </>
         ) : null}

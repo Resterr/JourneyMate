@@ -3,7 +3,7 @@
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-end;
     text-align: center;
     flex-direction: column;
     background-image: url("../../utils/world.png");

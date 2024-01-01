@@ -68,7 +68,11 @@ const SharedPlanDisplay: React.FC = () => {
       {paginatedPlaces !== null ? (
         <>
           <SearchTypes onSelectedTypesChange={handleSelectedTypesChange} />
-          <PlacesList places={paginatedPlaces!.items} />
+          <PlacesList
+            places={paginatedPlaces!.items}
+            isEditMode={false}
+            planId={undefined}
+          />
           <div className="planDisplay__pagination">
             <Pagination
               className="planDisplay__pagination-items"

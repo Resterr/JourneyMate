@@ -80,7 +80,15 @@ const SearchAddress: React.FC<SearchAddressProps> = ({
         >
           {addresses.map((x) => (
             <MenuItem key={x.id} value={x.id}>
-              <ListItemText primary={x.locality} />
+              <ListItemText
+                primary={
+                  x.locality +
+                  ", " +
+                  x.administrativeAreaLevel2 +
+                  ", " +
+                  x.administrativeAreaLevel1
+                }
+              />
             </MenuItem>
           ))}
         </Select>

@@ -4,7 +4,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { AxiosResponse } from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../../contexts/userContext";
-import { Pagination } from "@mui/material";
+import { Button, Pagination, Typography } from "@mui/material";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -14,7 +14,6 @@ import IconButton from "@mui/material/IconButton";
 import ShareModal from "./modals/shareModal";
 
 const PlanList: React.FC = () => {
-  const { id } = useParams();
   const userContext = useContext(UserContext);
   const currentUser = userContext.currentUser;
   const navigate = useNavigate();
@@ -57,7 +56,6 @@ const PlanList: React.FC = () => {
         console.log(error);
       });
   }, [
-    id,
     navigate,
     pageNumber,
     pageSize,
@@ -73,6 +71,22 @@ const PlanList: React.FC = () => {
     setPageNumber(value);
   };
 
+  const deletePlan = async (id: string) => {
+    try {
+      let token: string | null = userContext.accessToken;
+      let config = {
+        headers: { Authorization: `Bearer ${token}` },
+        data: {
+          id: id,
+        },
+      };
+
+      await axiosInstance.delete("/api/plan", config);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <div className="planList">
       {loading || paginatedPlans == null ? (
@@ -83,19 +97,28 @@ const PlanList: React.FC = () => {
             <div className="planList_share-status">
               <h1>{status}</h1>
             </div>
-            <List sx={{ width: "100%", maxWidth: 1400 }}>
+            <List sx={{ width: "100%", maxWidth: 1300 }}>
               {paginatedPlans!.items.map((plan) => {
                 const labelId = `checkbox-list-label-${plan.id}`;
                 return (
                   <ListItem
                     key={plan.id}
                     secondaryAction={
-                      <IconButton edge="end" aria-label="comments">
-                        <ShareModal
-                          setStatus={setStatus}
-                          planId={plan.id}
-                        ></ShareModal>
-                      </IconButton>
+                      <div>
+                        <IconButton edge="end" aria-label="comments">
+                          <ShareModal
+                            setStatus={setStatus}
+                            planId={plan.id}
+                          ></ShareModal>
+                        </IconButton>
+                        <Button
+                          variant="contained"
+                          color="error"
+                          onClick={() => deletePlan(plan.id)}
+                        >
+                          DELETE
+                        </Button>
+                      </div>
                     }
                     disablePadding
                   >

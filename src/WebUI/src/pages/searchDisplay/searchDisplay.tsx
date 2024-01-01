@@ -68,7 +68,11 @@ const SearchDisplay: React.FC = () => {
       {paginatedPlaces !== null ? (
         <>
           <SearchTypes onSelectedTypesChange={handleSelectedTypesChange} />
-          <PlacesList places={paginatedPlaces!.items} />
+          <PlacesList
+            places={paginatedPlaces!.items}
+            isEditMode={false}
+            planId={undefined}
+          />
           <div className="searchDisplay__pagination">
             <Pagination
               className="searchDisplay__pagination-items"

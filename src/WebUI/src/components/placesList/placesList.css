@@ -3,3 +3,8 @@
     background-color: rgba(53, 41, 97, 0.6);
     color: white;
 }
+
+.searchPlace_form__button-item
+{
+    margin-right: 1%;
+}

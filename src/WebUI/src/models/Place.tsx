@@ -16,7 +16,6 @@ export type Place = {
   rating: number;
   userRatingsTotal: number;
   vicinity: string;
-  distanceFromAddress: number;
   location: Location;
   plusCode: PlusCode;
   photo: string | null;

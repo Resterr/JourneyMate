@@ -50,7 +50,7 @@ const PlanDisplay: React.FC = () => {
       .catch((error) => {
         console.log(error);
       });
-  }, [id, navigate, pageNumber, pageSize, userContext.accessToken, tagsString]);
+  }, [id, navigate, pageNumber, pageSize, tagsString, userContext.accessToken]);
 
   const handlePaginationChange = (
     _event: React.ChangeEvent<unknown>,
@@ -68,7 +68,11 @@ const PlanDisplay: React.FC = () => {
       {paginatedPlaces !== null ? (
         <>
           <SearchTypes onSelectedTypesChange={handleSelectedTypesChange} />
-          <PlacesList places={paginatedPlaces!.items} />
+          <PlacesList
+            places={paginatedPlaces!.items}
+            isEditMode={true}
+            planId={id}
+          />
           <div className="planDisplay__pagination">
             <Pagination
               className="planDisplay__pagination-items"
