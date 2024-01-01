@@ -45,7 +45,6 @@ internal sealed class GetPlacesForPlanPaginatedHandler : IRequestHandler<GetPlac
 				.AsNoTracking().PaginatedListAsync(request.PageNumber, request.PageSize);
 
 			var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
-			placesDto.ForEach(placeDto => placeDto.DistanceFromAddress = Math.Round(placeDto.DistanceFromAddress, 2));
 			var result = new PaginatedList<PlaceDto>(placesDto, places.TotalCount, request.PageNumber, request.PageSize);
 
 			return result;
@@ -62,7 +61,6 @@ internal sealed class GetPlacesForPlanPaginatedHandler : IRequestHandler<GetPlac
 				.AsNoTracking().PaginatedListAsync(request.PageNumber, request.PageSize);
 
 			var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
-			placesDto.ForEach(placeDto => placeDto.DistanceFromAddress = Math.Round(placeDto.DistanceFromAddress, 2));
 			var result = new PaginatedList<PlaceDto>(placesDto, places.TotalCount, request.PageNumber, request.PageSize);
 
 			return result;

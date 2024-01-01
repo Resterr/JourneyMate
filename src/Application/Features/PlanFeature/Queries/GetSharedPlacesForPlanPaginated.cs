@@ -27,13 +27,9 @@ internal sealed class GetSharedPlacesForPlanPaginatedHandler : IRequestHandler<G
 	public async Task<PaginatedList<PlaceDto>> Handle(GetSharedPlacesForPlanPaginated request, CancellationToken cancellationToken)
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
-<<<<<<< Updated upstream
-		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
-=======
 		var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
 		if (await _dbContext.Plans.AnyAsync(x => x.Id == request.PlanId) == false) throw new PlanNotFoundException(request.PlanId);
-
->>>>>>> Stashed changes
+		
 		if (request.TagsString != null)
 		{
 			if (await _dbContext.Plans.AnyAsync(x => x.Id == request.PlanId) == false) throw new PlanNotFoundException(request.PlanId);
@@ -54,7 +50,6 @@ internal sealed class GetSharedPlacesForPlanPaginatedHandler : IRequestHandler<G
 				.AsNoTracking().PaginatedListAsync(request.PageNumber, request.PageSize);
 			
 			var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
-			placesDto.ForEach(placeDto => placeDto.DistanceFromAddress = Math.Round(placeDto.DistanceFromAddress, 2));
 			var result = new PaginatedList<PlaceDto>(placesDto, places.TotalCount, request.PageNumber, request.PageSize);
 
 			return result;
@@ -73,7 +68,6 @@ internal sealed class GetSharedPlacesForPlanPaginatedHandler : IRequestHandler<G
 				.AsNoTracking().PaginatedListAsync(request.PageNumber, request.PageSize);
 			
 			var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
-			placesDto.ForEach(placeDto => placeDto.DistanceFromAddress = Math.Round(placeDto.DistanceFromAddress, 2));
 			var result = new PaginatedList<PlaceDto>(placesDto, places.TotalCount, request.PageNumber, request.PageSize);
 
 			return result;

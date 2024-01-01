@@ -119,8 +119,6 @@ internal static class PlanRequests
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Remove plan"));
 		
-<<<<<<< Updated upstream
-=======
 		group.MapDelete("places", async (ISender sender, [FromBody] RemovePlacesFromPlan request) =>
 			{
 				await sender.Send(request);
@@ -132,7 +130,6 @@ internal static class PlanRequests
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Remove plan place"));
 		
->>>>>>> Stashed changes
 		group.MapPut("share", async (ISender sender, [FromBody] SharePlan request) =>
 			{
 				await sender.Send(request);
