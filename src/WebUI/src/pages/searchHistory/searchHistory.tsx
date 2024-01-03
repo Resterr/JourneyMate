@@ -4,7 +4,7 @@ import axiosInstance from "../../utils/axiosInstance";
 import { AxiosResponse } from "axios";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { UserContext } from "../../contexts/userContext";
-import { Pagination } from "@mui/material";
+import { Pagination, Rating } from "@mui/material";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
@@ -12,89 +12,133 @@ import ListItemText from "@mui/material/ListItemText";
 import { PaginatedReports } from "../../models/PaginatedReports";
 
 const SearchDisplay: React.FC = () => {
-  const { id } = useParams();
-  const userContext = useContext(UserContext);
-  const currentUser = userContext.currentUser;
-  const navigate = useNavigate();
-  const [pageNumber, setPageNumber] = useState<number>(1);
-  const [pageSize] = useState<number>(10);
-  const [paginatedReports, setPaginatedReports] =
-    useState<PaginatedReports | null>(null);
+    const { id } = useParams();
+    const userContext = useContext(UserContext);
+    const currentUser = userContext.currentUser;
+    const navigate = useNavigate();
+    const [pageNumber, setPageNumber] = useState<number>(1);
+    const [pageSize] = useState<number>(10);
+    const [paginatedReports, setPaginatedReports] =
+        useState<PaginatedReports | null>(null);
 
-  useEffect(() => {
-    if (!currentUser) {
-      navigate("/");
-    }
-  }, [currentUser, navigate]);
+    useEffect(() => {
+        if (!currentUser) {
+            navigate("/");
+        }
+    }, [currentUser, navigate]);
 
-  useEffect(() => {
-    let token: string | null = userContext.accessToken;
-    let config = {
-      headers: { Authorization: `Bearer ${token}` },
+    useEffect(() => {
+        let token: string | null = userContext.accessToken;
+        let config = {
+            headers: { Authorization: `Bearer ${token}` },
+        };
+
+        axiosInstance
+            .get<PaginatedReports>(
+                `/api/place/report?PageNumber=${pageNumber}&PageSize=${pageSize}`,
+                config,
+            )
+            .then((response: AxiosResponse<PaginatedReports>) => {
+                if (response.status === 200) {
+                    setPaginatedReports(response.data);
+                } else {
+                    navigate(`/searchPlaces`);
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }, [id, navigate, pageNumber, pageSize, userContext.accessToken]);
+
+    const handlePaginationChange = (
+        _event: React.ChangeEvent<unknown>,
+        value: number,
+    ) => {
+        setPageNumber(value);
     };
 
-    axiosInstance
-      .get<PaginatedReports>(
-        `/api/place/report?PageNumber=${pageNumber}&PageSize=${pageSize}`,
-        config,
-      )
-      .then((response: AxiosResponse<PaginatedReports>) => {
-        if (response.status === 200) {
-          setPaginatedReports(response.data);
-        } else {
-          navigate(`/searchPlaces`);
+    const updateRating = async (id: string, newValue: number | null) => {
+        try {
+            let token: string | null = userContext.accessToken;
+            let config = {
+                headers: { Authorization: `Bearer ${token}` },
+            };
+
+            let formData = {
+                reportId: id,
+                rate: newValue,
+            };
+
+            await axiosInstance.patch(
+                `/api/place/report/rating`,
+                formData,
+                config,
+            );
+        } catch (error) {
+            console.error(error);
         }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }, [id, navigate, pageNumber, pageSize, userContext.accessToken]);
+        window.location.reload();
+    };
 
-  const handlePaginationChange = (
-    _event: React.ChangeEvent<unknown>,
-    value: number,
-  ) => {
-    setPageNumber(value);
-  };
-
-  return (
-    <div className="searchHistory">
-      {paginatedReports !== null ? (
-        <>
-          <div className="searchHistory__reportList">
-            <List sx={{ width: "100%", maxWidth: 1400 }}>
-              {paginatedReports.items.map((report) => {
-                const labelId = `checkbox-list-label-${report.id}`;
-                return (
-                  <Link to={`/searchDisplay/${report.id}`}>
-                    <ListItem key={report.id} disablePadding>
-                      <ListItemButton role={undefined} dense>
-                        <ListItemText
-                          id={labelId}
-                          primary={`${report.id} - ${report.created}`}
+    return (
+        <div className="searchHistory">
+            {paginatedReports !== null ? (
+                <>
+                    <div className="searchHistory__reportList">
+                        <List sx={{ width: "100%", maxWidth: 1400 }}>
+                            {paginatedReports.items.map((report) => {
+                                const labelId = `checkbox-list-label-${report.id}`;
+                                return (
+                                    <ListItem
+                                        key={report.id}
+                                        secondaryAction={
+                                            <div>
+                                                <Rating
+                                                    onChange={(
+                                                        event,
+                                                        newValue,
+                                                    ) =>
+                                                        updateRating(
+                                                            report.id,
+                                                            newValue,
+                                                        )
+                                                    }
+                                                    value={report.rating}
+                                                />
+                                            </div>
+                                        }
+                                        disablePadding
+                                    >
+                                        <ListItemButton role={undefined} dense>
+                                            <Link
+                                                to={`/searchDisplay/${report.id}`}
+                                            >
+                                                <ListItemText
+                                                    id={labelId}
+                                                    primary={`${report.id} - ${report.created}`}
+                                                />
+                                            </Link>
+                                        </ListItemButton>
+                                    </ListItem>
+                                );
+                            })}
+                        </List>
+                    </div>
+                    <div className="searchHistory__pagination">
+                        <Pagination
+                            className="searchHistory__pagination-items"
+                            variant="outlined"
+                            count={paginatedReports.totalPages}
+                            page={pageNumber}
+                            onChange={handlePaginationChange}
                         />
-                      </ListItemButton>
-                    </ListItem>
-                  </Link>
-                );
-              })}
-            </List>
-          </div>
-          <div className="searchHistory__pagination">
-            <Pagination
-              className="searchHistory__pagination-items"
-              variant="outlined"
-              count={paginatedReports.totalPages}
-              page={pageNumber}
-              onChange={handlePaginationChange}
-            />
-          </div>
-        </>
-      ) : (
-        <p>Loading...</p>
-      )}
-    </div>
-  );
+                    </div>
+                </>
+            ) : (
+                <p>Loading...</p>
+            )}
+        </div>
+    );
 };
 
 export default SearchDisplay;

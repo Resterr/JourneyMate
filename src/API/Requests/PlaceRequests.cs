@@ -91,6 +91,18 @@ internal static class PlaceRequests
 			.Produces(StatusCodes.Status403Forbidden)
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Add places"));
+		
+		group.MapPatch("report/rating", async (ISender sender, [FromBody] RateReport request) =>
+			{
+				await sender.Send(request);
+				return Results.Ok();
+			})
+			.RequireAuthorization("user")
+			.Produces(StatusCodes.Status200OK)
+			.Produces(StatusCodes.Status401Unauthorized)
+			.Produces(StatusCodes.Status403Forbidden)
+			.Produces(StatusCodes.Status400BadRequest)
+			.WithMetadata(new SwaggerOperationAttribute("Rate report"));
 
 		return group;
 	}
