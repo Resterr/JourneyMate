@@ -19,7 +19,7 @@ public class FollowConfiguration : IEntityTypeConfiguration<Follow>
 
 		builder
 			.HasOne(x => x.Followed)
-			.WithMany()
+			.WithMany(x => x.UserFollowed)
 			.HasForeignKey(x => x.FollowedId)
 			.OnDelete(DeleteBehavior.NoAction);
 		

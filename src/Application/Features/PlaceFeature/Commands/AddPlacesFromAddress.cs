@@ -27,7 +27,7 @@ internal sealed class AddPlacesFromAddressHandler : IRequestHandler<AddPlacesFro
 		var address = await _dbContext.Addresses.SingleOrDefaultAsync(x => x.Id == request.AddressId) ?? throw new AddressNotFoundException(request.AddressId);
 		var locationString = string.Join(',', address.Location.Latitude.ToString(CultureInfo.InvariantCulture), address.Location.Longitude.ToString(CultureInfo.InvariantCulture));
 		var placeTypes = await _dbContext.PlaceTypes.ToListAsync();
-		var places = await _placesApiService.GetPlacesAsync(locationString,  placeTypes.Select(x => x.ApiName).ToList());
+		var places = await _placesApiService.GetPlacesAsync(locationString,  placeTypes.Select(x => x.ApiName).ToList(), 20000, "prominence");
 		
 		if (places.Count > 0)
 		{
