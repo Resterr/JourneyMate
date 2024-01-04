@@ -33,7 +33,7 @@ internal sealed class AdministrativeAreaSeeder : IAdministrativeAreaSeeder
 
 	public void SeedCountries()
 	{
-		var newCountry = new Country("PL", "Poland");
+		var newCountry = new Country("PL", "Polska");
 		
 		if (!_dbContext.Countries.Any(x => x.LongName == newCountry.LongName))
 		{
@@ -47,7 +47,7 @@ internal sealed class AdministrativeAreaSeeder : IAdministrativeAreaSeeder
 		var addressCount = await _dbContext.Addresses.CountAsync();
 		if(addressCount == 0)
 		{
-			var country = await _dbContext.Countries.SingleOrDefaultAsync(x => x.LongName == "Poland") ?? throw new ObjectNotFoundException("Country");
+			var country = await _dbContext.Countries.SingleOrDefaultAsync(x => x.ShortName == "PL") ?? throw new ObjectNotFoundException("Country");
 			var terytReadModel = await GetAdministrativeAreas();
 			foreach (var teryt in terytReadModel)
 			{

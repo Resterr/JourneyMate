@@ -21,7 +21,7 @@ internal sealed class PlacesApiService : IPlacesApiService
 		_keysOptions = keysOptions;
 	}
 
-	public async Task<List<PlaceAddDto>> GetPlacesAsync(string location, List<string> types)
+	public async Task<List<PlaceAddDto>> GetPlacesAsync(string location, List<string> types, int radius, string rankBy)
 	{
 		using var client = new HttpClient();
 		var result = new List<PlaceAddDto>();
@@ -29,7 +29,7 @@ internal sealed class PlacesApiService : IPlacesApiService
 		foreach (var type in types)
 		{
 			var response = await client.GetStringAsync($"{_urlOptions.Value.GoogleMapsApiUrl}/place/nearbysearch/json" +
-				$"?location={location}&type={type}&rankby=distance&key={_keysOptions.Value.GooglePlacesApiKey}");
+				$"?location={location}&type={type}&radius={radius.ToString()}&rankby={rankBy}&key={_keysOptions.Value.GooglePlacesApiKey}&language=pl");
 
 			var placeReadModel = JsonConvert.DeserializeObject<PlaceReadModel>(response);
 			var placeReadModels = new List<PlaceReadModel>();
