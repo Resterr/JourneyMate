@@ -32,14 +32,14 @@
     width: 100%;
 }
 
-.followUser__content{
+.followUser__content {
     display: flex;
     justify-content: space-between !important;
     width: 100%;
     padding-bottom: 1%;
 }
 
-.followUser__content-list{
+.followUser__content-list {
     width: 600px;
     background-color: rgba(53, 41, 97, 0.6);
     color: white;

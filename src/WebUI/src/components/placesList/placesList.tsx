@@ -13,7 +13,7 @@ import { Place } from "../../models/Place";
 import axiosInstance from "../../utils/axiosInstance";
 import { UserContext } from "../../contexts/userContext";
 import PhotoModal from "./modal/photoModal";
-import { set, SubmitHandler, useForm } from "react-hook-form";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { AxiosResponse } from "axios";
 
 type PlacesListProps = {
