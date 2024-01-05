@@ -99,12 +99,9 @@ internal sealed class GenerateReportHandler : IRequestHandler<GenerateReport, Gu
 
 		var placeAddresses = await _dbContext.PlaceAddress.Include(x => x.Place)
 			.ThenInclude(x => x.Types)
-			.Where(x => x.AddressId == address.Id && x.Place.UserRatingsTotal > 10 && x.Place.Rating > 3.0)
+			.Where(x => x.AddressId == address.Id && x.Place.UserRatingsTotal > 10 && x.Place.Rating > 3.0 && x.DistanceFromAddress < request.Distance)
 			.ToListAsync(cancellationToken);
-
-		placeAddresses = placeAddresses.Where(x => x.DistanceFromAddress < request.Distance)
-			.ToList();
-
+		
 		var places = placeAddresses.Select(x => x.Place)
 			.OrderBy(x => x.Rating)
 			.ToList();

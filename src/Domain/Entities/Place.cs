@@ -13,8 +13,8 @@ public class Place : BaseAuditableEntity
 	public string Vicinity { get; private set; }
 	public Location Location { get; private set; }
 	public PlusCode PlusCode { get; private set; }
-	public List<Photo> Photos { get; } = new();
-	public List<PlaceAddressRelation> Addresses { get; } = new();
+	public List<Photo> Photos { get; private set;} = new();
+	public List<PlaceAddressRelation> Addresses { get; private set;} = new();
 	public List<PlaceType> Types { get; private set; } = new();
 	public List<Report> Reports { get; private set; } = new();
 	public List<Plan> Plans { get; private set; } = new();

@@ -4,7 +4,7 @@ namespace JourneyMate.Domain.Entities;
 
 public class Photo : BaseAuditableEntity
 {
-	public Guid PlaceId { get; }
+	public Guid PlaceId  { get; set; }
 	public Place Place { get; private set; }
 	public byte[] Data { get; private set; }
 	public int Height { get; private set; }

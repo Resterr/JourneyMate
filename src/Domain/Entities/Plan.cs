@@ -4,7 +4,7 @@ namespace JourneyMate.Domain.Entities;
 
 public class Plan : BaseAuditableEntity
 {
-	public Guid UserId { get; }
+	public Guid UserId { get; set; }
 	public User User { get; private set; }
 	public string Name { get; private set; }
 	public List<Place> Places { get; } = new();

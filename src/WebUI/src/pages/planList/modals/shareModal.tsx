@@ -1,5 +1,6 @@
 import * as React from "react";
-import { useContext } from "react";
+import "./shareModal.css";
+import { useContext, useEffect } from "react";
 import { Box, Button, Modal, Typography } from "@mui/material";
 import { SubmitHandler, useForm } from "react-hook-form";
 import axiosInstance from "../../../utils/axiosInstance";
@@ -25,6 +26,11 @@ const ShareModal: React.FC<PlacesListModalProps> = (props) => {
         formState: { errors },
         setValue,
     } = useForm<FormData>();
+    const [planId, setPlanId] = React.useState<string>(props.planId);
+
+    useEffect(() => {
+        setPlanId(props.planId);
+    }, [props.planId]);
 
     const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
         try {
@@ -32,9 +38,9 @@ const ShareModal: React.FC<PlacesListModalProps> = (props) => {
             let config = {
                 headers: { Authorization: `Bearer ${token}` },
             };
-            setValue("planId", props.planId);
+            setValue("planId", planId);
             await axiosInstance.put("/api/plan/share", data, config);
-            props.setStatus("Successfully shared");
+            props.setStatus("Udostępniono");
             setOpen(false);
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -42,7 +48,7 @@ const ShareModal: React.FC<PlacesListModalProps> = (props) => {
                     props.setStatus(error.response.data.Detail);
                 }
             } else {
-                props.setStatus("Failed to share");
+                props.setStatus("Nie udało się udostępnić");
             }
             setOpen(false);
         }
@@ -97,7 +103,12 @@ const ShareModal: React.FC<PlacesListModalProps> = (props) => {
                                 className="shareModal__form-name"
                                 style={{ textAlign: "center" }}
                             >
-                                Username to share:
+                                Nazwa użytkownika do udostępnienia:
+                                <input
+                                    type="hidden"
+                                    {...register("planId")}
+                                    value={planId}
+                                />
                                 <br />
                                 <input
                                     style={{ width: 300 }}
@@ -114,7 +125,7 @@ const ShareModal: React.FC<PlacesListModalProps> = (props) => {
                                 className="shareModal__form-button"
                                 style={{ textAlign: "center" }}
                             >
-                                <button type="submit">Share</button>
+                                <button type="submit">Udostępnij</button>
                             </div>
                         </form>
                     </Typography>

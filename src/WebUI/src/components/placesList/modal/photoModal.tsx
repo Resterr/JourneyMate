@@ -26,6 +26,7 @@ const PhotoModal: React.FC<PlacesListModalProps> = (props) => {
         color: "#ffffff",
         boxShadow: 24,
         display: "flex",
+        textAlign: "center",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",

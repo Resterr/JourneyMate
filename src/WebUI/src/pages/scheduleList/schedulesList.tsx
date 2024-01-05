@@ -103,6 +103,7 @@ const SchedulesList: React.FC = () => {
                             value={selectedDate}
                             onChange={(newValue) => setSelectedDate(newValue)}
                             ampm={false}
+                            format="DD-MM-YYYY HH:MM"
                         />
                     </LocalizationProvider>
                 </div>

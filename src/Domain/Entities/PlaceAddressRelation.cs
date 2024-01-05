@@ -2,9 +2,9 @@
 
 public class PlaceAddressRelation
 {
-	public Guid AddressId { get; }
+	public Guid AddressId  { get; set; }
 	public Address Address { get; private set; }
-	public Guid PlaceId { get; }
+	public Guid PlaceId  { get; set; }
 	public Place Place { get; private set; }
 	public double DistanceFromAddress { get; private set; }
 

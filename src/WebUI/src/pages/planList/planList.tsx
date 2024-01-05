@@ -12,6 +12,7 @@ import ListItemText from "@mui/material/ListItemText";
 import { PaginatedPlans } from "../../models/PaginatedPlans";
 import IconButton from "@mui/material/IconButton";
 import ShareModal from "./modals/shareModal";
+import { formatDate } from "../../utils/helpers";
 
 const PlanList: React.FC = () => {
     const userContext = useContext(UserContext);
@@ -89,7 +90,7 @@ const PlanList: React.FC = () => {
 
     return (
         <div className="planList">
-            {loading || paginatedPlans == null ? (
+            {loading ? (
                 <p>Loading...</p>
             ) : (
                 <>
@@ -98,7 +99,7 @@ const PlanList: React.FC = () => {
                             <h1>{status}</h1>
                         </div>
                         <List sx={{ width: "100%", maxWidth: 1300 }}>
-                            {paginatedPlans!.items.map((plan) => {
+                            {paginatedPlans?.items.map((plan) => {
                                 const labelId = `checkbox-list-label-${plan.id}`;
                                 return (
                                     <ListItem
@@ -135,7 +136,12 @@ const PlanList: React.FC = () => {
                                         >
                                             <ListItemText
                                                 id={labelId}
-                                                primary={`${plan.name} - ${plan.created}`}
+                                                primary={`${
+                                                    plan.name
+                                                } - ${formatDate(
+                                                    plan.created,
+                                                    1,
+                                                )}`}
                                             />
                                         </ListItemButton>
                                     </ListItem>

@@ -7,7 +7,7 @@ public class AdministrativeAreaLevel1 : BaseEntity
 	public string ShortName { get; private set; }
 	public string LongName { get; private set; }
 
-	public Guid CountryId { get; }
+	public Guid CountryId  { get; set; }
 	public Country Country { get; private set; }
 
 	private AdministrativeAreaLevel1() { }

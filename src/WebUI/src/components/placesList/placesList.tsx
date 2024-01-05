@@ -179,7 +179,7 @@ const PlacesList: React.FC<PlacesListProps> = (props) => {
                             </button>
                         </div>
                     )}
-                    <List sx={{ width: "100%", maxWidth: 1300 }}>
+                    <List sx={{ width: "100%", maxWidth: 1400 }}>
                         {places.map((place) => {
                             const labelId = `checkbox-list-label-${place.id}`;
                             return (

@@ -4,9 +4,9 @@ namespace JourneyMate.Domain.Entities;
 
 public class Follow : BaseEntity
 {
-	public Guid FollowedId { get; }
+	public Guid FollowedId  { get; set; }
 	public User Followed { get; private set; }
-	public Guid FollowerId { get; }
+	public Guid FollowerId  { get; set; }
 	public User Follower { get; private set; }
 	public DateTime FollowDate { get; private set; }
 	public List<FollowPlanRelation> Shared { get; private set; } = new();

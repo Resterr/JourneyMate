@@ -50,13 +50,17 @@ const ScheduleDetailModal: React.FC<ScheduleDetailModalProps> = (props) => {
                         component="h2"
                     >
                         <>
-                            Data początkowa: {formatDate(schedule.startingDate)}
+                            Data początkowa:{" "}
+                            {formatDate(schedule.startingDate, 1)}
                         </>
                         <br />
                         {schedule.endingDate == null ? (
                             <></>
                         ) : (
-                            <>Data końcowa: {formatDate(schedule.endingDate)}</>
+                            <>
+                                Data końcowa:{" "}
+                                {formatDate(schedule.endingDate, 1)}
+                            </>
                         )}
                     </Typography>
                 </Box>

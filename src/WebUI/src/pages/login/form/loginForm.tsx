@@ -43,15 +43,15 @@ const LoginForm: React.FC = () => {
                 );
                 userContext.setUserName(data.userName);
 
-                setStatus(`Welcome ${data.userName}!`);
+                setStatus(`Witaj ${data.userName}!`);
 
                 navigate("/");
             } else {
-                setStatus("Failed to login");
+                setStatus("Nie udało się zalogować");
             }
         } catch (error) {
             console.error(error);
-            setStatus("Failed to login");
+            setStatus("Nie udało się zalogować");
         }
     };
 
@@ -68,7 +68,7 @@ const LoginForm: React.FC = () => {
                         id="form-login"
                         {...register("userName", {
                             required: "This is required",
-                            minLength: 6,
+                            minLength: 3,
                         })}
                     />
                     <br />

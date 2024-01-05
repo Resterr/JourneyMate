@@ -34,7 +34,7 @@ const RegisterForm: React.FC = () => {
             .post("/api/users/register", data)
             .then((response) => {
                 if (response.status === 200) {
-                    setStatus("Successfully registered");
+                    setStatus("Zarejestowano pomyślnie");
                     const formId = document.getElementById(
                         "form-id",
                     ) as HTMLInputElement;
@@ -53,12 +53,12 @@ const RegisterForm: React.FC = () => {
                     formPassword.value = "";
                     formPasswordConfirm.value = "";
                 } else {
-                    setStatus("Failed to register");
+                    setStatus("Błąd rejestracji");
                 }
             })
             .catch((error: any) => {
                 console.log(error);
-                setStatus("Failed to register");
+                setStatus("Błąd rejestracji");
             });
     };
 
@@ -88,7 +88,7 @@ const RegisterForm: React.FC = () => {
                         id="form-login"
                         {...register("userName", {
                             required: "This is required",
-                            minLength: 6,
+                            minLength: 3,
                         })}
                     />
                     <br />

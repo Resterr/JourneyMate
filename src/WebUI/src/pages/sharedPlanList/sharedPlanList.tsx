@@ -10,6 +10,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import { PaginatedPlans } from "../../models/PaginatedPlans";
+import { formatDate } from "../../utils/helpers";
 
 const SharedPlanList: React.FC = () => {
     const { id } = useParams();
@@ -90,7 +91,12 @@ const SharedPlanList: React.FC = () => {
                                         >
                                             <ListItemText
                                                 id={labelId}
-                                                primary={`${plan.name} - ${plan.created}`}
+                                                primary={`${
+                                                    plan.name
+                                                } - ${formatDate(
+                                                    plan.created,
+                                                    1,
+                                                )}`}
                                             />
                                         </ListItemButton>
                                     </ListItem>

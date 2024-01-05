@@ -88,7 +88,7 @@ const FollowUser: React.FC = () => {
                 headers: { Authorization: `Bearer ${token}` },
             };
             await axiosInstance.post("/api/users/follow", data, config);
-            setStatus("Successfully followed");
+            setStatus("Pomyślnie zaobserwowano ");
             window.location.reload();
         } catch (error) {
             if (axios.isAxiosError(error)) {
@@ -96,7 +96,7 @@ const FollowUser: React.FC = () => {
                     setStatus(error.response.data.Detail);
                 }
             } else {
-                setStatus("Failed to follow");
+                setStatus("Nie udało się zaobserwować");
             }
         }
     };
@@ -165,9 +165,9 @@ const FollowUser: React.FC = () => {
             ) : (
                 <div className="followUser__content">
                     <div className="followUser__content-list">
-                        <p>Followers</p>
+                        <p>Obserwujący</p>
                         <List sx={{ width: "100%", maxWidth: 1300 }}>
-                            {paginatedFollowers!.items.map((follow) => {
+                            {paginatedFollowers?.items.map((follow) => {
                                 const labelId = `checkbox-list-label-${follow.userName}`;
                                 return (
                                     <ListItem
@@ -186,16 +186,16 @@ const FollowUser: React.FC = () => {
                             <Pagination
                                 className="followUser__content-list-pagination-item"
                                 variant="outlined"
-                                count={paginatedFollowers!.totalPages}
+                                count={paginatedFollowers?.totalPages}
                                 page={pageNumberFollowers}
                                 onChange={handleFollowersPaginationChange}
                             />
                         </div>
                     </div>
                     <div className="followUser__content-list">
-                        <p>Followed</p>
+                        <p>Obserwowani</p>
                         <List sx={{ width: "100%", maxWidth: 1300 }}>
-                            {paginatedFollowed!.items.map((follow) => {
+                            {paginatedFollowed?.items.map((follow) => {
                                 const labelId = `checkbox-list-label-${follow.userName}`;
                                 return (
                                     <ListItem
@@ -229,7 +229,7 @@ const FollowUser: React.FC = () => {
                             <Pagination
                                 className="followUser__content-list-pagination-item"
                                 variant="outlined"
-                                count={paginatedFollowed!.totalPages}
+                                count={paginatedFollowed?.totalPages}
                                 page={pageNumberFollowed}
                                 onChange={handleFollowedPaginationChange}
                             />

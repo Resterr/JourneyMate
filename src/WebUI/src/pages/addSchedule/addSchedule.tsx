@@ -22,12 +22,8 @@ const AddSchedule: React.FC = () => {
     const userContext = useContext(UserContext);
     const currentUser = userContext.currentUser;
     const navigate = useNavigate();
-    const [startingDate, setstartingDate] = useState<Dayjs | null>(
-        dayjs(new Date()),
-    );
-    const [endingDate, setEndingDate] = useState<Dayjs | null>(
-        dayjs(new Date()),
-    );
+    const [startingDate, setStartingDate] = useState<Dayjs>(dayjs(new Date()));
+    const [endingDate, setEndingDate] = useState<Dayjs | null>(null);
     const {
         register,
         handleSubmit,
@@ -49,16 +45,17 @@ const AddSchedule: React.FC = () => {
             let config = {
                 headers: { Authorization: `Bearer ${token}` },
             };
+            setValue("startingDate", startingDate.toDate());
 
             await axiosInstance.put(`/api/schedule`, data, config);
-            setStatus("Successfully added or updated");
+            setStatus("Zaktualizowano z sukcesem");
         } catch (error) {
             if (axios.isAxiosError(error)) {
                 if (error.response) {
                     setStatus(error.response.data.Detail);
                 }
             } else {
-                setStatus("Failed to add or update");
+                setStatus("Błąd przy aktualizacji");
             }
         }
     };
@@ -69,7 +66,7 @@ const AddSchedule: React.FC = () => {
 
     const handleStartingDateChange = (startingDate: Dayjs | null) => {
         if (startingDate != null) {
-            setstartingDate(startingDate);
+            setStartingDate(startingDate);
             setValue("startingDate", startingDate.toDate());
         }
     };
@@ -103,7 +100,8 @@ const AddSchedule: React.FC = () => {
                                     handleStartingDateChange(newValue)
                                 }
                                 ampm={false}
-                                label="Starting date"
+                                label="Data początkowa"
+                                format="DD-MM-YYYY HH:MM"
                             />
                         </LocalizationProvider>
                     </div>
@@ -115,16 +113,14 @@ const AddSchedule: React.FC = () => {
                                     handleEndingDateChange(newValue)
                                 }
                                 ampm={false}
-                                label="Ending date"
-                                sx={{
-                                    color: "white",
-                                }}
+                                label="Data końcowa"
+                                format="DD-MM-YYYY HH:MM"
                             />
                         </LocalizationProvider>
                     </div>
                 </div>
                 <button className="addSchedule__form-button" type="submit">
-                    Add
+                    Dodaj
                 </button>
             </form>
         </div>

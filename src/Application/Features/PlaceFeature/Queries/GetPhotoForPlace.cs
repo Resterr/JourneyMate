@@ -22,8 +22,7 @@ internal sealed class GetPhotoForPlaceHandler : IRequestHandler<GetPhotoForPlace
 
 	public async Task<Stream> Handle(GetPhotoForPlace request, CancellationToken cancellationToken)
 	{
-		var photo = await _dbContext.Photos.AsNoTracking()
-			.FirstOrDefaultAsync(x => x.PlaceId == request.PlaceId);
+		var photo = await _dbContext.Photos.Include(x => x.Place).FirstOrDefaultAsync(x => x.PlaceId == request.PlaceId);
 		if (photo != null)
 		{
 			var data = photo.Data;

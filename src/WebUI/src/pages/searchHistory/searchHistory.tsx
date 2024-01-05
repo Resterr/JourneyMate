@@ -120,6 +120,7 @@ const SearchDisplay: React.FC = () => {
                                                         report.id
                                                     } - ${formatDate(
                                                         report.created,
+                                                        1,
                                                     )}`}
                                                 />
                                             </Link>

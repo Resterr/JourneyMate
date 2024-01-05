@@ -4,9 +4,9 @@ namespace JourneyMate.Domain.Entities;
 
 public class Schedule : BaseAuditableEntity
 {
-	public Guid PlanId { get; }
+	public Guid PlanId { get; set; }
 	public Plan Plan { get; private set; }
-	public Guid PlaceId { get; }
+	public Guid PlaceId { get; set; }
 	public Place Place { get; private set; }
 	public DateTime StartingDate { get; private set; }
 	public DateTime? EndingDate { get; private set; }
