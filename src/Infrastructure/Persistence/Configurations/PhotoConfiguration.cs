@@ -10,10 +10,10 @@ public class PhotoConfiguration : IEntityTypeConfiguration<Photo>
 	{
 		builder.Property(x => x.PhotoReference)
 			.IsRequired();
-		
+
 		builder.Property(x => x.Width)
 			.IsRequired();
-		
+
 		builder.Property(x => x.Height)
 			.IsRequired();
 

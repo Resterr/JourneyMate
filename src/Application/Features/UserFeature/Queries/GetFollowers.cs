@@ -13,8 +13,8 @@ public record GetFollowers(int PageNumber, int PageSize) : IRequest<PaginatedLis
 internal sealed class GetFollowersHandler : IRequestHandler<GetFollowers, PaginatedList<UserNameDto>>
 {
 	private readonly ICurrentUserService _currentUserService;
-	private readonly IMapper _mapper;
 	private readonly IApplicationDbContext _dbContext;
+	private readonly IMapper _mapper;
 
 	public GetFollowersHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService, IMapper mapper)
 	{
@@ -31,8 +31,10 @@ internal sealed class GetFollowersHandler : IRequestHandler<GetFollowers, Pagina
 		var followers = await _dbContext.Followers.Include(x => x.Follower)
 			.Where(x => x.FollowedId == user.Id)
 			.OrderBy(x => x.Follower.UserName)
-			.AsNoTracking().PaginatedListAsync(request.PageNumber, request.PageSize);
-		var users = followers.Items.Select(x => x.Follower).ToList();
+			.AsNoTracking()
+			.PaginatedListAsync(request.PageNumber, request.PageSize);
+		var users = followers.Items.Select(x => x.Follower)
+			.ToList();
 		var userNameDto = _mapper.Map<List<UserNameDto>>(users);
 		var result = new PaginatedList<UserNameDto>(userNameDto, followers.TotalCount, request.PageNumber, request.PageSize);
 

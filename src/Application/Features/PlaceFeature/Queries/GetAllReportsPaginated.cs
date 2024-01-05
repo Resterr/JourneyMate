@@ -13,8 +13,8 @@ public record GetAllReportsPaginated(int PageNumber, int PageSize) : IRequest<Pa
 
 internal sealed class GetAllReportsHandler : IRequestHandler<GetAllReportsPaginated, PaginatedList<ReportDto>>
 {
-	private readonly IApplicationDbContext _dbContext;
 	private readonly ICurrentUserService _currentUserService;
+	private readonly IApplicationDbContext _dbContext;
 	private readonly IMapper _mapper;
 
 	public GetAllReportsHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService, IMapper mapper)
@@ -34,7 +34,7 @@ internal sealed class GetAllReportsHandler : IRequestHandler<GetAllReportsPagina
 			.PaginatedListAsync(request.PageNumber, request.PageSize);
 		var reportsDto = _mapper.Map<List<ReportDto>>(reports.Items);
 		var result = new PaginatedList<ReportDto>(reportsDto, reports.TotalCount, request.PageNumber, request.PageSize);
-		
+
 		return result;
 	}
 }

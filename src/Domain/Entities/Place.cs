@@ -13,22 +13,15 @@ public class Place : BaseAuditableEntity
 	public string Vicinity { get; private set; }
 	public Location Location { get; private set; }
 	public PlusCode PlusCode { get; private set; }
-	public List<Photo> Photos { get; private set; } = new();
-	public List<PlaceAddressRelation> Addresses { get; private set; } = new();
+	public List<Photo> Photos { get; } = new();
+	public List<PlaceAddressRelation> Addresses { get; } = new();
 	public List<PlaceType> Types { get; private set; } = new();
 	public List<Report> Reports { get; private set; } = new();
 	public List<Plan> Plans { get; private set; } = new();
-	
+
 	private Place() { }
-	public Place(
-		string apiPlaceId,
-		string businessStatus,
-		string name,
-		double rating,
-		int userRatingsTotal,
-		string vicinity,
-		Location location,
-		PlusCode plusCode)
+
+	public Place(string apiPlaceId, string businessStatus, string name, double rating, int userRatingsTotal, string vicinity, Location location, PlusCode plusCode)
 	{
 		ApiPlaceId = apiPlaceId;
 		BusinessStatus = businessStatus;
@@ -58,18 +51,17 @@ public class Place : BaseAuditableEntity
 		Location = location;
 		PlusCode = plusCode;
 	}
-	
+
 	public bool CheckType(List<PlaceType> placeTypes)
 	{
 		var hasType = false;
 		foreach (var placeType in placeTypes)
-		{
-			if (Types.Any(x => x.Id == placeType.Id)) hasType = true;
-		}
-		
+			if (Types.Any(x => x.Id == placeType.Id))
+				hasType = true;
+
 		return hasType;
 	}
-	
+
 	public void SetTypes(List<PlaceType> placeTypes)
 	{
 		Types = placeTypes;
@@ -80,17 +72,17 @@ public class Place : BaseAuditableEntity
 		if (Types.Contains(placeType)) return;
 		Types.Add(placeType);
 	}
-	
+
 	public void AddPhoto(Photo photo)
 	{
 		Photos.Add(photo);
 	}
-	
+
 	public bool CheckAddress(Guid addressId)
 	{
 		return Addresses.Any(x => x.AddressId == addressId);
 	}
-	
+
 	public void AddAddress(PlaceAddressRelation addressRelation)
 	{
 		if (Addresses.Contains(addressRelation)) return;

@@ -13,8 +13,8 @@ public record GenerateReport(Guid AddressId, List<string> Types, double Distance
 
 internal sealed class GenerateReportHandler : IRequestHandler<GenerateReport, Guid>
 {
-	private readonly IApplicationDbContext _dbContext;
 	private readonly ICurrentUserService _currentUserService;
+	private readonly IApplicationDbContext _dbContext;
 	private readonly IPlacesApiService _placesApiService;
 
 	public GenerateReportHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService, IPlacesApiService placesApiService)
@@ -44,7 +44,6 @@ internal sealed class GenerateReportHandler : IRequestHandler<GenerateReport, Gu
 				.ToList(), 20000, "prominence");
 
 			if (placesToAdd.Count > 0)
-			{
 				foreach (var placeDto in placesToAdd)
 				{
 					var place = await _dbContext.Places.Include(x => x.Addresses)
@@ -94,24 +93,22 @@ internal sealed class GenerateReportHandler : IRequestHandler<GenerateReport, Gu
 
 					await _dbContext.SaveChangesAsync();
 				}
-			}
 			else
-			{
 				throw new PlaceNotFoundException();
-			}
 		}
-		
+
 		var placeAddresses = await _dbContext.PlaceAddress.Include(x => x.Place)
 			.ThenInclude(x => x.Types)
 			.Where(x => x.AddressId == address.Id && x.Place.UserRatingsTotal > 10 && x.Place.Rating > 3.0)
 			.ToListAsync(cancellationToken);
 
-		placeAddresses = placeAddresses.Where(x => x.DistanceFromAddress < request.Distance).ToList();
+		placeAddresses = placeAddresses.Where(x => x.DistanceFromAddress < request.Distance)
+			.ToList();
 
 		var places = placeAddresses.Select(x => x.Place)
 			.OrderBy(x => x.Rating)
 			.ToList();
-		
+
 		places = places.Where(x => x.CheckType(types))
 			.ToList();
 
@@ -133,6 +130,8 @@ public class GenerateReportValidator : AbstractValidator<GenerateReport>
 		RuleFor(x => x.Types)
 			.NotEmpty();
 		RuleFor(x => x.Distance)
-			.NotEmpty().GreaterThanOrEqualTo(1).LessThanOrEqualTo(20);
+			.NotEmpty()
+			.GreaterThanOrEqualTo(1)
+			.LessThanOrEqualTo(20);
 	}
 }

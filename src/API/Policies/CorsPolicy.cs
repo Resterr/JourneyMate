@@ -11,12 +11,9 @@ internal static class CorsPolicy
 		{
 			options.AddPolicy("CorsPolicy", builder =>
 			{
-				builder.WithOrigins(config["Cors:AllowedOrigins"]!
-						.Split(","))
-					.WithMethods(config["Cors:AllowedMethods"]!
-						.Split(","))
-					.WithHeaders(config["Cors:AllowedHeaders"]!
-						.Split(","));
+				builder.WithOrigins(config["Cors:AllowedOrigins"]!.Split(","))
+					.WithMethods(config["Cors:AllowedMethods"]!.Split(","))
+					.WithHeaders(config["Cors:AllowedHeaders"]!.Split(","));
 			});
 		});
 

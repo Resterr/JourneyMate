@@ -51,7 +51,7 @@ internal sealed class AddAddressHandler : IRequestHandler<AddAddress, Guid>
 			locality = new Address(address.ApiPlaceId, address.Locality, address.Location, level2, address.PostalCode);
 			_dbContext.Addresses.Add(locality);
 		}
-		
+
 		return locality.Id;
 	}
 }

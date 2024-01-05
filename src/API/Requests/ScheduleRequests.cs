@@ -30,7 +30,7 @@ internal static class ScheduleRequests
 			.Produces(StatusCodes.Status401Unauthorized)
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Get schedules for plan"));
-		
+
 		group.MapPut("", async (ISender sender, [FromBody] AddOrUpdateSchedule request) =>
 			{
 				await sender.Send(request);

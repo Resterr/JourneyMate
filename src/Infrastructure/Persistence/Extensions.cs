@@ -13,17 +13,16 @@ internal static class Extensions
 	public static IServiceCollection AddPersistence(this IServiceCollection services, IConfiguration configuration)
 	{
 		var options = configuration.GetOptions<ConnectionStringsOptions>("ConnectionStrings");
-		
+
 		services.AddScoped<AuditableEntitySaveChangesInterceptor>();
-		services.AddDbContext<ApplicationDbContext>(x => x.UseSqlServer(options.SqlServer,
-			o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
+		services.AddDbContext<ApplicationDbContext>(x => x.UseSqlServer(options.SqlServer, o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery)));
 		services.AddScoped<IApplicationDbContext>(provider => provider.GetRequiredService<ApplicationDbContext>());
 		services.AddScoped<ApplicationInitializer>();
 		services.AddScoped<IUsersSeeder, UsersSeeder>();
 		services.AddScoped<ITypesSeeder, TypesSeeder>();
 		services.AddScoped<IAdministrativeAreaSeeder, AdministrativeAreaSeeder>();
 		services.AddHostedService<ApplicationInitializer>();
-		
+
 		return services;
 	}
 }

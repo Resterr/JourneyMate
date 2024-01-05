@@ -11,8 +11,8 @@ public record AddOrUpdatePlan(string Name, List<Guid> PlacesId) : IRequest<Guid>
 
 internal sealed class AddOrUpdateHandler : IRequestHandler<AddOrUpdatePlan, Guid>
 {
-	private readonly IApplicationDbContext _dbContext;
 	private readonly ICurrentUserService _currentUserService;
+	private readonly IApplicationDbContext _dbContext;
 
 	public AddOrUpdateHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService)
 	{
@@ -24,7 +24,8 @@ internal sealed class AddOrUpdateHandler : IRequestHandler<AddOrUpdatePlan, Guid
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
 		var user = await _dbContext.Users.SingleOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
-		var plan = await _dbContext.Plans.Include(x => x.Places).SingleOrDefaultAsync(x => x.Name == request.Name && x.UserId == user.Id);
+		var plan = await _dbContext.Plans.Include(x => x.Places)
+			.SingleOrDefaultAsync(x => x.Name == request.Name && x.UserId == user.Id);
 
 		if (plan == null)
 		{
@@ -41,13 +42,14 @@ internal sealed class AddOrUpdateHandler : IRequestHandler<AddOrUpdatePlan, Guid
 			plan.AddPlaces(places);
 			await _dbContext.Plans.AddAsync(plan);
 			await _dbContext.SaveChangesAsync();
-			
+
 			return new Guid();
 		}
 		else
 		{
 			var places = new List<Place>();
-			var placePlansToadd = request.PlacesId.Where(x => !plan.Places.Any(y => y.Id == x)).ToList();
+			var placePlansToadd = request.PlacesId.Where(x => !plan.Places.Any(y => y.Id == x))
+				.ToList();
 
 			foreach (var placeId in placePlansToadd)
 			{

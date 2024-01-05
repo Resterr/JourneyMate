@@ -28,7 +28,7 @@ internal static class AddressRequests
 			.RequireAuthorization("user")
 			.Produces<List<AddressDto>>()
 			.WithMetadata(new SwaggerOperationAttribute("Get addresses"));
-		
+
 		group.MapGet("type", async (ISender sender, [AsParameters] GetAllTypes request) =>
 			{
 				var result = await sender.Send(request);

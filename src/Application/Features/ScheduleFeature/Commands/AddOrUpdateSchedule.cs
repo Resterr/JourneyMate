@@ -25,7 +25,8 @@ internal sealed class UpdateScheduleHandler : IRequestHandler<AddOrUpdateSchedul
 		if (schedule == null)
 		{
 			var plan = await _dbContext.Plans.SingleOrDefaultAsync(x => x.Id == request.PlanId) ?? throw new PlanNotFoundException(request.PlaceId);
-			var place = await _dbContext.Places.SingleOrDefaultAsync(x => x.Id == request.PlaceId) ?? throw new PlaceNotFoundException(request.PlaceId);;
+			var place = await _dbContext.Places.SingleOrDefaultAsync(x => x.Id == request.PlaceId) ?? throw new PlaceNotFoundException(request.PlaceId);
+			;
 			schedule = new Schedule(plan, place, request.StartingDate, request.EndingDate);
 			await _dbContext.Schedules.AddAsync(schedule);
 			await _dbContext.SaveChangesAsync();
@@ -36,7 +37,7 @@ internal sealed class UpdateScheduleHandler : IRequestHandler<AddOrUpdateSchedul
 			_dbContext.Schedules.Update(schedule);
 			await _dbContext.SaveChangesAsync();
 		}
-		
+
 		return Unit.Value;
 	}
 }

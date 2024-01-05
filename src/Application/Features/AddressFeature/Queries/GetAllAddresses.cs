@@ -22,7 +22,9 @@ internal sealed class GetAllAddressesHandler : IRequestHandler<GetAllAddresses, 
 	public async Task<List<AddressDto>> Handle(GetAllAddresses request, CancellationToken cancellationToken)
 	{
 		var addresses = await _dbContext.Addresses.Include(x => x.AdministrativeAreaLevel2)
-			.ThenInclude(x => x.AdministrativeAreaLevel1).ThenInclude(x => x.Country).OrderBy(x => x.Locality.LongName)
+			.ThenInclude(x => x.AdministrativeAreaLevel1)
+			.ThenInclude(x => x.Country)
+			.OrderBy(x => x.Locality.LongName)
 			.AsNoTracking()
 			.ToListAsync();
 

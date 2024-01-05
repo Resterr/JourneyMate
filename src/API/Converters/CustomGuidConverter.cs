@@ -9,10 +9,7 @@ public class CustomGuidConverter : JsonConverter<Guid>
 	public override Guid Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
 	{
 		var value = reader.GetString();
-		if (!Guid.TryParse(value, out var guid))
-		{
-			throw new InvalidGuidFormatException(value);
-		}
+		if (!Guid.TryParse(value, out var guid)) throw new InvalidGuidFormatException(value);
 
 		return guid;
 	}

@@ -28,7 +28,7 @@ internal sealed class GetAllUsersHandler : IRequestHandler<GetAllUsers, List<Use
 			.ToList();
 
 		users.Remove(superAdmin[0]);
-		
+
 		var result = _mapper.Map<List<UserDto>>(users);
 
 		return result;

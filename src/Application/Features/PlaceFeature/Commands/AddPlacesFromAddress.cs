@@ -27,26 +27,28 @@ internal sealed class AddPlacesFromAddressHandler : IRequestHandler<AddPlacesFro
 		var address = await _dbContext.Addresses.SingleOrDefaultAsync(x => x.Id == request.AddressId) ?? throw new AddressNotFoundException(request.AddressId);
 		var locationString = string.Join(',', address.Location.Latitude.ToString(CultureInfo.InvariantCulture), address.Location.Longitude.ToString(CultureInfo.InvariantCulture));
 		var placeTypes = await _dbContext.PlaceTypes.ToListAsync();
-		var places = await _placesApiService.GetPlacesAsync(locationString,  placeTypes.Select(x => x.ApiName).ToList(), 20000, "prominence");
-		
+		var places = await _placesApiService.GetPlacesAsync(locationString, placeTypes.Select(x => x.ApiName)
+			.ToList(), 20000, "prominence");
+
 		if (places.Count > 0)
-		{
 			foreach (var placeDto in places)
 			{
-				var place = await _dbContext.Places.Include(x => x.Addresses).SingleOrDefaultAsync(x => x.ApiPlaceId == placeDto.ApiPlaceId);
+				var place = await _dbContext.Places.Include(x => x.Addresses)
+					.SingleOrDefaultAsync(x => x.ApiPlaceId == placeDto.ApiPlaceId);
 
 				if (place == null)
 				{
-					if(placeDto.UserRatingsTotal < 10 || placeDto.Rating < 3.0) continue;
+					if (placeDto.UserRatingsTotal < 10 || placeDto.Rating < 3.0) continue;
 					place = new Place(placeDto.ApiPlaceId, placeDto.BusinessStatus, placeDto.Name, placeDto.Rating, placeDto.UserRatingsTotal, placeDto.Vicinity, placeDto.Location, placeDto.PlusCode);
 
 					var distanceFromAddress = Helpers.CalculateDistance(address.Location.Latitude, address.Location.Longitude, place.Location.Latitude, place.Location.Longitude);
-					if(distanceFromAddress > 20) continue;
+					if (distanceFromAddress > 20) continue;
 					var placeAddress = new PlaceAddressRelation(address, place, distanceFromAddress);
-				
+
 					place.AddAddress(placeAddress);
-					
-					var typesToSet = placeTypes.Where(placeType => placeDto.Types.Any(x => x.Contains(placeType.ApiName))).ToList();
+
+					var typesToSet = placeTypes.Where(placeType => placeDto.Types.Any(x => x.Contains(placeType.ApiName)))
+						.ToList();
 
 					place.SetTypes(typesToSet);
 
@@ -56,7 +58,7 @@ internal sealed class AddPlacesFromAddressHandler : IRequestHandler<AddPlacesFro
 						var photo = new Photo(place, placeDto.Photo.Height, placeDto.Photo.Width, placeDto.Photo.PhotoReference, photoData);
 						place.AddPhoto(photo);
 					}
-					
+
 					await _dbContext.Places.AddAsync(place);
 				}
 				else
@@ -66,22 +68,19 @@ internal sealed class AddPlacesFromAddressHandler : IRequestHandler<AddPlacesFro
 					if (!place.Addresses.Any(x => x.AddressId == request.AddressId))
 					{
 						var distanceFromAddress = Helpers.CalculateDistance(address.Location.Latitude, address.Location.Longitude, place.Location.Latitude, place.Location.Longitude);
-						if(distanceFromAddress > 20) continue;
+						if (distanceFromAddress > 20) continue;
 						var placeAddress = new PlaceAddressRelation(address, place, distanceFromAddress);
-					
+
 						place.AddAddress(placeAddress);
 					}
-					
+
 					_dbContext.Places.Update(place);
 				}
-				
+
 				await _dbContext.SaveChangesAsync();
 			}
-		}
 		else
-		{
 			throw new PlaceNotFoundException();
-		}
 
 		return Unit.Value;
 	}

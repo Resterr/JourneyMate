@@ -1,7 +1,6 @@
 ﻿using JourneyMate.Application.Common.Mappings;
 using JourneyMate.Domain.Entities;
 using JourneyMate.Domain.ValueObjects;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace JourneyMate.Application.Common.Models;
 
@@ -9,7 +8,7 @@ public class PlaceDto : IMapFrom<Place>
 {
 	public Guid Id { get; set; }
 	public string ApiPlaceId { get; set; }
-	public string BusinessStatus { get;  set; }
+	public string BusinessStatus { get; set; }
 	public string Name { get; set; }
 	public double Rating { get; set; }
 	public int UserRatingsTotal { get; set; }

@@ -10,13 +10,13 @@ public class ReportConfiguration : IEntityTypeConfiguration<Report>
 	{
 		builder.Property(x => x.UserId)
 			.IsRequired();
-		
+
 		builder.Property(x => x.AddressId)
 			.IsRequired();
-		
+
 		builder.Property(x => x.Rating)
 			.IsRequired();
-		
+
 		builder.ToTable("Report");
 	}
 }

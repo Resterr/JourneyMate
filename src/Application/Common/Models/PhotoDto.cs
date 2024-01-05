@@ -3,8 +3,8 @@
 public class PhotoDto
 {
 	public Guid Id { get; set; }
-	public byte[] Data { get; private set; }
-	public int? Height { get; private set; }
-	public int? Width { get; private set; }
-	public string PhotoReference { get; private set; }
+	public byte[] Data { get; }
+	public int? Height { get; }
+	public int? Width { get; }
+	public string PhotoReference { get; }
 }

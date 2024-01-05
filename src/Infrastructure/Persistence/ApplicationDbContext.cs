@@ -13,6 +13,12 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 	private readonly AuditableEntitySaveChangesInterceptor _auditableEntitySaveChangesInterceptor;
 	private readonly IMediator _mediator;
 
+	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IMediator mediator, AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor) : base(options)
+	{
+		_mediator = mediator;
+		_auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
+	}
+
 	public DbSet<User> Users => Set<User>();
 	public DbSet<Role> Roles => Set<Role>();
 	public DbSet<Address> Addresses => Set<Address>();
@@ -27,74 +33,78 @@ public class ApplicationDbContext : DbContext, IApplicationDbContext
 	public DbSet<Plan> Plans => Set<Plan>();
 	public DbSet<Schedule> Schedules => Set<Schedule>();
 	public DbSet<Follow> Followers => Set<Follow>();
-	
-	public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IMediator mediator, AuditableEntitySaveChangesInterceptor auditableEntitySaveChangesInterceptor) : base(options)
-	{
-		_mediator = mediator;
-		_auditableEntitySaveChangesInterceptor = auditableEntitySaveChangesInterceptor;
-	}
-
-	protected override void OnModelCreating(ModelBuilder builder)
-	{
-		builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
-		
-		builder.Entity<User>()
-			.HasMany(x => x.Roles)
-			.WithMany(x => x.Users)
-			.UsingEntity(
-				"UserRoleRelation",
-				x => x.HasOne(typeof(Role)).WithMany().HasForeignKey("RoleId").HasPrincipalKey(nameof(Role.Id)),
-				x => x.HasOne(typeof(User)).WithMany().HasForeignKey("UserId").HasPrincipalKey(nameof(User.Id)),
-				x => x.HasKey("UserId", "RoleId"));
-
-		builder.Entity<Place>()
-			.HasMany(x => x.Types)
-			.WithMany(x => x.Places)
-			.UsingEntity(
-				"PlacePlaceTypeRelation",
-				x => x.HasOne(typeof(PlaceType)).WithMany().HasForeignKey("PlaceTypeId").HasPrincipalKey(nameof(PlaceType.Id)),
-				x => x.HasOne(typeof(Place)).WithMany().HasForeignKey("PlaceId").HasPrincipalKey(nameof(Place.Id)),
-				x => x.HasKey("PlaceId", "PlaceTypeId"));
-		
-		builder.Entity<Report>()
-			.HasMany(x => x.Types)
-			.WithMany(x => x.Reports)
-			.UsingEntity(
-				"ReportPlaceTypeRelation",
-				x => x.HasOne(typeof(PlaceType)).WithMany().HasForeignKey("PlaceTypeId").HasPrincipalKey(nameof(PlaceType.Id)),
-				x => x.HasOne(typeof(Report)).WithMany().HasForeignKey("ReportId").HasPrincipalKey(nameof(Report.Id)),
-				x => x.HasKey("ReportId", "PlaceTypeId"));
-		
-		builder.Entity<Report>()
-			.HasMany(x => x.Places)
-			.WithMany(x => x.Reports)
-			.UsingEntity(
-				"ReportPlaceRelation",
-				x => x.HasOne(typeof(Place)).WithMany().HasForeignKey("PlaceId").HasPrincipalKey(nameof(Place.Id)),
-				x => x.HasOne(typeof(Report)).WithMany().HasForeignKey("ReportId").HasPrincipalKey(nameof(Report.Id)),
-				x => x.HasKey("ReportId", "PlaceId"));
-		
-		builder.Entity<Plan>()
-			.HasMany(x => x.Places)
-			.WithMany(x => x.Plans)
-			.UsingEntity(
-				"PlacePlanRelation",
-				x => x.HasOne(typeof(Place)).WithMany().HasForeignKey("PlaceId").HasPrincipalKey(nameof(Place.Id)),
-				x => x.HasOne(typeof(Plan)).WithMany().HasForeignKey("PlanId").HasPrincipalKey(nameof(Plan.Id)),
-				x => x.HasKey("PlanId", "PlaceId"));
-		
-		base.OnModelCreating(builder);
-	}
-
-	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-	{
-		optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
-	}
 
 	public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
 	{
 		await _mediator.DispatchDomainEvents(this);
 
 		return await base.SaveChangesAsync(cancellationToken);
+	}
+
+	protected override void OnModelCreating(ModelBuilder builder)
+	{
+		builder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
+
+		builder.Entity<User>()
+			.HasMany(x => x.Roles)
+			.WithMany(x => x.Users)
+			.UsingEntity("UserRoleRelation", x => x.HasOne(typeof(Role))
+				.WithMany()
+				.HasForeignKey("RoleId")
+				.HasPrincipalKey(nameof(Role.Id)), x => x.HasOne(typeof(User))
+				.WithMany()
+				.HasForeignKey("UserId")
+				.HasPrincipalKey(nameof(User.Id)), x => x.HasKey("UserId", "RoleId"));
+
+		builder.Entity<Place>()
+			.HasMany(x => x.Types)
+			.WithMany(x => x.Places)
+			.UsingEntity("PlacePlaceTypeRelation", x => x.HasOne(typeof(PlaceType))
+				.WithMany()
+				.HasForeignKey("PlaceTypeId")
+				.HasPrincipalKey(nameof(PlaceType.Id)), x => x.HasOne(typeof(Place))
+				.WithMany()
+				.HasForeignKey("PlaceId")
+				.HasPrincipalKey(nameof(Place.Id)), x => x.HasKey("PlaceId", "PlaceTypeId"));
+
+		builder.Entity<Report>()
+			.HasMany(x => x.Types)
+			.WithMany(x => x.Reports)
+			.UsingEntity("ReportPlaceTypeRelation", x => x.HasOne(typeof(PlaceType))
+				.WithMany()
+				.HasForeignKey("PlaceTypeId")
+				.HasPrincipalKey(nameof(PlaceType.Id)), x => x.HasOne(typeof(Report))
+				.WithMany()
+				.HasForeignKey("ReportId")
+				.HasPrincipalKey(nameof(Report.Id)), x => x.HasKey("ReportId", "PlaceTypeId"));
+
+		builder.Entity<Report>()
+			.HasMany(x => x.Places)
+			.WithMany(x => x.Reports)
+			.UsingEntity("ReportPlaceRelation", x => x.HasOne(typeof(Place))
+				.WithMany()
+				.HasForeignKey("PlaceId")
+				.HasPrincipalKey(nameof(Place.Id)), x => x.HasOne(typeof(Report))
+				.WithMany()
+				.HasForeignKey("ReportId")
+				.HasPrincipalKey(nameof(Report.Id)), x => x.HasKey("ReportId", "PlaceId"));
+
+		builder.Entity<Plan>()
+			.HasMany(x => x.Places)
+			.WithMany(x => x.Plans)
+			.UsingEntity("PlacePlanRelation", x => x.HasOne(typeof(Place))
+				.WithMany()
+				.HasForeignKey("PlaceId")
+				.HasPrincipalKey(nameof(Place.Id)), x => x.HasOne(typeof(Plan))
+				.WithMany()
+				.HasForeignKey("PlanId")
+				.HasPrincipalKey(nameof(Plan.Id)), x => x.HasKey("PlanId", "PlaceId"));
+
+		base.OnModelCreating(builder);
+	}
+
+	protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+	{
+		optionsBuilder.AddInterceptors(_auditableEntitySaveChangesInterceptor);
 	}
 }

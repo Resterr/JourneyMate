@@ -20,10 +20,10 @@ internal sealed class RemovePlanHandler : IRequestHandler<RemovePlan, Unit>
 	public async Task<Unit> Handle(RemovePlan request, CancellationToken cancellationToken)
 	{
 		var plan = await _dbContext.Plans.SingleOrDefaultAsync(x => x.Id == request.Id) ?? throw new PlanNotFoundException(request.Id);
-		
+
 		_dbContext.Plans.Remove(plan);
 		await _dbContext.SaveChangesAsync();
-		
+
 		return Unit.Value;
 	}
 }

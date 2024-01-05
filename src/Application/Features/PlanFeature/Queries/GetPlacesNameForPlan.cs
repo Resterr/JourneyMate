@@ -12,8 +12,8 @@ public record GetPlacesNameForPlan(Guid PlanId) : IRequest<List<PlaceNameDto>>;
 
 internal sealed class GetPlacesNameForPlanHandler : IRequestHandler<GetPlacesNameForPlan, List<PlaceNameDto>>
 {
-	private readonly IApplicationDbContext _dbContext;
 	private readonly ICurrentUserService _currentUserService;
+	private readonly IApplicationDbContext _dbContext;
 	private readonly IMapper _mapper;
 
 	public GetPlacesNameForPlanHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService, IMapper mapper)
@@ -28,10 +28,12 @@ internal sealed class GetPlacesNameForPlanHandler : IRequestHandler<GetPlacesNam
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
 		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
 		var plan = await _dbContext.Plans.Include(x => x.Places)
-			.Where(x => x.UserId == user.Id)
-			.AsNoTracking().SingleOrDefaultAsync(x => x.Id == request.PlanId) ?? throw new PlanNotFoundException(request.PlanId);
+				.Where(x => x.UserId == user.Id)
+				.AsNoTracking()
+				.SingleOrDefaultAsync(x => x.Id == request.PlanId) ??
+			throw new PlanNotFoundException(request.PlanId);
 		var result = _mapper.Map<List<PlaceNameDto>>(plan.Places);
- 
+
 		return result;
 	}
 }
