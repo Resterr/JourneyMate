@@ -95,26 +95,28 @@ const AddSchedule: React.FC = () => {
                     <div className="addSchedule__form-calendar-item">
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DateTimePicker
+                                className="addSchedule__form-calendar-item-picker"
                                 value={startingDate}
                                 onChange={(newValue) =>
                                     handleStartingDateChange(newValue)
                                 }
                                 ampm={false}
                                 label="Data początkowa"
-                                format="DD-MM-YYYY HH:MM"
+                                format="DD-MM-YYYY HH:mm"
                             />
                         </LocalizationProvider>
                     </div>
                     <div className="addSchedule__form-calendar-item">
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <DateTimePicker
+                                className="addSchedule__form-calendar-item-picker"
                                 value={endingDate}
                                 onChange={(newValue) =>
                                     handleEndingDateChange(newValue)
                                 }
                                 ampm={false}
                                 label="Data końcowa"
-                                format="DD-MM-YYYY HH:MM"
+                                format="DD-MM-YYYY HH:mm"
                             />
                         </LocalizationProvider>
                     </div>

@@ -40,3 +40,7 @@
     width: 400px;
     height: 80px;
 }
+
+.addSchedule__form-calendar-item-picker{
+    color:white;
+}

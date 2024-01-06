@@ -66,7 +66,7 @@ const PlaceNames: React.FC<PlaceNamesProps> = (props) => {
                     sx={{ color: "#00AAFF" }}
                     className="placeNames__form-label"
                 >
-                    Place
+                    Miejsce
                 </InputLabel>
                 <Select
                     sx={{ color: "#00AAFF" }}
