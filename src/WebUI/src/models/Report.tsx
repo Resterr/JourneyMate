@@ -3,4 +3,5 @@ export type Report = {
     addressId: string;
     rating: number;
     created: Date;
+    name: string;
 };

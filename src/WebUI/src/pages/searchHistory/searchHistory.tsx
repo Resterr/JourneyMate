@@ -117,7 +117,7 @@ const SearchDisplay: React.FC = () => {
                                                 <ListItemText
                                                     id={labelId}
                                                     primary={`${
-                                                        report.id
+                                                        report.name
                                                     } - ${formatDate(
                                                         report.created,
                                                         1,

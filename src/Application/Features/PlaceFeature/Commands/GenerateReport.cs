@@ -27,7 +27,7 @@ internal sealed class GenerateReportHandler : IRequestHandler<GenerateReport, Gu
 	public async Task<Guid> Handle(GenerateReport request, CancellationToken cancellationToken)
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
-		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
+		var user = await _dbContext.Users.Include(x => x.Reports).FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
 
 		var address = await _dbContext.Addresses.FirstOrDefaultAsync(x => x.Id == request.AddressId) ?? throw new AddressNotFoundException(request.AddressId);
 		var types = await _dbContext.PlaceTypes.Where(x => request.Types.Contains(x.Name))

@@ -10,7 +10,9 @@ public class User : BaseAuditableEntity
 	public string UserName { get; private set; }
 	public string? RefreshToken { get; private set; }
 	public DateTime? RefreshTokenExpiryTime { get; private set; }
-	public List<Role> Roles { get; } = new();
+	public List<Role> Roles { get; private set;} = new();
+	public List<Report> Reports { get; private set;} = new();
+	public List<Plan> Plans { get; private set;} = new();
 	public List<Follow> UserFollowers { get; private set; } = new();
 	public List<Follow> UserFollowed { get; private set; } = new();
 

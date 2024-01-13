@@ -1,4 +1,5 @@
-﻿using JourneyMate.Domain.Common;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+using JourneyMate.Domain.Common;
 
 namespace JourneyMate.Domain.Entities;
 
@@ -9,8 +10,11 @@ public class Report : BaseAuditableEntity
 	public Guid AddressId { get; }
 	public Address Address { get; private set; }
 	public int Rating { get; private set; }
+	public string Name { get; private set; }
 	public List<Place> Places { get; private set; } = new();
 	public List<PlaceType> Types { get; private set; } = new();
+	[NotMapped]
+	public int ReportNumber { get; set; }
 
 	private Report() { }
 
@@ -21,8 +25,15 @@ public class Report : BaseAuditableEntity
 		Rating = 0;
 		Places = places;
 		Types = types;
+		ReportNumber = User.Reports.Count + 1;
+		UpdateName();
 	}
-
+	
+	public void UpdateName()
+	{
+		Name = $"{User.UserName}-{ReportNumber}";
+	}
+	
 	public void UpdateRating(int rating)
 	{
 		Rating = rating;

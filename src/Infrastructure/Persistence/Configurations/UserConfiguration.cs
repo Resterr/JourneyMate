@@ -16,6 +16,16 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 			.HasMaxLength(256)
 			.IsRequired();
 		
+		builder.HasMany(x => x.Reports)
+			.WithOne(x => x.User)
+			.HasForeignKey(x => x.UserId)
+			.OnDelete(DeleteBehavior.NoAction);
+		
+		builder.HasMany(x => x.Plans)
+			.WithOne(x => x.User)
+			.HasForeignKey(x => x.UserId)
+			.OnDelete(DeleteBehavior.NoAction);
+		
 		builder.HasMany(x => x.UserFollowers)
 			.WithOne(x => x.Followed)
 			.HasForeignKey(x => x.FollowedId)

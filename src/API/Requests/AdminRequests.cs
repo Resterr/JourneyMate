@@ -81,6 +81,19 @@ internal static class AdminRequests
 			.Produces(StatusCodes.Status403Forbidden)
 			.Produces(StatusCodes.Status404NotFound)
 			.WithMetadata(new SwaggerOperationAttribute("Remove role"));
+		
+		group.MapPatch("reportNames", async (ISender sender, UpdateReportNames request) =>
+			{
+				await sender.Send(request);
+				return Results.Ok();
+			})
+			.RequireAuthorization("admin")
+			.Produces(StatusCodes.Status200OK)
+			.Produces(StatusCodes.Status400BadRequest)
+			.Produces(StatusCodes.Status401Unauthorized)
+			.Produces(StatusCodes.Status403Forbidden)
+			.Produces(StatusCodes.Status404NotFound)
+			.WithMetadata(new SwaggerOperationAttribute("Update report names"));
 
 		group.MapDelete("users/{id:guid}", async (ISender sender, Guid id) =>
 			{
