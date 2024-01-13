@@ -28,13 +28,16 @@ const SearchPlaces: React.FC = () => {
         }
     }, [currentUser, navigate]);
 
+    useEffect(() => {
+        setValue("distance", distance);
+    }, []);
+
     const onSubmit: SubmitHandler<FormData> = async (data: FormData) => {
         try {
             let token: string | null = userContext.accessToken;
             let config = {
                 headers: { Authorization: `Bearer ${token}` },
             };
-            setValue("distance", distance);
 
             const response: AxiosResponse<any> = await axiosInstance.post(
                 "/api/place/report/generate",

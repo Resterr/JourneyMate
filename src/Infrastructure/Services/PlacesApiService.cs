@@ -40,7 +40,7 @@ internal sealed class PlacesApiService : IPlacesApiService
 
 				while (!nextPageToken.IsNullOrEmpty())
 				{
-					Thread.Sleep(1600);
+					Thread.Sleep(1500);
 					response = await client.GetStringAsync($"{_urlOptions.Value.GoogleMapsApiUrl}/place/nearbysearch/json" +
 						$"?location={location}&type={type}&rankby=distance&key={_keysOptions.Value.GooglePlacesApiKey}&pagetoken={nextPageToken}&language=pl");
 					placeReadModel = JsonConvert.DeserializeObject<PlaceReadModel>(response);

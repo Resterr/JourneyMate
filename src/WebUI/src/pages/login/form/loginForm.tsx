@@ -43,8 +43,6 @@ const LoginForm: React.FC = () => {
                 );
                 userContext.setUserName(data.userName);
 
-                setStatus(`Witaj ${data.userName}!`);
-
                 navigate("/");
             } else {
                 setStatus("Nie udało się zalogować");
