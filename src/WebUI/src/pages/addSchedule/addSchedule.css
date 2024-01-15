@@ -14,6 +14,11 @@
     color: white;
 }
 
+.addSchedule__status{
+    background-color: rgba(53, 41, 97, 0.6);
+    color: white;
+}
+
 .addSchedule__form-calendar {
     display: flex;
     align-items: center;
@@ -34,4 +39,8 @@
     color: white;
     width: 400px;
     height: 80px;
+}
+
+.addSchedule__form-calendar-item-picker{
+    color:white;
 }

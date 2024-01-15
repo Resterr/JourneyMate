@@ -21,15 +21,15 @@ internal sealed class PlacesApiService : IPlacesApiService
 		_keysOptions = keysOptions;
 	}
 
-	public async Task<List<PlaceAddDto>> GetPlacesAsync(string location, List<string> types)
+	public async Task<List<PlaceAddDto>> GetPlacesAsync(string location, List<string> types, int radius, string rankBy)
 	{
 		using var client = new HttpClient();
 		var result = new List<PlaceAddDto>();
-		
+
 		foreach (var type in types)
 		{
 			var response = await client.GetStringAsync($"{_urlOptions.Value.GoogleMapsApiUrl}/place/nearbysearch/json" +
-				$"?location={location}&type={type}&rankby=distance&key={_keysOptions.Value.GooglePlacesApiKey}");
+				$"?location={location}&type={type}&radius={radius.ToString()}&rankby={rankBy}&key={_keysOptions.Value.GooglePlacesApiKey}&language=pl");
 
 			var placeReadModel = JsonConvert.DeserializeObject<PlaceReadModel>(response);
 			var placeReadModels = new List<PlaceReadModel>();
@@ -40,7 +40,7 @@ internal sealed class PlacesApiService : IPlacesApiService
 
 				while (!nextPageToken.IsNullOrEmpty())
 				{
-					Thread.Sleep(1600);
+					Thread.Sleep(1500);
 					response = await client.GetStringAsync($"{_urlOptions.Value.GoogleMapsApiUrl}/place/nearbysearch/json" +
 						$"?location={location}&type={type}&rankby=distance&key={_keysOptions.Value.GooglePlacesApiKey}&pagetoken={nextPageToken}&language=pl");
 					placeReadModel = JsonConvert.DeserializeObject<PlaceReadModel>(response);
@@ -58,7 +58,7 @@ internal sealed class PlacesApiService : IPlacesApiService
 					}
 				}
 			}
-			
+
 			foreach (var model in placeReadModels)
 			{
 				var placeDto = MapToDto(model);
@@ -81,7 +81,9 @@ internal sealed class PlacesApiService : IPlacesApiService
 			if (validationResult.IsValid)
 				if (result.Business_status == "OPERATIONAL")
 				{
-					var photo = result.Photos.IsNullOrEmpty() ? null : result.Photos[0].Photo_reference.IsNullOrEmpty() ? null : new PhotoAddDto(result.Photos[0].Height, result.Photos[0].Width, result.Photos[0].Photo_reference);
+					var photo = result.Photos.IsNullOrEmpty() ? null :
+						result.Photos[0]
+							.Photo_reference.IsNullOrEmpty() ? null : new PhotoAddDto(result.Photos[0].Height, result.Photos[0].Width, result.Photos[0].Photo_reference);
 
 					var place = new PlaceAddDto
 					{
@@ -103,20 +105,20 @@ internal sealed class PlacesApiService : IPlacesApiService
 
 		return places;
 	}
-	
+
 	[SuppressMessage("ReSharper", "InconsistentNaming")]
 	private class PlaceReadModel
 	{
 		#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
 		public List<object> Html_attributions { get; set; }
-		public string Next_page_token { get; set; }
-		public List<Result> Results { get; set; }
-		public string Status { get; set; }
+		public string Next_page_token { get; }
+		public List<Result> Results { get; }
+		public string Status { get; }
 
 		public class Location
 		{
-			public double? Lat { get; set; }
-			public double? Lng { get; set; }
+			public double? Lat { get; }
+			public double? Lng { get; }
 		}
 
 		public class Northeast
@@ -139,7 +141,7 @@ internal sealed class PlacesApiService : IPlacesApiService
 
 		public class Geometry
 		{
-			public Location Location { get; set; }
+			public Location Location { get; }
 			public Viewport Viewport { get; set; }
 		}
 
@@ -150,36 +152,36 @@ internal sealed class PlacesApiService : IPlacesApiService
 
 		public class Photo
 		{
-			public int Height { get; set; }
+			public int Height { get; }
 			public List<string> Html_attributions { get; set; }
-			public string Photo_reference { get; set; }
-			public int Width { get; set; }
+			public string Photo_reference { get; }
+			public int Width { get; }
 		}
 
 		public class PlusCode
 		{
-			public string Compound_code { get; set; }
-			public string Global_code { get; set; }
+			public string Compound_code { get; }
+			public string Global_code { get; }
 		}
 
 		public class Result
 		{
-			public string Business_status { get; set; }
-			public Geometry Geometry { get; set; }
+			public string Business_status { get; }
+			public Geometry Geometry { get; }
 			public string Icon { get; set; }
 			public string Icon_background_color { get; set; }
 			public string Icon_mask_base_uri { get; set; }
-			public string Name { get; set; }
+			public string Name { get; }
 			public OpeningHours Opening_hours { get; set; }
-			public List<Photo> Photos { get; set; }
-			public string Place_id { get; set; }
-			public PlusCode Plus_code { get; set; }
-			public double Rating { get; set; }
+			public List<Photo> Photos { get; }
+			public string Place_id { get; }
+			public PlusCode Plus_code { get; }
+			public double Rating { get; }
 			public string Reference { get; set; }
 			public string Scope { get; set; }
-			public List<string> Types { get; set; }
-			public int User_ratings_total { get; set; }
-			public string Vicinity { get; set; }
+			public List<string> Types { get; }
+			public int User_ratings_total { get; }
+			public string Vicinity { get; }
 		}
 	}
 
@@ -205,14 +207,14 @@ internal sealed class PlacesApiService : IPlacesApiService
 				.NotNull();
 		}
 	}
-	
+
 	public async Task<byte[]> LoadPhoto(string photoReference, int height, int width)
 	{
 		using var client = new HttpClient();
 
 		var response = await client.GetByteArrayAsync($"{_urlOptions.Value.GoogleMapsApiUrl}/place/photo" +
 			$"?photo_reference={photoReference}&maxheight={height}&maxwidth={width}&key={_keysOptions.Value.GooglePlacesApiKey}");
-		
+
 		return response;
 	}
 }

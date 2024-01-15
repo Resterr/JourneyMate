@@ -19,4 +19,3 @@ internal sealed class CurrentUserService : ICurrentUserService
 	public Guid? UserId => Principal?.FindFirstValue(ClaimTypes.NameIdentifier)
 		.ToGuid();
 }
-

@@ -27,7 +27,7 @@ internal sealed class TokenRemoveHandler : IRequestHandler<TokenRemove, Unit>
 
 		_dbContext.Users.Update(user);
 		await _dbContext.SaveChangesAsync(cancellationToken);
-		
+
 		return Unit.Value;
 	}
 }

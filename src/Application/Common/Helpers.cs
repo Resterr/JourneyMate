@@ -26,7 +26,7 @@ public static class Helpers
 	{
 		return degree * (Math.PI / 180);
 	}
-	
+
 	public static Guid? ToGuid(this string? value)
 	{
 		return Guid.TryParse(value, out var result) ? result : null;

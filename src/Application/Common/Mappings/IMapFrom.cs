@@ -13,11 +13,11 @@ public interface IMapFrom<T>
 			.ForMember(dest => dest.AdministrativeAreaLevel2, opt => opt.MapFrom(src => src.AdministrativeAreaLevel2.LongName))
 			.ForMember(dest => dest.AdministrativeAreaLevel1, opt => opt.MapFrom(src => src.AdministrativeAreaLevel2.AdministrativeAreaLevel1.LongName))
 			.ForMember(dest => dest.Country, opt => opt.MapFrom(src => src.AdministrativeAreaLevel2.AdministrativeAreaLevel1.Country.LongName));
-		
+
 		profile.CreateMap<Schedule, ScheduleDto>()
 			.ForMember(dest => dest.PlanName, opt => opt.MapFrom(src => src.Plan.Name))
 			.ForMember(dest => dest.PlaceName, opt => opt.MapFrom(src => src.Place.Name));
-		
+
 		profile.CreateMap(typeof(T), GetType());
 	}
 }

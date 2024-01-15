@@ -10,6 +10,7 @@ public class PlaceType : BaseEntity
 	public List<Report> Reports { get; private set; } = new();
 
 	private PlaceType() { }
+
 	public PlaceType(string apiName, string name)
 	{
 		ApiName = apiName;

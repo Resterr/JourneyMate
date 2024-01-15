@@ -22,12 +22,11 @@ internal sealed class GetPhotoForPlaceHandler : IRequestHandler<GetPhotoForPlace
 
 	public async Task<Stream> Handle(GetPhotoForPlace request, CancellationToken cancellationToken)
 	{
-		var photo = await _dbContext.Photos.AsNoTracking().FirstOrDefaultAsync(x => x.PlaceId == request.PlaceId);
+		var photo = await _dbContext.Photos.Include(x => x.Place).FirstOrDefaultAsync(x => x.PlaceId == request.PlaceId);
 		if (photo != null)
 		{
 			var data = photo.Data;
 			if (data.Length > 0)
-			{
 				using (var memoryStream = new MemoryStream(data))
 				{
 					using (var image = Image.Load(memoryStream))
@@ -37,18 +36,17 @@ internal sealed class GetPhotoForPlaceHandler : IRequestHandler<GetPhotoForPlace
 							Size = new Size(request.Width, request.Height),
 							Mode = ResizeMode.Max
 						}));
-						
+
 						var resizedMemoryStream = new MemoryStream();
 						image.Save(resizedMemoryStream, new JpegEncoder());
-						
+
 						resizedMemoryStream.Seek(0, SeekOrigin.Begin);
 
 						return resizedMemoryStream;
 					}
 				}
-			}
 		}
-		
+
 		throw new PhotoNotFoundException(request.PlaceId);
 	}
 }

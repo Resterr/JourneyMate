@@ -11,18 +11,6 @@ public class FollowConfiguration : IEntityTypeConfiguration<Follow>
 		builder.Property(x => x.FollowDate)
 			.IsRequired();
 		
-		builder
-			.HasOne(x => x.Follower)
-			.WithMany(x => x.UserFollowers)
-			.HasForeignKey(x => x.FollowerId)
-			.OnDelete(DeleteBehavior.NoAction);
-
-		builder
-			.HasOne(x => x.Followed)
-			.WithMany()
-			.HasForeignKey(x => x.FollowedId)
-			.OnDelete(DeleteBehavior.NoAction);
-		
 		builder.ToTable("Follow");
 	}
 }

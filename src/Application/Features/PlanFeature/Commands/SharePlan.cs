@@ -22,17 +22,21 @@ internal sealed class SharePlanHandler : IRequestHandler<SharePlan, Unit>
 	public async Task<Unit> Handle(SharePlan request, CancellationToken cancellationToken)
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
-		var user = await _dbContext.Users.Include(x => x.UserFollowers)
-				.ThenInclude(x => x.Shared)
+		var user = await _dbContext.Users.Include(x => x.UserFollowers).ThenInclude(x => x.Follower)
 				.SingleOrDefaultAsync(x => x.Id == userId) ??
-			throw new UserNotFoundException("name", request.Username);
-		var shareUser = await _dbContext.Users.SingleOrDefaultAsync(x => x.UserName == request.Username) ?? throw new UserNotFoundException("name", request.Username);
-		var plan = await _dbContext.Plans.Include(x => x.Shared).ThenInclude(x => x.Follow).SingleOrDefaultAsync(x => x.Id == request.PlanId) ?? throw new PlanNotFoundException(request.PlanId);
-		var follow = await _dbContext.Followers.Include(x => x.Shared).SingleOrDefaultAsync(x => x.FollowerId == shareUser.Id) ?? throw new InvalidFollowerException(request.Username);
-		if (!follow.Shared.Any(x => x.FollowId == follow.Id))
-		{
-			var planShare = new FollowPlanRelation(follow, plan);
+			throw new UserNotFoundException();
 		
+		if (user.UserName == request.Username) throw new CannotShareToYourselfException();
+		var follow = user.UserFollowers.SingleOrDefault(x => x.Follower.UserName == request.Username && x.FollowedId == user.Id);
+		if (follow is null) throw new InvalidFollowerException(request.Username);
+		
+		var plan =  await _dbContext.Plans.Include(x => x.Shared).ThenInclude(x => x.Follow).SingleOrDefaultAsync(x => x.Id == request.PlanId) ?? throw new PlanNotFoundException(request.PlanId);
+		var planShare = plan.Shared.SingleOrDefault(x => x.Follow.Follower.UserName == request.Username && x.Follow.Followed.UserName == user.UserName);
+
+		if (planShare == null)
+		{
+			planShare = new FollowPlanRelation(follow, plan);
+
 			plan.AddShare(planShare);
 			_dbContext.Plans.Update(plan);
 			await _dbContext.SaveChangesAsync(cancellationToken);

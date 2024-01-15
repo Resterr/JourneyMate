@@ -1,6 +1,5 @@
 ﻿using JourneyMate.Application.Common.Interfaces;
 using JourneyMate.Infrastructure.Common.Options;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -20,7 +19,7 @@ internal static class Extensions
 		services.AddTransient<IGeocodeApiService, GeocodeApiService>();
 		services.AddTransient<IPlacesApiService, PlacesApiService>();
 		services.AddTransient<ICurrentUserService, CurrentUserService>();
-		
+
 		return services;
 	}
 }

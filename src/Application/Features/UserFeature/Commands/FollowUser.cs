@@ -11,9 +11,9 @@ public record FollowUser(string UserName) : IRequest<Unit>;
 
 internal sealed class FollowUserHandler : IRequestHandler<FollowUser, Unit>
 {
-	private readonly IApplicationDbContext _dbContext;
 	private readonly ICurrentUserService _currentUserService;
 	private readonly IDateTimeService _dateTimeService;
+	private readonly IApplicationDbContext _dbContext;
 
 	public FollowUserHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService, IDateTimeService dateTimeService)
 	{
@@ -26,13 +26,13 @@ internal sealed class FollowUserHandler : IRequestHandler<FollowUser, Unit>
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
 		var user = await _dbContext.Users.SingleOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
-		
+
 		if (user.UserName == request.UserName) throw new CannotFollowYourselfException();
-		
+
 		var follow = await _dbContext.Followers.Include(x => x.Followed)
 			.Where(x => x.FollowerId == user.Id)
 			.SingleOrDefaultAsync(x => x.Followed.UserName == request.UserName);
-		
+
 		if (follow != null) throw new AlreadyFollowedException(request.UserName);
 
 		var userToFollow = await _dbContext.Users.SingleOrDefaultAsync(x => x.UserName == request.UserName) ?? throw new UserNotFoundException();

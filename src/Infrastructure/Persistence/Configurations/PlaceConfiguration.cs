@@ -32,7 +32,7 @@ public class PlaceConfiguration : IEntityTypeConfiguration<Place>
 		builder.Property(x => x.Vicinity)
 			.HasMaxLength(512)
 			.IsRequired();
-		
+
 		builder.OwnsOne(x => x.Location)
 			.Property(x => x.Latitude)
 			.HasColumnName("Latitude")
@@ -54,7 +54,7 @@ public class PlaceConfiguration : IEntityTypeConfiguration<Place>
 			.HasColumnName("GlobalCode")
 			.HasMaxLength(256)
 			.IsRequired();
-		
+
 		builder.ToTable("Place");
 	}
 }

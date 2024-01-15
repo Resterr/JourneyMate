@@ -32,7 +32,9 @@ internal sealed class TokenRefreshHandler : IRequestHandler<TokenRefresh, Tokens
 
 		if (Guid.TryParse(principal.FindFirstValue(ClaimTypes.NameIdentifier), out var userId)) { }
 		else
+		{
 			throw new InvalidTokenException();
+		}
 
 		var user = await _dbContext.Users.Include(x => x.Roles)
 				.SingleOrDefaultAsync(x => x.Id == userId, cancellationToken) ??

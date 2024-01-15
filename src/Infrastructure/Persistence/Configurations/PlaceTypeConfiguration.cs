@@ -14,14 +14,14 @@ public class PlaceTypeConfiguration : IEntityTypeConfiguration<PlaceType>
 
 		builder.HasIndex(x => x.ApiName)
 			.IsUnique();
-		
+
 		builder.Property(x => x.Name)
 			.HasMaxLength(256)
 			.IsRequired();
 
 		builder.HasIndex(x => x.Name)
 			.IsUnique();
-		
+
 		builder.ToTable("PlaceType");
 	}
 }

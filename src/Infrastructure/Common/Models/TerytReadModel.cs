@@ -12,7 +12,7 @@ internal class TerytReadModel
 		Municipality = municipality;
 		IsCity = isCity;
 	}
-		
+
 	public string ToComponent()
 	{
 		if (IsCity)

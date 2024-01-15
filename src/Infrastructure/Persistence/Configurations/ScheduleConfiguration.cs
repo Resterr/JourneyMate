@@ -10,6 +10,16 @@ public class ScheduleConfiguration : IEntityTypeConfiguration<Schedule>
 	{
 		builder.Property(x => x.StartingDate)
 			.IsRequired();
+		
+		builder.HasOne(x => x.Place)
+			.WithMany()
+			.HasForeignKey(x => x.PlaceId)
+			.IsRequired();
+
+		builder.HasOne(x => x.Plan)
+			.WithMany()
+			.HasForeignKey(x => x.PlanId)
+			.IsRequired();
 
 		builder.ToTable("Schedule");
 	}

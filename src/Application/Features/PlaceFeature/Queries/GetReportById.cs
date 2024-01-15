@@ -12,8 +12,8 @@ public record GetReportById(Guid Id) : IRequest<ReportDto>;
 
 internal sealed class GetReportByIdHandler : IRequestHandler<GetReportById, ReportDto>
 {
-	private readonly IApplicationDbContext _dbContext;
 	private readonly ICurrentUserService _currentUserService;
+	private readonly IApplicationDbContext _dbContext;
 	private readonly IMapper _mapper;
 
 	public GetReportByIdHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService, IMapper mapper)
@@ -27,9 +27,12 @@ internal sealed class GetReportByIdHandler : IRequestHandler<GetReportById, Repo
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
 		var user = await _dbContext.Users.FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
-		var report = await _dbContext.Reports.Where(x => x.UserId == user.Id).AsNoTracking().FirstOrDefaultAsync(x => x.Id == request.Id) ?? throw new ReportNotFoundException(request.Id);
+		var report = await _dbContext.Reports.Where(x => x.UserId == user.Id)
+				.AsNoTracking()
+				.FirstOrDefaultAsync(x => x.Id == request.Id) ??
+			throw new ReportNotFoundException(request.Id);
 		var result = _mapper.Map<ReportDto>(report);
-		
+
 		return result;
 	}
 }

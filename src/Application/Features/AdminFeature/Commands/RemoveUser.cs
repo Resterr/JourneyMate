@@ -10,8 +10,8 @@ public record RemoveUser(Guid Id) : IRequest<Unit>;
 
 internal sealed class RemoveUserHandler : IRequestHandler<RemoveUser, Unit>
 {
-	private readonly IApplicationDbContext _dbContext;
 	private readonly ICurrentUserService _currentUserService;
+	private readonly IApplicationDbContext _dbContext;
 
 	public RemoveUserHandler(IApplicationDbContext dbContext, ICurrentUserService currentUserService)
 	{

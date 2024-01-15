@@ -1,6 +1,7 @@
 export type Report = {
-  id: string;
-  addressId: string;
-  rating: number;
-  created: Date;
+    id: string;
+    addressId: string;
+    rating: number;
+    created: Date;
+    name: string;
 };

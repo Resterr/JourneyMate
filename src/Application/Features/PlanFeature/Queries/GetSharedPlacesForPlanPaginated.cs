@@ -27,28 +27,30 @@ internal sealed class GetSharedPlacesForPlanPaginatedHandler : IRequestHandler<G
 	public async Task<PaginatedList<PlaceDto>> Handle(GetSharedPlacesForPlanPaginated request, CancellationToken cancellationToken)
 	{
 		var userId = _currentUserService.UserId ?? throw new UnauthorizedAccessException();
-		var user = await _dbContext.Users.AsNoTracking().FirstOrDefaultAsync(x => x.Id == userId) ?? throw new UserNotFoundException(userId);
+		var user = await _dbContext.Users.AsNoTracking()
+				.FirstOrDefaultAsync(x => x.Id == userId) ??
+			throw new UserNotFoundException(userId);
 		if (await _dbContext.Plans.AnyAsync(x => x.Id == request.PlanId) == false) throw new PlanNotFoundException(request.PlanId);
-		
+
 		if (request.TagsString != null)
 		{
 			if (await _dbContext.Plans.AnyAsync(x => x.Id == request.PlanId) == false) throw new PlanNotFoundException(request.PlanId);
 
 			var typesNames = request.TagsString.Split('|');
 			var types = await _dbContext.PlaceTypes.Where(x => typesNames.Contains(x.Name))
-				.AsNoTracking().ToListAsync(cancellationToken);
+				.AsNoTracking()
+				.ToListAsync(cancellationToken);
 
 			var places = await _dbContext.Places.Include(x => x.Plans)
 				.ThenInclude(x => x.Shared)
 				.ThenInclude(x => x.Follow)
 				.Include(x => x.Addresses)
 				.Include(x => x.Types)
-				.Where(x => x.Plans.Any(y => y.Id == request.PlanId)
-					&& x.Plans.Any(y => y.Shared.Any(z => z.Follow.FollowerId == user.Id) 
-						&& x.Types.Any(z => types.Contains(z))))
+				.Where(x => x.Plans.Any(y => y.Id == request.PlanId) && x.Plans.Any(y => y.Shared.Any(z => z.Follow.FollowerId == user.Id) && x.Types.Any(z => types.Contains(z))))
 				.OrderBy(x => x.Rating)
-				.AsNoTracking().PaginatedListAsync(request.PageNumber, request.PageSize);
-			
+				.AsNoTracking()
+				.PaginatedListAsync(request.PageNumber, request.PageSize);
+
 			var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
 			var result = new PaginatedList<PlaceDto>(placesDto, places.TotalCount, request.PageNumber, request.PageSize);
 
@@ -65,8 +67,9 @@ internal sealed class GetSharedPlacesForPlanPaginatedHandler : IRequestHandler<G
 				.Include(x => x.Types)
 				.Where(x => x.Plans.Any(y => y.Id == request.PlanId) && x.Plans.Any(y => y.Shared.Any(z => z.Follow.FollowerId == user.Id)))
 				.OrderBy(x => x.Rating)
-				.AsNoTracking().PaginatedListAsync(request.PageNumber, request.PageSize);
-			
+				.AsNoTracking()
+				.PaginatedListAsync(request.PageNumber, request.PageSize);
+
 			var placesDto = _mapper.Map<List<PlaceDto>>(places.Items);
 			var result = new PaginatedList<PlaceDto>(placesDto, places.TotalCount, request.PageNumber, request.PageSize);
 

@@ -1,6 +1,4 @@
-﻿using JourneyMate.Application.Common.Mappings;
-using JourneyMate.Domain.Entities;
-using JourneyMate.Domain.ValueObjects;
+﻿using JourneyMate.Domain.ValueObjects;
 
 namespace JourneyMate.Application.Common.Models;
 

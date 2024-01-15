@@ -22,7 +22,9 @@ internal sealed class RemovePlacesFromPlanPlanHandler : IRequestHandler<RemovePl
 		var plan = await _dbContext.Plans.Include(x => x.Places)
 				.SingleOrDefaultAsync(x => x.Id == request.PlanId) ??
 			throw new PlanNotFoundException(request.PlanId);
-		var places = await _dbContext.Places.Where(x => request.Places.Contains(x.Id)).ToListAsync() ?? throw new PlaceNotFoundException();
+		var places = await _dbContext.Places.Where(x => request.Places.Contains(x.Id))
+				.ToListAsync() ??
+			throw new PlaceNotFoundException();
 
 		plan.RemovePlaces(places);
 

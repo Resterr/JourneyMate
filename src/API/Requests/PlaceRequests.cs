@@ -31,7 +31,7 @@ internal static class PlaceRequests
 			.Produces(StatusCodes.Status403Forbidden)
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Get report data"));
-		
+
 		group.MapGet("report/{id:guid}/place", async (ISender sender, [AsParameters] GetReportPlacesPaginated request) =>
 			{
 				var result = await sender.Send(request);
@@ -43,7 +43,7 @@ internal static class PlaceRequests
 			.Produces(StatusCodes.Status403Forbidden)
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Get report place paginated"));
-		
+
 		group.MapGet("report", async (ISender sender, [AsParameters] GetAllReportsPaginated request) =>
 			{
 				var result = await sender.Send(request);
@@ -55,7 +55,7 @@ internal static class PlaceRequests
 			.Produces(StatusCodes.Status403Forbidden)
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Get all reports data"));
-		
+
 		group.MapGet("photo/{placeId:guid}", async (ISender sender, [AsParameters] GetPhotoForPlace request) =>
 			{
 				var result = await sender.Send(request);
@@ -67,7 +67,7 @@ internal static class PlaceRequests
 			.Produces(StatusCodes.Status403Forbidden)
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Get photo for place"));
-		
+
 		group.MapPost("report/generate", async (ISender sender, [FromBody] GenerateReport request) =>
 			{
 				var id = await sender.Send(request);
@@ -79,7 +79,7 @@ internal static class PlaceRequests
 			.Produces(StatusCodes.Status403Forbidden)
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Search places"));
-		
+
 		group.MapPost("add", async (ISender sender, [FromBody] AddPlacesFromAddress request) =>
 			{
 				await sender.Send(request);
@@ -91,7 +91,7 @@ internal static class PlaceRequests
 			.Produces(StatusCodes.Status403Forbidden)
 			.Produces(StatusCodes.Status400BadRequest)
 			.WithMetadata(new SwaggerOperationAttribute("Add places"));
-		
+
 		group.MapPatch("report/rating", async (ISender sender, [FromBody] RateReport request) =>
 			{
 				await sender.Send(request);

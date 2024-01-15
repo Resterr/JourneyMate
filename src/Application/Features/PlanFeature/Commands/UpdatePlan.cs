@@ -21,7 +21,7 @@ internal sealed class UpdatePlanHandler : IRequestHandler<UpdatePlan, Unit>
 	{
 		var plan = await _dbContext.Plans.SingleOrDefaultAsync(x => x.Id == request.Id) ?? throw new PlanNotFoundException(request.Id);
 		plan.Update(request.Name);
-		
+
 		_dbContext.Plans.Update(plan);
 		await _dbContext.SaveChangesAsync();
 

@@ -15,10 +15,10 @@ public class AdministrativeAreaLevel2Configuration : IEntityTypeConfiguration<Ad
 		builder.Property(x => x.LongName)
 			.HasMaxLength(256)
 			.IsRequired();
-		
+
 		builder.Property(x => x.AdministrativeAreaLevel1Id)
 			.IsRequired();
-		
+
 		builder.ToTable("AdministrativeAreaLevel2");
 	}
 }

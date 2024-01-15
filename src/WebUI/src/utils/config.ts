@@ -1,9 +1,9 @@
 type AppConfig = {
-  googleMapsApiKey: string;
+    googleMapsApiKey: string;
 };
 
 const config: AppConfig = {
-  googleMapsApiKey: "X",
+    googleMapsApiKey: "X",
 };
 
 export default config;

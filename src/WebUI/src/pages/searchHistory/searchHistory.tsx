@@ -10,6 +10,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemText from "@mui/material/ListItemText";
 import { PaginatedReports } from "../../models/PaginatedReports";
+import { formatDate } from "../../utils/helpers";
 
 const SearchDisplay: React.FC = () => {
     const { id } = useParams();
@@ -115,7 +116,12 @@ const SearchDisplay: React.FC = () => {
                                             >
                                                 <ListItemText
                                                     id={labelId}
-                                                    primary={`${report.id} - ${report.created}`}
+                                                    primary={`${
+                                                        report.name
+                                                    } - ${formatDate(
+                                                        report.created,
+                                                        1,
+                                                    )}`}
                                                 />
                                             </Link>
                                         </ListItemButton>

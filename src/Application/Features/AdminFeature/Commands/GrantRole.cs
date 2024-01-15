@@ -11,7 +11,7 @@ public record GrantRole(Guid Id, string RoleName) : IRequest<Unit>;
 internal sealed class GrantRoleHandler : IRequestHandler<GrantRole, Unit>
 {
 	private readonly IApplicationDbContext _dbContext;
-	
+
 	public GrantRoleHandler(IApplicationDbContext dbContext)
 	{
 		_dbContext = dbContext;

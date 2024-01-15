@@ -9,5 +9,6 @@ public class ReportDto : IMapFrom<Report>
 	public Guid AddressId { get; set; }
 	public int Rating { get; set; }
 	public DateTime Created { get; set; }
+	public string Name { get; set; }
 	public List<string> Types { get; set; }
 }

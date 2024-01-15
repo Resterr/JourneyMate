@@ -1,4 +1,6 @@
 .register_form {
+    width: 400px;
+    height: 600px;
     background: rgba(53, 41, 97, 0.6);
     color: white;
     border-radius: 10px;

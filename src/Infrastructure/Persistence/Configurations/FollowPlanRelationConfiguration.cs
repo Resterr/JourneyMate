@@ -8,19 +8,16 @@ public class FollowPlanRelationConfiguration : IEntityTypeConfiguration<FollowPl
 {
 	public void Configure(EntityTypeBuilder<FollowPlanRelation> builder)
 	{
-		builder
-			.HasKey(x => new { x.FollowId, x.PlanId });
+		builder.HasKey(x => new { x.FollowId, x.PlanId });
 
-		builder
-			.HasOne(x => x.Follow)
+		builder.HasOne(x => x.Follow)
 			.WithMany(x => x.Shared)
 			.HasForeignKey(x => x.FollowId);
 
-		builder
-			.HasOne(x => x.Plan)
+		builder.HasOne(x => x.Plan)
 			.WithMany(x => x.Shared)
 			.HasForeignKey(x => x.PlanId);
-		
+
 		builder.ToTable("FollowPlanRelation");
 	}
-} 
+}

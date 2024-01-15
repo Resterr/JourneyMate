@@ -14,8 +14,8 @@ internal interface IUsersSeeder
 
 internal sealed class UsersSeeder : IUsersSeeder
 {
-	private readonly IConfiguration _configuration;
 	private readonly IApplicationDbContext _applicationDbContext;
+	private readonly IConfiguration _configuration;
 	private readonly IPasswordManager _passwordManager;
 
 	public UsersSeeder(IConfiguration configuration, IApplicationDbContext applicationDbContext, IPasswordManager passwordManager)

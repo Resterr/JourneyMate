@@ -2,8 +2,8 @@
 
 namespace JourneyMate.Application.Common.Exceptions;
 
-public class CannotFollowYourselfException : JourneyMateException
+public class CannotShareToYourselfException : JourneyMateException
 {
 	public override HttpStatusCode StatusCode => HttpStatusCode.BadRequest;
-	public CannotFollowYourselfException() : base("You cannot follow yourself") { }
+	public CannotShareToYourselfException() : base("You cannot share to yourself") { }
 }
